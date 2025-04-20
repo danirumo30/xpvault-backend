@@ -8,11 +8,11 @@
         <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.gametracker</groupId>
+    <groupId>com.xpvault</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
-    <description>Backend for gametracker.</description>
+    <description>Backend for xpvault.</description>
     <url/>
     <licenses>
         <license/>

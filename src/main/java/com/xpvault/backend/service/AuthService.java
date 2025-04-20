@@ -1,10 +1,10 @@
-package com.gametracker.backend.service;
+package com.xpvault.backend.service;
 
-import com.gametracker.backend.dto.LoginUserDTO;
-import com.gametracker.backend.dto.RegisterUserDTO;
-import com.gametracker.backend.dto.VerifyUserDTO;
-import com.gametracker.backend.entity.AppUser;
-import com.gametracker.backend.repository.UserRepository;
+import com.xpvault.backend.dto.LoginUserDTO;
+import com.xpvault.backend.dto.RegisterUserDTO;
+import com.xpvault.backend.dto.VerifyUserDTO;
+import com.xpvault.backend.entity.AppUser;
+import com.xpvault.backend.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

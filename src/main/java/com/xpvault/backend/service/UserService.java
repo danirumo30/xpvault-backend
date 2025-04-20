@@ -1,7 +1,7 @@
-package com.gametracker.backend.service;
+package com.xpvault.backend.service;
 
-import com.gametracker.backend.entity.AppUser;
-import com.gametracker.backend.repository.UserRepository;
+import com.xpvault.backend.entity.AppUser;
+import com.xpvault.backend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

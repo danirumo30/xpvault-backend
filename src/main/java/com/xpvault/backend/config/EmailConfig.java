@@ -1,4 +1,4 @@
-package com.gametracker.backend.config;
+package com.xpvault.backend.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

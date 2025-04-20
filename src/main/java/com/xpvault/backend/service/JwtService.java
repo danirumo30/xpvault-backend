@@ -1,4 +1,4 @@
-package com.gametracker.backend.service;
+package com.xpvault.backend.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -43,9 +43,9 @@ public class JwtService {
     /**
      * Extrae una reclamación específica del token JWT.
      *
-     * @param token el token JWT
+     * @param token          el token JWT
      * @param claimsResolver una función para extraer la reclamación deseada
-     * @param <T> el tipo de la reclamación
+     * @param <T>            el tipo de la reclamación
      * @return el valor de la reclamación extraída
      */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -97,7 +97,7 @@ public class JwtService {
     /**
      * Verifica si el token JWT es válido.
      *
-     * @param token el token JWT
+     * @param token       el token JWT
      * @param userDetails los detalles del usuario
      * @return {@code true} si el token es válido, {@code false} en caso contrario
      */

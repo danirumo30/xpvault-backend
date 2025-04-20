@@ -1,6 +1,6 @@
-package com.gametracker.backend.repository;
+package com.xpvault.backend.repository;
 
-import com.gametracker.backend.entity.AppUser;
+import com.xpvault.backend.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

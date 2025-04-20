@@ -1,6 +1,6 @@
-package com.gametracker.backend.config;
+package com.xpvault.backend.config;
 
-import com.gametracker.backend.repository.UserRepository;
+import com.xpvault.backend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

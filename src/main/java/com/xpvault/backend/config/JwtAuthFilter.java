@@ -1,6 +1,6 @@
-package com.gametracker.backend.config;
+package com.xpvault.backend.config;
 
-import com.gametracker.backend.service.JwtService;
+import com.xpvault.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

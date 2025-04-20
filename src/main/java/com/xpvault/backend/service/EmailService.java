@@ -1,4 +1,4 @@
-package com.gametracker.backend.service;
+package com.xpvault.backend.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

@@ -1,9 +1,10 @@
-package com.gametracker.backend.config;
+package com.xpvault.backend.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -41,6 +42,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         // Permite libre acceso a todas las rutas bajo /XX/**
                         .requestMatchers("/auth/**").permitAll()
@@ -68,7 +70,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Lista de dominios permitidos para acceder a la API
-        configuration.setAllowedOrigins(List.of("https://gametracker.com", "https://localhost:9090"));
+        configuration.setAllowedOrigins(List.of("*"));
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         // Encabezados permitidos en la solicitud

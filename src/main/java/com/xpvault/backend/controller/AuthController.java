@@ -1,12 +1,12 @@
-package com.gametracker.backend.controller;
+package com.xpvault.backend.controller;
 
-import com.gametracker.backend.dto.LoginUserDTO;
-import com.gametracker.backend.dto.RegisterUserDTO;
-import com.gametracker.backend.dto.VerifyUserDTO;
-import com.gametracker.backend.entity.AppUser;
-import com.gametracker.backend.response.LoginResponse;
-import com.gametracker.backend.service.AuthService;
-import com.gametracker.backend.service.JwtService;
+import com.xpvault.backend.dto.LoginUserDTO;
+import com.xpvault.backend.dto.RegisterUserDTO;
+import com.xpvault.backend.dto.VerifyUserDTO;
+import com.xpvault.backend.entity.AppUser;
+import com.xpvault.backend.response.LoginResponse;
+import com.xpvault.backend.service.AuthService;
+import com.xpvault.backend.service.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.gametracker.backend;
+package com.xpvault.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

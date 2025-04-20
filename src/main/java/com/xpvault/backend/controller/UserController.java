@@ -1,7 +1,7 @@
-package com.gametracker.backend.controller;
+package com.xpvault.backend.controller;
 
-import com.gametracker.backend.entity.AppUser;
-import com.gametracker.backend.service.UserService;
+import com.xpvault.backend.entity.AppUser;
+import com.xpvault.backend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

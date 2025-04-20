@@ -1,4 +1,4 @@
-package com.gametracker.backend.entity;
+package com.xpvault.backend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

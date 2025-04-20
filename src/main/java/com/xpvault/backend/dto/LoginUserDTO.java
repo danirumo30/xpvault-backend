@@ -1,4 +1,4 @@
-package com.gametracker.backend.dto;
+package com.xpvault.backend.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

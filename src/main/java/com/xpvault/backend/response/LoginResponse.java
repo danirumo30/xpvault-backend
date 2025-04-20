@@ -1,4 +1,4 @@
-package com.gametracker.backend.response;
+package com.xpvault.backend.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
