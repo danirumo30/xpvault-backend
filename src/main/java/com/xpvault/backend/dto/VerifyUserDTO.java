@@ -1,12 +1,11 @@
 package com.xpvault.backend.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO utilizado para verificar una cuenta de usuario mediante un código de verificación.
- */
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class VerifyUserDTO {
     private String email;

@@ -1,7 +1,7 @@
 package com.xpvault.backend.controller;
 
-import com.xpvault.backend.entity.AppUser;
-import com.xpvault.backend.service.UserService;
+import com.xpvault.backend.model.AppUserModel;
+import com.xpvault.backend.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,15 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Controlador REST que maneja las operaciones relacionadas con los usuarios.
- * Rutas: /users/me, /users/all
- */
-@RequestMapping("/users")
 @RestController
+@RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     /**
      * Endpoint que devuelve los datos del usuario actualmente autenticado.
@@ -30,11 +26,11 @@ public class UserController {
      * @return El usuario autenticado
      */
     @GetMapping("/me")
-    public ResponseEntity<AppUser> authenticatedUser() {
+    public ResponseEntity<AppUserModel> authenticatedUser() {
         // Se obtiene el contexto de autenticación actual
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // Se obtiene el usuario desde los detalles del principal
-        AppUser currentUser = (AppUser) authentication.getPrincipal();
+        AppUserModel currentUser = (AppUserModel) authentication.getPrincipal();
         return ResponseEntity.ok(currentUser);
     }
 
@@ -45,8 +41,8 @@ public class UserController {
      * @return Lista de todos los usuarios registrados
      */
     @PostMapping("/all")
-    public ResponseEntity<List<AppUser>> allUsers() {
-        List<AppUser> users = userService.allUsers();
+    public ResponseEntity<List<AppUserModel>> allUsers() {
+        List<AppUserModel> users = userServiceImpl.allUsers();
         return ResponseEntity.ok(users);
     }
 }

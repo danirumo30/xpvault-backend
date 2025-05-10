@@ -1,12 +1,11 @@
 package com.xpvault.backend.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO utilizado para registrar un nuevo usuario en el sistema.
- */
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class RegisterUserDTO {
     private String email;

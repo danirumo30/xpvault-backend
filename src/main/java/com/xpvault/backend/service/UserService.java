@@ -1,27 +1,16 @@
 package com.xpvault.backend.service;
 
-import com.xpvault.backend.entity.AppUser;
-import com.xpvault.backend.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.xpvault.backend.model.AppUserModel;
 
 import java.util.List;
 
-/**
- * Servicio encargado de gestionar las operaciones relacionadas con los usuarios.
- * Proporciona métodos para acceder a los usuarios almacenados en la base de datos.
- */
-@Service
-@AllArgsConstructor
-public class UserService {
-    private final UserRepository userRepository;
+public interface UserService {
 
     /**
      * Obtiene una lista de todos los usuarios registrados en el sistema.
      *
-     * @return una lista de usuarios ({@link AppUser})
+     * @return una lista de usuarios ({@link AppUserModel})
      */
-    public List<AppUser> allUsers() {
-        return userRepository.findAll();
-    }
+    List<AppUserModel> allUsers();
+
 }

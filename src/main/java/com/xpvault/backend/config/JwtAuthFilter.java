@@ -1,6 +1,6 @@
 package com.xpvault.backend.config;
 
-import com.xpvault.backend.service.JwtService;
+import com.xpvault.backend.service.impl.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,18 +19,12 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-/**
- * Filtro personalizado que intercepta cada solicitud HTTP para validar el JWT.
- * Si el token es válido, autentica al usuario y lo registra en el contexto de seguridad de Spring.
- */
 @Component
 @AllArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    // Manejador de excepciones para responder adecuadamente ante errores
+
     private final HandlerExceptionResolver handlerExceptionResolver;
-    // Servicio para operaciones relacionadas con JWT (como extracción y validación)
-    private final JwtService jwtService;
-    // Servicio para cargar los detalles del usuario a partir del email extraído del token
+    private final JwtServiceImpl jwtServiceImpl;
     private final UserDetailsService userDetailsService;
 
     /**
@@ -49,7 +43,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain chain
     )
             throws ServletException, IOException {
-        // Ignora la autenticación para rutas públicas como /auth o /users
         if (request.getServletPath().startsWith("/auth") || request.getServletPath().startsWith("/users")) {
             chain.doFilter(request, response);
             return;
@@ -57,37 +50,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // Si no hay token o no comienza con "Bearer ", se continúa sin procesar JWT
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
         try {
-            // Extrae el token JWT sin el prefijo "Bearer "
             final String jwt = authHeader.substring(7);
-            // Extrae el email del usuario del token
-            final String userEmail = jwtService.extractUsername(jwt);
-            // Obtiene la autenticación actual del contexto de seguridad
+            final String userEmail = jwtServiceImpl.extractUsername(jwt);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            // Si hay un email válido y aún no hay usuario autenticado en el contexto
             if (userEmail != null && authentication == null) {
-                // Carga los detalles del usuario desde la base de datos
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                // Verifica si el token es válido para ese usuario
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    // Crea un token de autenticación con los detalles del usuario
+                if (jwtServiceImpl.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
                     );
 
-                    // Agrega información adicional de la petición al token
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    // Establece el token de autenticación en el contexto de seguridad
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }

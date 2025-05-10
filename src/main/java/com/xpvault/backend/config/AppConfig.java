@@ -1,6 +1,6 @@
 package com.xpvault.backend.config;
 
-import com.xpvault.backend.repository.UserRepository;
+import com.xpvault.backend.dao.UserDAO;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +12,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-/**
- * Configuración principal de seguridad para la autenticación en la aplicación.
- * Define los beans relacionados con la autenticación de usuarios.
- */
 @Configuration
 @AllArgsConstructor
 public class AppConfig {
-    private final UserRepository userRepository;
+
+    private final UserDAO userDAO;
 
     /**
      * Bean que define el servicio para cargar los detalles del usuario por su nombre de usuario (email).
@@ -28,8 +25,7 @@ public class AppConfig {
      */
     @Bean
     UserDetailsService userDetailsService() {
-        // Busca el usuario por email, lanza excepción si no se encuentra
-        return username -> userRepository.findByEmail(username)
+        return username -> userDAO.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

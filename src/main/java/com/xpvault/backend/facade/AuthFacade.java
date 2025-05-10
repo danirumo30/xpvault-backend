@@ -1,18 +1,20 @@
-package com.xpvault.backend.service;
+package com.xpvault.backend.facade;
 
+import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.LoginUserDTO;
-import com.xpvault.backend.model.AppUserModel;
+import com.xpvault.backend.dto.RegisterUserDTO;
+import com.xpvault.backend.dto.VerifyUserDTO;
 
-public interface AuthService {
+public interface AuthFacade {
 
     /**
      * Registra a un nuevo usuario, codifica su contraseña, genera un código
      * de verificación y envía un email de verificación.
      *
-     * @param appUserModel DTO con los datos del usuario a registrar
+     * @param registerUserDTO con los datos del usuario a registrar
      * @return Usuario creado y almacenado en la base de datos
      */
-    AppUserModel signUp(AppUserModel appUserModel);
+    RegisterUserDTO signUp(RegisterUserDTO registerUserDTO);
 
     /**
      * Autentica a un usuario por su email y contraseña.
@@ -21,14 +23,14 @@ public interface AuthService {
      * @param loginUserDTO DTO con las credenciales del usuario
      * @return Usuario autenticado
      */
-    AppUserModel authenticate(LoginUserDTO loginUserDTO);
+    LoginUserDTO authenticate(LoginUserDTO loginUserDTO);
 
     /**
      * Verifica el código enviado por el usuario y habilita su cuenta.
      *
-     * @param appUserModel DTO con email y código de verificación
+     * @param verifyUserDTO DTO con email y código de verificación
      */
-    void verifyUser(AppUserModel appUserModel);
+    void verifyUser(VerifyUserDTO verifyUserDTO);
 
     /**
      * Reenvía un nuevo código de verificación si la cuenta no está habilitada.
@@ -40,8 +42,8 @@ public interface AuthService {
     /**
      * Envía el email de verificación al usuario con código en formato HTML.
      *
-     * @param appUserModel Usuario al que se le enviará el correo
+     * @param appUserDTO Usuario al que se le enviará el correo
      */
-    void sendVerificationEmail(AppUserModel appUserModel);
+    void sendVerificationEmail(AppUserDTO appUserDTO);
 
 }

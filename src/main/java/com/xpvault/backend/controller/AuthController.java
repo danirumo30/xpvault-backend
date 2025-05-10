@@ -3,27 +3,23 @@ package com.xpvault.backend.controller;
 import com.xpvault.backend.dto.LoginUserDTO;
 import com.xpvault.backend.dto.RegisterUserDTO;
 import com.xpvault.backend.dto.VerifyUserDTO;
-import com.xpvault.backend.entity.AppUser;
+import com.xpvault.backend.facade.AuthFacade;
+import com.xpvault.backend.facade.JwtFacade;
 import com.xpvault.backend.response.LoginResponse;
-import com.xpvault.backend.service.AuthService;
-import com.xpvault.backend.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controlador REST que maneja las operaciones relacionadas con la autenticación de usuarios.
- * Rutas: /auth/signup, /auth/login, /auth/verify, /auth/resend
- */
-@RequestMapping("/auth")
 @RestController
-@AllArgsConstructor
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    private final JwtService jwtService;
-    private final AuthService authService;
+
+    private final JwtFacade jwtFacade;
+    private final AuthFacade authFacade;
 
     /**
      * Endpoint para registrar un nuevo usuario en la plataforma.
@@ -32,9 +28,9 @@ public class AuthController {
      * @return Usuario registrado (sin contraseña)
      */
     @PostMapping("/signup")
-    public ResponseEntity<AppUser> register(@RequestBody RegisterUserDTO registerUserDTO) {
-        AppUser registeredUser = authService.signUp(registerUserDTO);
-        return ResponseEntity.ok(registeredUser);
+    public ResponseEntity<RegisterUserDTO> register(@RequestBody RegisterUserDTO registerUserDTO) {
+        RegisterUserDTO registeredUserDTO = authFacade.signUp(registerUserDTO);
+        return ResponseEntity.ok(registeredUserDTO);
     }
 
     /**
@@ -45,9 +41,9 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginUserDTO loginUserDTO) {
-        AppUser authenticatedUser = authService.authenticate(loginUserDTO);
-        String token = jwtService.generateToken(authenticatedUser);
-        LoginResponse loginResponse = new LoginResponse(token, jwtService.getExpirationTime());
+        LoginUserDTO authenticated = authFacade.authenticate(loginUserDTO);
+        String token = jwtFacade.generateToken(authenticated);
+        LoginResponse loginResponse = new LoginResponse(token, jwtFacade.getExpirationTime());
         return ResponseEntity.ok(loginResponse);
     }
 
@@ -58,9 +54,9 @@ public class AuthController {
      * @return Mensaje de éxito o excepción si el código no es válido
      */
     @PostMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody VerifyUserDTO verifyUserDTO) {
+    public ResponseEntity<String> verify(@RequestBody VerifyUserDTO verifyUserDTO) {
         try {
-            authService.verifyUser(verifyUserDTO);
+            authFacade.verifyUser(verifyUserDTO);
             return ResponseEntity.ok("Account verified successfully.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -74,9 +70,9 @@ public class AuthController {
      * @return Mensaje de éxito o error si el email no es válido o no existe
      */
     @PostMapping("/resend")
-    public ResponseEntity<?> resend(@RequestBody String email) {
+    public ResponseEntity<String> resend(@RequestBody String email) {
         try {
-            authService.resendVerificationCode(email);
+            authFacade.resendVerificationCode(email);
             return ResponseEntity.ok("Account resend successfully.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

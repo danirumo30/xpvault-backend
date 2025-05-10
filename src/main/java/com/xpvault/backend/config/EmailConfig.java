@@ -8,17 +8,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
-/**
- * Clase de configuración para el envío de correos electrónicos utilizando JavaMailSender.
- * Se configura para utilizar el servidor SMTP de Gmail.
- */
 @Configuration
 public class EmailConfig {
-    // Inyección del nombre de usuario del correo desde application.properties
+
     @Value("${spring.mail.username}")
     private String emailUsername;
 
-    // Inyección de la contraseña del correo desde application.properties
     @Value("${spring.mail.password}")
     private String password;
 
