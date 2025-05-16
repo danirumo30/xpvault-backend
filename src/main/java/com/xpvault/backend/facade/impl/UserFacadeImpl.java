@@ -25,9 +25,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public AppUserDTO findById(Long id) {
-        return userService.findById(id)
-                          .map(appUserModelToAppUserDTOConverter::convert)
-                          .orElse(null);
+    public AppUserDTO findByUsername(String username) {
+        return appUserModelToAppUserDTOConverter.convert(userService.findByUsername(username));
     }
 }

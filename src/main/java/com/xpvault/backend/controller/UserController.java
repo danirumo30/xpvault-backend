@@ -27,11 +27,10 @@ public class UserController {
      */
     @GetMapping("/me")
     public ResponseEntity<AppUserDTO> authenticatedUser() {
-        // Se obtiene el contexto de autenticación actual
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // Se obtiene el usuario desde los detalles del principal
-        AppUserDTO currentUser = (AppUserDTO) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
+        String username = authentication.getName();
+        AppUserDTO user = userFacade.findByUsername(username);
+        return ResponseEntity.ok(user);
     }
 
     /**

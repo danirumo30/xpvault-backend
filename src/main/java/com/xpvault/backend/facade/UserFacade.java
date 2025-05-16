@@ -7,6 +7,6 @@ import java.util.List;
 public interface UserFacade {
 
     List<AppUserDTO> allUsers();
-    AppUserDTO findById(Long id);
+    AppUserDTO findByUsername(String username);
 
 }

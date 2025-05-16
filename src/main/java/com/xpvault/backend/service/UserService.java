@@ -4,7 +4,6 @@ import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.model.AppUserModel;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
@@ -14,6 +13,6 @@ public interface UserService {
      * @return una lista de usuarios ({@link AppUserDTO})
      */
     List<AppUserModel> allUsers();
-    Optional<AppUserModel> findById(Long id);
+    AppUserModel findByUsername(String username);
 
 }

@@ -54,7 +54,11 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        if (username == null || userDetails == null || userDetails.getUsername() == null) {
+            return false;
+        }
+        final String usernameBeforeAt = username.contains("@") ? username.substring(0, username.indexOf("@")) : username;
+        return usernameBeforeAt.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private String buildToken(

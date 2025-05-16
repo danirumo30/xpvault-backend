@@ -39,7 +39,6 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/game/**").permitAll()
                         .anyRequest().authenticated()
                 )

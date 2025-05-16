@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +20,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<AppUserModel> findById(Long id) {
-        return userDAO.findById(id);
+    public AppUserModel findByUsername(String username) {
+        return userDAO.findByUsername(username);
     }
 
 }
