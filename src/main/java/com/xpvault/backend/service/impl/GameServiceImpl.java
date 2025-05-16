@@ -4,6 +4,7 @@ import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreFeaturedApps;
 import com.xpvault.backend.dao.GameDAO;
 import com.xpvault.backend.model.GameModel;
 import com.xpvault.backend.service.GameService;
@@ -24,6 +25,7 @@ public class GameServiceImpl implements GameService {
     private final GameDAO gameDAO;
     private final SteamStorefront steamStorefront;
     private final SteamNews steamNews;
+
 
     @Value("${steam.news.maxLength}")
     private int maxLength;
@@ -68,5 +70,12 @@ public class GameServiceImpl implements GameService {
         return steamNews.getNewsForApp(steamId, maxLength, -1, newsCount, "")
                         .thenApply(steamNewsItems -> steamNewsItems)
                         .join();
+    }
+
+    @Override
+    public StoreFeaturedApps getFeaturedGames() {
+        return steamStorefront.getFeaturedApps()
+                              .thenApply(featuredApps -> featuredApps)
+                              .join();
     }
 }

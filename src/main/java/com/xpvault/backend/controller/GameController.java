@@ -1,8 +1,10 @@
 package com.xpvault.backend.controller;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.xpvault.backend.dto.GameDTO;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.GameSteamNewsDTO;
+import com.xpvault.backend.dto.SteamFeaturedGameDTO;
 import com.xpvault.backend.facade.GameFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -74,6 +76,31 @@ public class GameController {
                     .body("No details found for Steam ID: " + steamId);
         }
         return ResponseEntity.ok(steamData);
+    }
+
+    @GetMapping("/steam/details/full/{steamId}")
+    public ResponseEntity<Object> steamFullDetails(@PathVariable Integer steamId,
+                                                   @RequestHeader(value = "Accept-Language", defaultValue = "en") String language) {
+        StoreAppDetails steamData = gameFacade.getFullSteamDetailsBySteamId(steamId, language);
+
+        if (steamData == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("No details found for Steam ID: " + steamId);
+        }
+        return ResponseEntity.ok(steamData);
+    }
+
+    @GetMapping("/steam/featured")
+    public ResponseEntity<Object> steamFeaturedGames() {
+        List<SteamFeaturedGameDTO> featuredApps = gameFacade.getFeaturedGames();
+
+        if (featuredApps == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("No featured games.");
+        }
+        return ResponseEntity.ok(featuredApps);
     }
 
     @GetMapping("/steam/news/{steamId}")

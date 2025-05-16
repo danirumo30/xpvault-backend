@@ -18,6 +18,7 @@ import java.util.List;
 @Table(name = "app_user")
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 public class AppUserModel implements UserDetails {
@@ -26,21 +27,27 @@ public class AppUserModel implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     @Setter(AccessLevel.NONE)
+    @NonNull
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
+    @NonNull
     private String username;
 
     @Column(name = "email", unique = true, nullable = false)
+    @NonNull
     private String email;
 
     @Column(name = "password", nullable = false)
+    @NonNull
     private String password;
 
     @Column(name = "verification_code")
+    @NonNull
     private String verificationCode;
 
     @Column(name = "verification_expiration")
+    @NonNull
     private LocalDateTime verificationExpiration;
 
     @Column(name = "role")
@@ -48,6 +55,10 @@ public class AppUserModel implements UserDetails {
 
     @Column(name = "enabled")
     private Boolean enabled;
+
+    @Column(name = "steam_id")
+    @NonNull
+    private Long steamId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

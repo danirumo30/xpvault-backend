@@ -1,0 +1,52 @@
+package com.xpvault.backend.facade.impl;
+
+import com.xpvault.backend.converter.SteamPlayerOwnedGameToOwnedSteamGameDTOConverter;
+import com.xpvault.backend.dto.OwnedSteamGameDTO;
+import com.xpvault.backend.dto.SteamUserDTO;
+import com.xpvault.backend.facade.SteamUserFacade;
+import com.xpvault.backend.service.SteamUserService;
+import com.xpvault.backend.service.UserService;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.Comparator;
+import java.util.List;
+
+@Component
+@Getter(AccessLevel.PROTECTED)
+@RequiredArgsConstructor
+public class SteamUserFacadeImpl implements SteamUserFacade {
+
+    private final UserService userService;
+    private final SteamUserService steamUserService;
+    private final SteamPlayerOwnedGameToOwnedSteamGameDTOConverter steamPlayerOwnedGameToOwnedSteamGameDTOConverter;
+
+    @Override
+    public List<OwnedSteamGameDTO> getOwnedGames(Long steamId) {
+        return steamUserService.getOwnedGames(steamId)
+                               .stream()
+                               .map(steamPlayerOwnedGameToOwnedSteamGameDTOConverter::convert)
+                               .toList();
+    }
+
+    public List<SteamUserDTO> getAllUsers() {
+        return userService.allUsers()
+                   .stream()
+                   .map(user -> {
+                       List<OwnedSteamGameDTO> ownedGames = getOwnedGames(user.getSteamId());
+                       long totalTime = ownedGames.stream()
+                                                .mapToLong(OwnedSteamGameDTO::getTotalTime)
+                                                .sum();
+
+                       return new SteamUserDTO(
+                               user.getSteamId(),
+                               totalTime,
+                               ownedGames
+                       );
+                   })
+                   .sorted(Comparator.comparingLong(SteamUserDTO::getTotalTimePlayed).reversed())
+                   .toList();
+    }
+}
