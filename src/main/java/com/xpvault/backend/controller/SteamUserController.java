@@ -1,7 +1,7 @@
 package com.xpvault.backend.controller;
 
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
-import com.xpvault.backend.dto.SteamUserDTO;
+import com.xpvault.backend.dto.SteamUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,8 +33,8 @@ public class SteamUserController {
     }
 
     @GetMapping("/top")
-    public ResponseEntity<List<SteamUserDTO>> topGamesMostAchievements() {
-        List<SteamUserDTO> users = steamUserFacade.getAllUsers();
+    public ResponseEntity<List<SteamUserTopDTO>> topGamesMostAchievements() {
+        List<SteamUserTopDTO> users = steamUserFacade.getAllUsers();
         return ResponseEntity.ok(users);
     }
 }

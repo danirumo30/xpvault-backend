@@ -2,7 +2,7 @@ package com.xpvault.backend.facade.impl;
 
 import com.xpvault.backend.converter.SteamPlayerOwnedGameToOwnedSteamGameDTOConverter;
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
-import com.xpvault.backend.dto.SteamUserDTO;
+import com.xpvault.backend.dto.SteamUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
 import com.xpvault.backend.service.SteamUserService;
 import com.xpvault.backend.service.UserService;
@@ -31,22 +31,23 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
                                .toList();
     }
 
-    public List<SteamUserDTO> getAllUsers() {
+    @Override
+    public List<SteamUserTopDTO> getAllUsers() {
         return userService.allUsers()
                    .stream()
+                   .filter(user -> user.getSteamId() != null)
                    .map(user -> {
                        List<OwnedSteamGameDTO> ownedGames = getOwnedGames(user.getSteamId());
                        long totalTime = ownedGames.stream()
-                                                .mapToLong(OwnedSteamGameDTO::getTotalTime)
-                                                .sum();
+                                                  .mapToLong(OwnedSteamGameDTO::getTotalTime)
+                                                  .sum();
 
-                       return new SteamUserDTO(
+                       return new SteamUserTopDTO(
                                user.getSteamId(),
-                               totalTime,
-                               ownedGames
+                               totalTime
                        );
                    })
-                   .sorted(Comparator.comparingLong(SteamUserDTO::getTotalTimePlayed).reversed())
+                   .sorted(Comparator.comparingLong(SteamUserTopDTO::getTotalTimePlayed).reversed())
                    .toList();
     }
 }
