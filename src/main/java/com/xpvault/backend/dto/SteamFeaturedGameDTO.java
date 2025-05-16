@@ -5,20 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GameSteamDTO {
+public class SteamFeaturedGameDTO {
 
     private String screenshotUrl;
     private String title;
-    private String description;
-    private Integer price;
     private Integer steamId;
-    private Integer totalAchievements;
-    private List<SteamAchievementDTO> achievements;
 
 }

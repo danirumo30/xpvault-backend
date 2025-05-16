@@ -1,5 +1,9 @@
 package com.xpvault.backend.config;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
+import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
+import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamPlayerService;
+import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
 import com.xpvault.backend.dao.UserDAO;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @AllArgsConstructor
 public class AppConfig {
+
+    private static final String STEAM_API_KEY = "F7738655EF1D83B1DFF0C0536CCC31AE";
 
     private final UserDAO userDAO;
 
@@ -62,5 +68,25 @@ public class AppConfig {
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public SteamWebApiClient steamWebApiClient() {
+        return new SteamWebApiClient(STEAM_API_KEY);
+    }
+
+    @Bean
+    public SteamStorefront storeFront(SteamWebApiClient client) {
+        return new SteamStorefront(client);
+    }
+
+    @Bean
+    public SteamNews steamNews(SteamWebApiClient client) {
+        return new SteamNews(client);
+    }
+
+    @Bean
+    public SteamPlayerService playerService(SteamWebApiClient client) {
+        return new SteamPlayerService(client);
     }
 }

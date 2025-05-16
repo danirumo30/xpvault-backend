@@ -2,6 +2,7 @@ package com.xpvault.backend.service;
 
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreFeaturedApps;
 import com.xpvault.backend.model.GameModel;
 
 import java.util.List;
@@ -16,5 +17,6 @@ public interface GameService {
     GameModel save(GameModel game);
     StoreAppDetails getSteamDetailsBySteamId(Integer steamId, String language);
     List<SteamNewsItem> getSteamNewsBySteamId(Integer steamId);
+    StoreFeaturedApps getFeaturedGames();
 
 }

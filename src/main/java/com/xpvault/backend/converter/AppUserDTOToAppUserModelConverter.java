@@ -10,9 +10,14 @@ public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, 
 
     @Override
     public AppUserModel convert(AppUserDTO source) {
-        AppUserModel appUserModel = new AppUserModel();
-        appUserModel.setEmail(source.getEmail());
-        appUserModel.setVerificationCode(source.getVerificationCode());
-        return appUserModel;
+        return new AppUserModel(
+                source.getId(),
+                source.getUsername(),
+                source.getEmail(),
+                source.getPassword(),
+                source.getVerificationCode(),
+                source.getVerificationExpiration(),
+                source.getSteamId()
+        );
     }
 }
