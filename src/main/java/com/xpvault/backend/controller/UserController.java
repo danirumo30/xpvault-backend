@@ -1,7 +1,7 @@
 package com.xpvault.backend.controller;
 
-import com.xpvault.backend.model.AppUserModel;
-import com.xpvault.backend.service.impl.UserServiceImpl;
+import com.xpvault.backend.dto.AppUserDTO;
+import com.xpvault.backend.facade.UserFacade;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserFacade userFacade;
 
     /**
      * Endpoint que devuelve los datos del usuario actualmente autenticado.
@@ -26,11 +26,11 @@ public class UserController {
      * @return El usuario autenticado
      */
     @GetMapping("/me")
-    public ResponseEntity<AppUserModel> authenticatedUser() {
+    public ResponseEntity<AppUserDTO> authenticatedUser() {
         // Se obtiene el contexto de autenticación actual
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // Se obtiene el usuario desde los detalles del principal
-        AppUserModel currentUser = (AppUserModel) authentication.getPrincipal();
+        AppUserDTO currentUser = (AppUserDTO) authentication.getPrincipal();
         return ResponseEntity.ok(currentUser);
     }
 
@@ -41,8 +41,8 @@ public class UserController {
      * @return Lista de todos los usuarios registrados
      */
     @PostMapping("/all")
-    public ResponseEntity<List<AppUserModel>> allUsers() {
-        List<AppUserModel> users = userServiceImpl.allUsers();
+    public ResponseEntity<List<AppUserDTO>> allUsers() {
+        List<AppUserDTO> users = userFacade.allUsers();
         return ResponseEntity.ok(users);
     }
 }

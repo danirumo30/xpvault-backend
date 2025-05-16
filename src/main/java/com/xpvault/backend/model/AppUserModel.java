@@ -43,6 +43,9 @@ public class AppUserModel implements UserDetails {
     @Column(name = "verification_expiration")
     private LocalDateTime verificationExpiration;
 
+    @Column(name = "role")
+    private String role;
+
     @Column(name = "enabled")
     private Boolean enabled;
 
