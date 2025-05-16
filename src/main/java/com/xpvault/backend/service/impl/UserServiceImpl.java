@@ -1,7 +1,7 @@
 package com.xpvault.backend.service.impl;
 
-import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.dao.UserDAO;
+import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<AppUserModel> allUsers() {
         return userDAO.findAll();
+    }
+
+    @Override
+    public AppUserModel findByUsername(String username) {
+        return userDAO.findByUsername(username);
     }
 
 }

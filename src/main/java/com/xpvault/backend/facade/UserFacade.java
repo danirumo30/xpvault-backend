@@ -1,11 +1,12 @@
 package com.xpvault.backend.facade;
 
-import com.xpvault.backend.model.AppUserModel;
+import com.xpvault.backend.dto.AppUserDTO;
 
 import java.util.List;
 
 public interface UserFacade {
 
-    List<AppUserModel> allUsers();
+    List<AppUserDTO> allUsers();
+    AppUserDTO findByUsername(String username);
 
 }

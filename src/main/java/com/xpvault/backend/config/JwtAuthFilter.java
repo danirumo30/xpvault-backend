@@ -1,6 +1,6 @@
 package com.xpvault.backend.config;
 
-import com.xpvault.backend.service.impl.JwtServiceImpl;
+import com.xpvault.backend.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
-    private final JwtServiceImpl jwtServiceImpl;
+    private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
     /**
@@ -43,10 +43,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain chain
     )
             throws ServletException, IOException {
-        if (request.getServletPath().startsWith("/auth") || request.getServletPath().startsWith("/users")) {
-            chain.doFilter(request, response);
-            return;
-        }
 
         final String authHeader = request.getHeader("Authorization");
 
@@ -57,13 +53,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             final String jwt = authHeader.substring(7);
-            final String userEmail = jwtServiceImpl.extractUsername(jwt);
+
+            final String userEmail = jwtService.extractUsername(jwt);
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                if (jwtServiceImpl.isTokenValid(jwt, userDetails)) {
+                boolean valid = jwtService.isTokenValid(jwt, userDetails);
+
+                if (valid) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,

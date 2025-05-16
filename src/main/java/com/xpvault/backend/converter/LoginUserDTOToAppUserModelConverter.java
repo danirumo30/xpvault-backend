@@ -13,6 +13,7 @@ public class LoginUserDTOToAppUserModelConverter implements Converter<LoginUserD
         AppUserModel appUserModel = new AppUserModel();
         appUserModel.setEmail(source.getEmail());
         appUserModel.setPassword(source.getPassword());
+        appUserModel.setUsername(source.getEmail());
         return appUserModel;
     }
 }
