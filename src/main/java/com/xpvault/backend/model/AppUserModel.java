@@ -8,10 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,36 +23,30 @@ import java.util.List;
 @Table(name = "app_user")
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @Setter
+@Builder
 public class AppUserModel implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     @Setter(AccessLevel.NONE)
-    @NonNull
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
-    @NonNull
     private String username;
 
     @Column(name = "email", unique = true, nullable = false)
-    @NonNull
     private String email;
 
     @Column(name = "password", nullable = false)
-    @NonNull
     private String password;
 
     @Column(name = "verification_code")
-    @NonNull
     private String verificationCode;
 
     @Column(name = "verification_expiration")
-    @NonNull
     private LocalDateTime verificationExpiration;
 
     @Column(name = "role")
@@ -63,7 +56,6 @@ public class AppUserModel implements UserDetails {
     private Boolean enabled;
 
     @Column(name = "steam_id")
-    @NonNull
     private Long steamId;
 
     @Override
