@@ -1,5 +1,6 @@
 package com.xpvault.backend.controller;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.xpvault.backend.dto.GameDTO;
 import com.xpvault.backend.dto.GameSteamDTO;
@@ -112,5 +113,17 @@ public class GameController {
                     .body("No news found for Steam ID: " + steamId);
         }
         return ResponseEntity.ok(news);
+    }
+
+    @GetMapping("/steam/all")
+    public ResponseEntity<Object> steamApss() {
+        List<SteamApp> steamApps = gameFacade.getSteamApps();
+
+        if (steamApps == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("No featured games.");
+        }
+        return ResponseEntity.ok(steamApps);
     }
 }

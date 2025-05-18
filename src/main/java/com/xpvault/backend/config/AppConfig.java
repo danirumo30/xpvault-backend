@@ -1,6 +1,7 @@
 package com.xpvault.backend.config;
 
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
+import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamApps;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamPlayerService;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
@@ -88,5 +89,10 @@ public class AppConfig {
     @Bean
     public SteamPlayerService playerService(SteamWebApiClient client) {
         return new SteamPlayerService(client);
+    }
+
+    @Bean
+    public SteamApps steamApps(SteamWebApiClient client) {
+        return new SteamApps(client);
     }
 }

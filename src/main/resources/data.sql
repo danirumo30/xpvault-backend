@@ -1,14 +1,14 @@
 -- ADMIN USER
 INSERT INTO app_user (id, username, password, email, role, enabled)
 VALUES (
-           (SELECT COALESCE(MAX(id), 0) + 1 FROM app_user),
+           1,
            'admin',
            '$2a$10$BSFg8tEFD9762qMMxkTbouBhk0EHGTNmiwGNZ3vVLpwJzRiiBIdTS',
             'xpvault.team@gmail.com',
            'REGISTERED',
            true
        )
-ON CONFLICT (email) DO NOTHING;
+ON CONFLICT (id) DO NOTHING;
 
 -- GAME DEMO DATA
 DELETE FROM games;

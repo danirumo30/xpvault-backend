@@ -1,5 +1,6 @@
 package com.xpvault.backend.facade.impl;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.xpvault.backend.converter.GameDTOToGameModelConverter;
@@ -107,5 +108,10 @@ public class GameFacadeImpl implements GameFacade {
                           .stream()
                           .map(storeFeaturedAppInfoToSteamFeaturedGameDTOConverter::convert)
                           .toList();
+    }
+
+    @Override
+    public List<SteamApp> getSteamApps() {
+        return gameService.getSteamApps();
     }
 }

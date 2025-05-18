@@ -1,5 +1,6 @@
 package com.xpvault.backend.service;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreFeaturedApps;
@@ -18,5 +19,6 @@ public interface GameService {
     StoreAppDetails getSteamDetailsBySteamId(Integer steamId, String language);
     List<SteamNewsItem> getSteamNewsBySteamId(Integer steamId);
     StoreFeaturedApps getFeaturedGames();
+    List<SteamApp> getSteamApps();
 
 }

@@ -1,7 +1,9 @@
 package com.xpvault.backend.service.impl;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamApps;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreFeaturedApps;
@@ -25,6 +27,7 @@ public class GameServiceImpl implements GameService {
     private final GameDAO gameDAO;
     private final SteamStorefront steamStorefront;
     private final SteamNews steamNews;
+    private final SteamApps steamApps;
 
 
     @Value("${steam.news.maxLength}")
@@ -77,5 +80,12 @@ public class GameServiceImpl implements GameService {
         return steamStorefront.getFeaturedApps()
                               .thenApply(featuredApps -> featuredApps)
                               .join();
+    }
+
+    @Override
+    public List<SteamApp> getSteamApps() {
+        return steamApps.getAppList()
+                        .thenApply(apps -> apps)
+                        .join();
     }
 }
