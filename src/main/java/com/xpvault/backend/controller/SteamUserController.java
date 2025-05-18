@@ -37,4 +37,19 @@ public class SteamUserController {
         List<SteamUserTopDTO> users = steamUserFacade.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/resolve/{username}")
+    public ResponseEntity<Object> resolveSteamId(@PathVariable String username) {
+        try {
+            Long steamId = steamUserFacade.getSteamIdByUsername(username);
+            if (steamId == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("SteamID not found for vanity URL: " + username);
+            }
+            return ResponseEntity.ok(steamId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error resolving SteamID: " + e.getMessage());
+        }
+    }
 }

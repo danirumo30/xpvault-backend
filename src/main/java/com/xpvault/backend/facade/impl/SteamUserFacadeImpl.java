@@ -50,4 +50,9 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
                    .sorted(Comparator.comparingLong(SteamUserTopDTO::getTotalTimePlayed).reversed())
                    .toList();
     }
+
+    @Override
+    public Long getSteamIdByUsername(String username) {
+        return steamUserService.getSteamIdByUsername(username);
+    }
 }

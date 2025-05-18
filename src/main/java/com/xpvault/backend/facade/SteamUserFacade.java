@@ -9,5 +9,6 @@ public interface SteamUserFacade {
 
     List<OwnedSteamGameDTO> getOwnedGames(Long steamId);
     List<SteamUserTopDTO> getAllUsers();
+    Long getSteamIdByUsername(String username);
 
 }

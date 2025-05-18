@@ -5,6 +5,7 @@ import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamApps;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamPlayerService;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
+import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.xpvault.backend.dao.UserDAO;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -94,5 +95,10 @@ public class AppConfig {
     @Bean
     public SteamApps steamApps(SteamWebApiClient client) {
         return new SteamApps(client);
+    }
+
+    @Bean
+    public SteamUser steamUser(SteamWebApiClient client) {
+        return new SteamUser(client);
     }
 }

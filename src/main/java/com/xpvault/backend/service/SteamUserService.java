@@ -7,5 +7,6 @@ import java.util.List;
 public interface SteamUserService {
 
     List<SteamPlayerOwnedGame> getOwnedGames(Long steamId);
+    Long getSteamIdByUsername(String username);
 
 }
