@@ -1,13 +1,14 @@
 package com.xpvault.backend.facade.impl;
 
-import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.xpvault.backend.converter.GameDTOToGameModelConverter;
 import com.xpvault.backend.converter.GameModelToGameDTOConverter;
+import com.xpvault.backend.converter.SteamAppToBasicGameSteamDTOConverter;
 import com.xpvault.backend.converter.SteamNewsItemToGameSteamNewsDTOConverter;
 import com.xpvault.backend.converter.StoreAppDetailsToGameSteamDTOConverter;
 import com.xpvault.backend.converter.StoreFeaturedAppInfoToSteamFeaturedGameDTOConverter;
+import com.xpvault.backend.dto.BasicGameSteamDTO;
 import com.xpvault.backend.dto.GameDTO;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.GameSteamNewsDTO;
@@ -34,6 +35,7 @@ public class GameFacadeImpl implements GameFacade {
     private final StoreAppDetailsToGameSteamDTOConverter storeAppDetailsToGameSteamDataDTOConverter;
     private final SteamNewsItemToGameSteamNewsDTOConverter steamNewsItemToGameSteamNewsDataDTOConverter;
     private final StoreFeaturedAppInfoToSteamFeaturedGameDTOConverter storeFeaturedAppInfoToSteamFeaturedGameDTOConverter;
+    private final SteamAppToBasicGameSteamDTOConverter steamAppToBasicGameSteamDTOConverter;
 
     @Override
     public List<GameDTO> findAll() {
@@ -111,7 +113,10 @@ public class GameFacadeImpl implements GameFacade {
     }
 
     @Override
-    public List<SteamApp> getSteamApps() {
-        return gameService.getSteamApps();
+    public List<BasicGameSteamDTO> getSteamApps() {
+        return gameService.getSteamApps()
+                          .stream()
+                          .map(steamAppToBasicGameSteamDTOConverter::convert)
+                          .toList();
     }
 }

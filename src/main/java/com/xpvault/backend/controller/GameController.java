@@ -1,7 +1,7 @@
 package com.xpvault.backend.controller;
 
-import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
+import com.xpvault.backend.dto.BasicGameSteamDTO;
 import com.xpvault.backend.dto.GameDTO;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.GameSteamNewsDTO;
@@ -117,7 +117,7 @@ public class GameController {
 
     @GetMapping("/steam/all")
     public ResponseEntity<Object> steamApss() {
-        List<SteamApp> steamApps = gameFacade.getSteamApps();
+        List<BasicGameSteamDTO> steamApps = gameFacade.getSteamApps();
 
         if (steamApps == null) {
             return ResponseEntity

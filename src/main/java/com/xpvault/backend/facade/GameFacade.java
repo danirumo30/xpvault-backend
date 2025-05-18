@@ -1,7 +1,7 @@
 package com.xpvault.backend.facade;
 
-import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
+import com.xpvault.backend.dto.BasicGameSteamDTO;
 import com.xpvault.backend.dto.GameDTO;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.GameSteamNewsDTO;
@@ -20,6 +20,6 @@ public interface GameFacade {
     StoreAppDetails getFullSteamDetailsBySteamId(Integer steamId, String language);
     List<GameSteamNewsDTO> getSteamNewsBySteamId(Integer steamId);
     List<SteamFeaturedGameDTO> getFeaturedGames();
-    List<SteamApp> getSteamApps();
+    List<BasicGameSteamDTO> getSteamApps();
 
 }
