@@ -7,7 +7,11 @@ import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamPlayerServic
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.xpvault.backend.dao.UserDAO;
-import lombok.AllArgsConstructor;
+import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbMovieLists;
+import info.movito.themoviedbapi.TmdbMovies;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,10 +23,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AppConfig {
 
-    private static final String STEAM_API_KEY = "F7738655EF1D83B1DFF0C0536CCC31AE";
+    @Value("${steam.api.key}")
+    private String steamApiKey;
+
+    @Value("${tmdb.api.key}")
+    private String tmdbApiKey;
 
     private final UserDAO userDAO;
 
@@ -74,7 +82,7 @@ public class AppConfig {
 
     @Bean
     public SteamWebApiClient steamWebApiClient() {
-        return new SteamWebApiClient(STEAM_API_KEY);
+        return new SteamWebApiClient(steamApiKey);
     }
 
     @Bean
@@ -100,5 +108,20 @@ public class AppConfig {
     @Bean
     public SteamUser steamUser(SteamWebApiClient client) {
         return new SteamUser(client);
+    }
+
+    @Bean
+    public TmdbApi tmdbClient() {
+        return new TmdbApi(tmdbApiKey);
+    }
+
+    @Bean
+    public TmdbMovies tmdbMovies(TmdbApi tmdbApi) {
+        return tmdbApi.getMovies();
+    }
+
+    @Bean
+    public TmdbMovieLists tmdbMoviesList(TmdbApi tmdbApi) {
+        return tmdbApi.getMovieLists();
     }
 }
