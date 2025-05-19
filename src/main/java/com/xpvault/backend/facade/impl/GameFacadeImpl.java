@@ -1,9 +1,11 @@
 package com.xpvault.backend.facade.impl;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.xpvault.backend.converter.GameDTOToGameModelConverter;
 import com.xpvault.backend.converter.GameModelToGameDTOConverter;
+import com.xpvault.backend.converter.GameSteamDTOToBasicGameSteamDTOConverter;
 import com.xpvault.backend.converter.SteamAppToBasicGameSteamDTOConverter;
 import com.xpvault.backend.converter.SteamNewsItemToGameSteamNewsDTOConverter;
 import com.xpvault.backend.converter.StoreAppDetailsToGameSteamDTOConverter;
@@ -38,6 +40,7 @@ public class GameFacadeImpl implements GameFacade {
     private final SteamNewsItemToGameSteamNewsDTOConverter steamNewsItemToGameSteamNewsDataDTOConverter;
     private final StoreFeaturedAppInfoToSteamFeaturedGameDTOConverter storeFeaturedAppInfoToSteamFeaturedGameDTOConverter;
     private final SteamAppToBasicGameSteamDTOConverter steamAppToBasicGameSteamDTOConverter;
+    private final GameSteamDTOToBasicGameSteamDTOConverter gameSteamDTOToBasicGameSteamDTOConverter;
 
     @Override
     public List<GameDTO> findAll() {
@@ -126,42 +129,27 @@ public class GameFacadeImpl implements GameFacade {
 
     @Override
     public List<BasicGameSteamDTO> getSteamAppsWithHeaderImage(int page, int size, String language) {
-        List<BasicGameSteamDTO> apps = getSteamApps();
-        return getSteamAppsPaged(page, size, language, apps);
+        return getSteamAppsPaged(page, size, language, gameService.getSteamApps());
     }
 
     @Override
     public List<BasicGameSteamDTO> getSteamAppsWithHeaderImageByTitle(String title, int page, int size, String language) {
-        List<BasicGameSteamDTO> apps = getSteamAppsByTitle(title);
-        return getSteamAppsPaged(page, size, language, apps);
+        return getSteamAppsPaged(page, size, language, gameService.getSteamAppsFilteredByTitle(title));
     }
 
     @NotNull
-    private List<BasicGameSteamDTO> getSteamAppsPaged(int page, int size, String language, List<BasicGameSteamDTO> apps) {
-        int fromIndex = page * size;
-        int toIndex = Math.min(fromIndex + size, apps.size());
-
-        if (fromIndex >= apps.size()) {
-            return new ArrayList<>();
-        }
-
-        return apps.subList(fromIndex, toIndex)
-                .stream()
-                .map(dto -> {
-                    GameSteamDTO details = getSteamDetailsBySteamId(dto.getSteamId(), language);
-                    if (details != null) {
-                        dto.setScreenshotUrl(details.getScreenshotUrl());
-                        dto.setDescription(details.getDescription());
-                    }
-                    return dto;
-                })
-                .toList();
-    }
-
-    private List<BasicGameSteamDTO> getSteamAppsByTitle(String title) {
-        return getSteamApps()
-                .stream()
-                .filter(dto -> dto.getTitle().toLowerCase().contains(title.toLowerCase()))
-                .toList();
+    private List<BasicGameSteamDTO> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
+        return gameService.getSteamAppsPaged(page, size, language, apps)
+                          .stream()
+                          .map(steamAppToBasicGameSteamDTOConverter::convert)
+                          .filter(Objects::nonNull)
+                          .map(dto -> {
+                              GameSteamDTO steamDetails = getSteamDetailsBySteamId(dto.getSteamId(), language);
+                              if (steamDetails == null) {
+                                  return dto;
+                              }
+                              return gameSteamDTOToBasicGameSteamDTOConverter.convert(steamDetails);
+                          })
+                          .toList();
     }
 }

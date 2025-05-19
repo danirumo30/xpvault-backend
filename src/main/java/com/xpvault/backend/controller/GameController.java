@@ -132,7 +132,7 @@ public class GameController {
             @PathVariable String title,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestParam(defaultValue = "english") String language
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
         List<BasicGameSteamDTO> steamApps = gameFacade.getSteamAppsWithHeaderImageByTitle(title, page, size, language);
 
@@ -148,7 +148,7 @@ public class GameController {
     public ResponseEntity<Object> getSteamAppsWithImages(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestParam(defaultValue = "english") String language
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
         List<BasicGameSteamDTO> result = gameFacade.getSteamAppsWithHeaderImage(page, size, language);
 

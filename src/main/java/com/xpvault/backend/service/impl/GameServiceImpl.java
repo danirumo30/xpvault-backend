@@ -88,4 +88,25 @@ public class GameServiceImpl implements GameService {
                         .thenApply(apps -> apps)
                         .join();
     }
+
+    @Override
+    public List<SteamApp> getSteamAppsFilteredByTitle(String title) {
+        return getSteamApps().stream()
+                             .filter(app -> app.getName().toLowerCase().contains(title.toLowerCase()))
+                             .toList();
+    }
+
+    @Override
+    public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, apps.size());
+
+        if (fromIndex >= apps.size()) {
+            return List.of();
+        }
+
+        return apps.subList(fromIndex, toIndex)
+                   .stream()
+                   .toList();
+    }
 }
