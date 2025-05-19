@@ -126,4 +126,38 @@ public class GameController {
         }
         return ResponseEntity.ok(steamApps);
     }
+
+    @GetMapping("/steam/{title}")
+    public ResponseEntity<Object> steamApss(
+            @PathVariable String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "english") String language
+    ) {
+        List<BasicGameSteamDTO> steamApps = gameFacade.getSteamAppsWithHeaderImageByTitle(title, page, size, language);
+
+        if (steamApps == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("No games for this title.");
+        }
+        return ResponseEntity.ok(steamApps);
+    }
+
+    @GetMapping("/steam/apps-with-details")
+    public ResponseEntity<Object> getSteamAppsWithImages(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "english") String language
+    ) {
+        List<BasicGameSteamDTO> result = gameFacade.getSteamAppsWithHeaderImage(page, size, language);
+
+        if (result.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("No Steam apps found for this page.");
+        }
+
+        return ResponseEntity.ok(result);
+    }
 }

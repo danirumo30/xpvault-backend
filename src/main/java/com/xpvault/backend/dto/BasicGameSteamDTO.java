@@ -15,5 +15,7 @@ public class BasicGameSteamDTO {
 
     private String title;
     private Integer steamId;
+    private String screenshotUrl;
+    private String description;
 
 }

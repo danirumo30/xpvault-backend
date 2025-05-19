@@ -21,5 +21,7 @@ public interface GameFacade {
     List<GameSteamNewsDTO> getSteamNewsBySteamId(Integer steamId);
     List<SteamFeaturedGameDTO> getFeaturedGames();
     List<BasicGameSteamDTO> getSteamApps();
+    List<BasicGameSteamDTO> getSteamAppsWithHeaderImage(int page, int size, String language);
+    List<BasicGameSteamDTO> getSteamAppsWithHeaderImageByTitle(String title, int page, int size, String language);
 
 }

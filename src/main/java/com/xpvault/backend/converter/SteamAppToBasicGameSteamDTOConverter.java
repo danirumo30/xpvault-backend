@@ -10,9 +10,9 @@ public class SteamAppToBasicGameSteamDTOConverter implements Converter<SteamApp,
 
     @Override
     public BasicGameSteamDTO convert(SteamApp source) {
-        return new BasicGameSteamDTO(
-                source.getName(),
-                source.getAppid()
-        );
+        return BasicGameSteamDTO.builder()
+                                .title(source.getName())
+                                .steamId(source.getAppid())
+                                .build();
     }
 }

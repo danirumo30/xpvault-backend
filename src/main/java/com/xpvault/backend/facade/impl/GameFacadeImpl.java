@@ -19,10 +19,12 @@ import com.xpvault.backend.service.GameService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -116,7 +118,50 @@ public class GameFacadeImpl implements GameFacade {
     public List<BasicGameSteamDTO> getSteamApps() {
         return gameService.getSteamApps()
                           .stream()
+                          .filter(Objects::nonNull)
+                          .filter(app -> !app.getName().isBlank())
                           .map(steamAppToBasicGameSteamDTOConverter::convert)
                           .toList();
+    }
+
+    @Override
+    public List<BasicGameSteamDTO> getSteamAppsWithHeaderImage(int page, int size, String language) {
+        List<BasicGameSteamDTO> apps = getSteamApps();
+        return getSteamAppsPaged(page, size, language, apps);
+    }
+
+    @Override
+    public List<BasicGameSteamDTO> getSteamAppsWithHeaderImageByTitle(String title, int page, int size, String language) {
+        List<BasicGameSteamDTO> apps = getSteamAppsByTitle(title);
+        return getSteamAppsPaged(page, size, language, apps);
+    }
+
+    @NotNull
+    private List<BasicGameSteamDTO> getSteamAppsPaged(int page, int size, String language, List<BasicGameSteamDTO> apps) {
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, apps.size());
+
+        if (fromIndex >= apps.size()) {
+            return new ArrayList<>();
+        }
+
+        return apps.subList(fromIndex, toIndex)
+                .stream()
+                .map(dto -> {
+                    GameSteamDTO details = getSteamDetailsBySteamId(dto.getSteamId(), language);
+                    if (details != null) {
+                        dto.setScreenshotUrl(details.getScreenshotUrl());
+                        dto.setDescription(details.getDescription());
+                    }
+                    return dto;
+                })
+                .toList();
+    }
+
+    private List<BasicGameSteamDTO> getSteamAppsByTitle(String title) {
+        return getSteamApps()
+                .stream()
+                .filter(dto -> dto.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .toList();
     }
 }
