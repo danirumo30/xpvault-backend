@@ -13,7 +13,7 @@ public class CrewToBasicDirectorDTOConverter implements Converter<Crew, BasicDir
         return new BasicDirectorDTO(
                 source.getCreditId(),
                 source.getOriginalName(),
-                source.getProfilePath()
+                "https://image.tmdb.org/t/p/w500" + source.getProfilePath()
         );
     }
 }

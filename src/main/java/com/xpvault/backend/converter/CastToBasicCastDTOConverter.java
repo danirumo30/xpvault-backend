@@ -14,7 +14,7 @@ public class CastToBasicCastDTOConverter implements Converter<Cast, BasicCastDTO
                 source.getCreditId(),
                 source.getOriginalName(),
                 source.getCharacter(),
-                source.getProfilePath()
+                "https://image.tmdb.org/t/p/w500" + source.getProfilePath()
         );
     }
 }
