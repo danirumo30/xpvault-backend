@@ -7,5 +7,8 @@ import java.util.List;
 public interface MovieService {
 
     List<MovieDb> getPopularMovies(String language, int page, String region);
+    List<MovieDb> getTopRatedMovies(String language, int page, String region);
+    List<MovieDb> getUpcomingMovies(String language, int page, String region);
+    List<MovieDb> getMovieByTitle(String title, String language, int page, String region);
 
 }

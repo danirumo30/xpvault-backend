@@ -17,7 +17,7 @@ import java.util.Optional;
 public class MovieDBToMovieDTOConverter implements Converter<MovieDb, MovieDTO> {
 
     private final CrewToBasicDirectorDTOConverter crewToBasicDirectorDTOConverter;
-    private final CastToBasicCastDTOConverter castToBasicCastDTOConverter;
+    private final MovieCastToBasicCastDTOConverter movieCastToBasicCastDTOConverter;
 
     @Override
     public MovieDTO convert(MovieDb source) {
@@ -41,7 +41,7 @@ public class MovieDBToMovieDTOConverter implements Converter<MovieDb, MovieDTO> 
             casting = source.getCredits()
                     .getCast()
                     .stream()
-                    .map(castToBasicCastDTOConverter::convert)
+                    .map(movieCastToBasicCastDTOConverter::convert)
                     .toList();
         }
 

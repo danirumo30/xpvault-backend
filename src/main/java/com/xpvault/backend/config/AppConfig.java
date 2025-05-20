@@ -10,6 +10,11 @@ import com.xpvault.backend.dao.UserDAO;
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovieLists;
 import info.movito.themoviedbapi.TmdbMovies;
+import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.TmdbTvEpisodes;
+import info.movito.themoviedbapi.TmdbTvSeasons;
+import info.movito.themoviedbapi.TmdbTvSeries;
+import info.movito.themoviedbapi.TmdbTvSeriesLists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -101,5 +106,30 @@ public class AppConfig {
     @Bean
     public TmdbMovieLists tmdbMoviesList(TmdbApi tmdbApi) {
         return tmdbApi.getMovieLists();
+    }
+
+    @Bean
+    public TmdbSearch tmdbSearch(TmdbApi tmdbApi) {
+        return tmdbApi.getSearch();
+    }
+
+    @Bean
+    public TmdbTvSeries tmdbTvSeries(TmdbApi tmdbApi) {
+        return tmdbApi.getTvSeries();
+    }
+
+    @Bean
+    public TmdbTvSeriesLists tmdbTvSeriesLists(TmdbApi tmdbApi) {
+        return tmdbApi.getTvSeriesLists();
+    }
+
+    @Bean
+    public TmdbTvSeasons tmdbTvSeasons(TmdbApi tmdbApi) {
+        return tmdbApi.getTvSeasons();
+    }
+
+    @Bean
+    public TmdbTvEpisodes tmdbTvEpisodes(TmdbApi tmdbApi) {
+        return tmdbApi.getTvEpisodes();
     }
 }

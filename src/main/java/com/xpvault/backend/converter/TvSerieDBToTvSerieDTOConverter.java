@@ -1,0 +1,82 @@
+package com.xpvault.backend.converter;
+
+import com.xpvault.backend.dto.BasicCastDTO;
+import com.xpvault.backend.dto.BasicDirectorDTO;
+import com.xpvault.backend.dto.TvSeasonDTO;
+import com.xpvault.backend.dto.TvSerieDTO;
+import com.xpvault.backend.service.TvSerieService;
+import info.movito.themoviedbapi.model.core.Genre;
+import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
+import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvSerieDTO> {
+
+    private final TvSerieService tvSerieService;
+    private final CreatedByToBasicDirectorDTOConverter createdByToBasicDirectorDTOConverter;
+    private final TvSerieCastToBasicCastDTOConverter tvSerieCastToBasicCastDTOConverter;
+    private final TvSeasonDBToTvSeasonDTOConverter tvSeasonDBToTvSeasonDTOConverter;
+
+    @Override
+    public TvSerieDTO convert(TvSeriesDb source) {
+
+        List<BasicDirectorDTO> directors = null;
+        List<BasicCastDTO> casting = null;
+
+        List<String> genres = source.getGenres()
+                                    .stream()
+                                    .map(Genre::getName)
+                                    .toList();
+
+        List<TvSeasonDTO> seasons = source.getSeasons()
+                                          .stream()
+                                          .map(season -> {
+                                                TvSeasonDb seasonDb = tvSerieService.getTvSerieSeasons(
+                                                        source.getId(),
+                                                        source.getOriginalLanguage(),
+                                                        season.getSeasonNumber()
+                                                );
+                                              return tvSeasonDBToTvSeasonDTOConverter.convert(
+                                                        seasonDb,
+                                                        source.getId(),
+                                                        source.getOriginalLanguage()
+                                                );
+                                          })
+                                          .toList();
+
+
+        if (source.getCredits() != null) {
+            directors = source.getCreatedBy()
+                              .stream()
+                              .map(createdByToBasicDirectorDTOConverter::convert)
+                              .toList();
+
+            casting = source.getCredits()
+                            .getCast()
+                            .stream()
+                            .map(tvSerieCastToBasicCastDTOConverter::convert)
+                            .toList();
+        }
+
+        return new TvSerieDTO(
+                source.getId(),
+                "https://image.tmdb.org/t/p/w500" + source.getPosterPath(),
+                source.getName(),
+                source.getOverview(),
+                source.getFirstAirDate(),
+                source.getVoteAverage(),
+                source.getNumberOfSeasons(),
+                source.getNumberOfEpisodes(),
+                seasons,
+                directors,
+                casting,
+                genres
+        );
+    }
+}

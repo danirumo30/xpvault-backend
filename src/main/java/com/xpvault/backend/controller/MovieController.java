@@ -34,7 +34,53 @@ public class MovieController {
         if (movies == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No featured games.");
+                    .body("No popular movies found.");
+        }
+
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/top-rated")
+    public ResponseEntity<Object> getTopRatedMovies(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "US") String region,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        List<MovieDTO> movies = movieFacade.getTopRatedMovies(language, page, region);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No top-rated movies found.");
+        }
+
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<Object> getUpcomingMovies(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "US") String region,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        List<MovieDTO> movies = movieFacade.getUpcomingMovies(language, page, region);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No upcoming movies found.");
+        }
+
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Object> getMovieByTitle(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "US") String region,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        List<MovieDTO> movies = movieFacade.getMovieByTitle(title, language, page, region);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with title: " + title);
         }
 
         return ResponseEntity.ok(movies);

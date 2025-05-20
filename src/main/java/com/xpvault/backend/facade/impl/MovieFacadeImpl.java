@@ -26,4 +26,28 @@ public class MovieFacadeImpl implements MovieFacade {
                            .map(movieDBToMovieDTOConverter::convert)
                            .toList();
     }
+
+    @Override
+    public List<MovieDTO> getTopRatedMovies(String language, int page, String region) {
+        return movieService.getTopRatedMovies(language, page, region)
+                           .stream()
+                           .map(movieDBToMovieDTOConverter::convert)
+                           .toList();
+    }
+
+    @Override
+    public List<MovieDTO> getUpcomingMovies(String language, int page, String region) {
+        return movieService.getUpcomingMovies(language, page, region)
+                           .stream()
+                           .map(movieDBToMovieDTOConverter::convert)
+                           .toList();
+    }
+
+    @Override
+    public List<MovieDTO> getMovieByTitle(String title, String language, int page, String region) {
+        return movieService.getMovieByTitle(title, language, page, region)
+                           .stream()
+                           .map(movieDBToMovieDTOConverter::convert)
+                           .toList();
+    }
 }

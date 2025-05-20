@@ -1,12 +1,12 @@
 package com.xpvault.backend.converter;
 
 import com.xpvault.backend.dto.BasicCastDTO;
-import info.movito.themoviedbapi.model.movies.Cast;
+import info.movito.themoviedbapi.model.tv.core.credits.Cast;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CastToBasicCastDTOConverter implements Converter<Cast, BasicCastDTO> {
+public class TvSerieCastToBasicCastDTOConverter implements Converter<Cast, BasicCastDTO> {
 
     @Override
     public BasicCastDTO convert(Cast source) {
