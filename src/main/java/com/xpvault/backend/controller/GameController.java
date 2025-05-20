@@ -7,6 +7,8 @@ import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.GameSteamNewsDTO;
 import com.xpvault.backend.dto.SteamFeaturedGameDTO;
 import com.xpvault.backend.facade.GameFacade;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/game")
+@Getter(AccessLevel.PROTECTED)
 public class GameController {
 
     private final GameFacade gameFacade;

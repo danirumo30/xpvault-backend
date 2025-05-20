@@ -8,11 +8,14 @@ import com.xpvault.backend.dto.VerifyUserDTO;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.facade.AuthFacade;
 import com.xpvault.backend.service.AuthService;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class AuthFacadeImpl implements AuthFacade {
 
     private final AuthService authService;

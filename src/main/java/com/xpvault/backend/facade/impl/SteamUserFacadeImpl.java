@@ -15,8 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 
 @Component
-@Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class SteamUserFacadeImpl implements SteamUserFacade {
 
     private final UserService userService;

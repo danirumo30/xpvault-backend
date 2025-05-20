@@ -5,8 +5,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,22 +20,13 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    /**
-     * Metodo que intercepta la petición y verifica el token JWT si está presente y es válido.
-     *
-     * @param request  solicitud HTTP entrante
-     * @param response respuesta HTTP saliente
-     * @param chain    cadena de filtros para continuar la ejecución
-     * @throws ServletException si ocurre un error en el servlet
-     * @throws IOException      si ocurre un error de entrada/salida
-     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,

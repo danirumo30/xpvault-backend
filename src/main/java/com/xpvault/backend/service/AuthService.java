@@ -5,43 +5,10 @@ import com.xpvault.backend.model.AppUserModel;
 
 public interface AuthService {
 
-    /**
-     * Registra a un nuevo usuario, codifica su contraseña, genera un código
-     * de verificación y envía un email de verificación.
-     *
-     * @param appUserModel DTO con los datos del usuario a registrar
-     * @return Usuario creado y almacenado en la base de datos
-     */
     AppUserModel signUp(AppUserModel appUserModel);
-
-    /**
-     * Autentica a un usuario por su email y contraseña.
-     * Lanza error si no está verificado.
-     *
-     * @param loginUserDTO DTO con las credenciales del usuario
-     * @return Usuario autenticado
-     */
     AppUserModel authenticate(LoginUserDTO loginUserDTO);
-
-    /**
-     * Verifica el código enviado por el usuario y habilita su cuenta.
-     *
-     * @param appUserModel DTO con email y código de verificación
-     */
     void verifyUser(AppUserModel appUserModel);
-
-    /**
-     * Reenvía un nuevo código de verificación si la cuenta no está habilitada.
-     *
-     * @param email Email del usuario
-     */
     void resendVerificationCode(String email);
-
-    /**
-     * Envía el email de verificación al usuario con código en formato HTML.
-     *
-     * @param appUserModel Usuario al que se le enviará el correo
-     */
     void sendVerificationEmail(AppUserModel appUserModel);
 
 }

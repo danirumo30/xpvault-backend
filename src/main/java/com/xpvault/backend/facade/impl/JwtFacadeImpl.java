@@ -5,6 +5,8 @@ import com.xpvault.backend.dto.LoginUserDTO;
 import com.xpvault.backend.facade.JwtFacade;
 import com.xpvault.backend.service.JwtService;
 import io.jsonwebtoken.Claims;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class JwtFacadeImpl implements JwtFacade {
 
     private final JwtService jwtService;

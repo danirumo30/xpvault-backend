@@ -3,6 +3,8 @@ package com.xpvault.backend.controller;
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
 import com.xpvault.backend.dto.SteamUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/steam-user")
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class SteamUserController {
 
     private final SteamUserFacade steamUserFacade;

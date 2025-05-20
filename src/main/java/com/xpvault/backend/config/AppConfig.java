@@ -34,44 +34,22 @@ public class AppConfig {
 
     private final UserDAO userDAO;
 
-    /**
-     * Bean que define el servicio para cargar los detalles del usuario por su nombre de usuario (email).
-     *
-     * @return una implementación de UserDetailsService
-     */
     @Bean
     UserDetailsService userDetailsService() {
         return username -> userDAO.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    /**
-     * Bean que proporciona el codificador de contraseñas usando BCrypt.
-     *
-     * @return instancia de BCryptPasswordEncoder
-     */
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Bean que expone el AuthenticationManager necesario para la autenticación personalizada.
-     *
-     * @param config configuración de autenticación proporcionada por Spring
-     * @return AuthenticationManager
-     * @throws Exception si ocurre un error al obtener el AuthenticationManager
-     */
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    /**
-     * Bean que define el proveedor de autenticación que usa el UserDetailsService y el codificador de contraseñas.
-     *
-     * @return AuthenticationProvider configurado
-     */
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();

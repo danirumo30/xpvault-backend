@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class MovieFacadeImpl implements MovieFacade {
 
     private final MovieService movieService;

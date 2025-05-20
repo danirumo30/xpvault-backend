@@ -7,6 +7,8 @@ import com.xpvault.backend.dao.UserDAO;
 import com.xpvault.backend.service.AuthService;
 import com.xpvault.backend.service.EmailService;
 import jakarta.mail.MessagingException;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class AuthServiceImpl implements AuthService {
 
     private final UserDAO userDAO;

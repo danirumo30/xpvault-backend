@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class MovieServiceImpl implements MovieService {
 
     private final TmdbMovies tmdbMovies;

@@ -2,6 +2,8 @@ package com.xpvault.backend.controller;
 
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.facade.MovieFacade;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movies")
+@Getter(AccessLevel.PROTECTED)
 public class MovieController {
 
     private final MovieFacade movieFacade;

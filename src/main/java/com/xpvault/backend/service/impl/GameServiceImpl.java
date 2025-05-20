@@ -20,15 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class GameServiceImpl implements GameService {
 
     private final GameDAO gameDAO;
     private final SteamStorefront steamStorefront;
     private final SteamNews steamNews;
     private final SteamApps steamApps;
-
 
     @Value("${steam.news.maxLength}")
     private int maxLength;

@@ -3,6 +3,8 @@ package com.xpvault.backend.service.impl;
 import com.xpvault.backend.dao.UserDAO;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.service.UserService;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
