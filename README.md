@@ -1,6 +1,6 @@
 # XPVault - Backend
 
-**XPVault** es un sistema backend desarrollado con Spring Boot destinado a gestionar almacenamiento seguro de datos, probablemente como parte de una solución tipo "vault" o almacén seguro de información personal o profesional.
+**XPVault** es un sistema backend desarrollado con Spring Boot destinado a gestionar almacenamiento seguro de datos, como parte de una solución tipo "vault" de información de tu perfil de steam, peliculas y series.
 
 ## 🚀 Tecnologías utilizadas
 
