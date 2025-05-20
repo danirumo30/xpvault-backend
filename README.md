@@ -70,7 +70,7 @@ xpvault/
 
 ## 🛡️ Seguridad
 
-El backend implementa autenticación y autorización mediante **Spring Security**, posiblemente con JWT (por confirmar en los controladores). Asegura el acceso controlado a los recursos y endpoints.
+El backend implementa autenticación y autorización mediante **Spring Security**, con JWT. Asegura el acceso controlado a los recursos y endpoints.
 
 ## 🗃️ Base de datos
 
