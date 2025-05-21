@@ -21,17 +21,10 @@ import java.util.List;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig {
+
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
 
-    /**
-     * Configura la cadena de filtros de seguridad para definir qué rutas son públicas o protegidas,
-     * y cómo se maneja la sesión y la autenticación.
-     *
-     * @param http objeto HttpSecurity para construir la configuración
-     * @return SecurityFilterChain resultante
-     * @throws Exception si ocurre algún error en la configuración
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -54,11 +47,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Configura las políticas de CORS para permitir solicitudes desde dominios autorizados.
-     *
-     * @return CorsConfigurationSource configurado
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

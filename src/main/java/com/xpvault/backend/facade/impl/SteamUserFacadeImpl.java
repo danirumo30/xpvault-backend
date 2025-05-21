@@ -75,7 +75,7 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
 
     @Override
     public SteamUserDTO save(SteamUserDTO steamUserDTO) {
-        SteamUserModel steamUserModel = steamUserDTOToSteamUserModelConverter.convert(steamUserDTO);
+        SteamUserModel steamUserModel = steamUserDTOToSteamUserModelConverter.convert(getSteamUserById(steamUserDTO.getSteamId()));
 
         SteamUserModel saved = steamUserService.save(steamUserModel);
 
