@@ -16,8 +16,7 @@ public class AppUserModelToAppUserDTOConverter implements Converter<AppUserModel
                 source.getEmail(),
                 source.getPassword(),
                 source.getVerificationCode(),
-                source.getVerificationExpiration(),
-                source.getSteamUser().getNickname()
+                source.getVerificationExpiration()
         );
     }
 }
