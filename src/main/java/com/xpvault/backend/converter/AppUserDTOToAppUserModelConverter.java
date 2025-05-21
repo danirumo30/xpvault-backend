@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, AppUserModel> {
 
     private final SteamUserService steamUserService;
+    private final SteamPlayerProfileToSteamUserModelConverter steamPlayerProfileToSteamUserModelConverter;
 
     @Override
     public AppUserModel convert(AppUserDTO source) {
@@ -22,8 +23,11 @@ public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, 
                            .password(source.getPassword())
                            .verificationCode(source.getVerificationCode())
                            .verificationExpiration(source.getVerificationExpiration())
-                           .steamId(steamUserService.getSteamIdByUsername(source.getSteamUsername()))
-                           .steamUsername(source.getUsername())
+                           .steamUser(steamPlayerProfileToSteamUserModelConverter.convert(
+                                   steamUserService.getPlayerProfile(
+                                           steamUserService.getSteamIdByUsername(source.getSteamUsername())
+                                   )
+                           ))
                            .build();
     }
 }

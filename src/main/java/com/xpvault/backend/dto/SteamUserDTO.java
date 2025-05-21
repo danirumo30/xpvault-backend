@@ -14,6 +14,9 @@ import java.util.List;
 public class SteamUserDTO {
 
     private Long steamId;
+    private String nickname;
+    private String avatar;
+    private String profileUrl;
     private Long totalTimePlayed;
     private List<OwnedSteamGameDTO> ownedGames;
 

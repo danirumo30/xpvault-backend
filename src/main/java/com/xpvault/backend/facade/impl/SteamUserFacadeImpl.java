@@ -1,9 +1,15 @@
 package com.xpvault.backend.facade.impl;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import com.xpvault.backend.converter.SteamPlayerOwnedGameToOwnedSteamGameDTOConverter;
+import com.xpvault.backend.converter.SteamPlayerProfileToSteamUserDTOConverter;
+import com.xpvault.backend.converter.SteamUserDTOToSteamUserModelConverter;
+import com.xpvault.backend.converter.SteamUserModelToSteamUserDTOConverter;
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
+import com.xpvault.backend.dto.SteamUserDTO;
 import com.xpvault.backend.dto.SteamUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
+import com.xpvault.backend.model.SteamUserModel;
 import com.xpvault.backend.service.SteamUserService;
 import com.xpvault.backend.service.UserService;
 import lombok.AccessLevel;
@@ -22,6 +28,9 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     private final UserService userService;
     private final SteamUserService steamUserService;
     private final SteamPlayerOwnedGameToOwnedSteamGameDTOConverter steamPlayerOwnedGameToOwnedSteamGameDTOConverter;
+    private final SteamPlayerProfileToSteamUserDTOConverter steamPlayerProfileToSteamUserDTOConverter;
+    private final SteamUserDTOToSteamUserModelConverter steamUserDTOToSteamUserModelConverter;
+    private final SteamUserModelToSteamUserDTOConverter steamUserModelToSteamUserDTOConverter;
 
     @Override
     public List<OwnedSteamGameDTO> getOwnedGames(Long steamId) {
@@ -35,18 +44,12 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     public List<SteamUserTopDTO> getAllUsers() {
         return userService.allUsers()
                           .stream()
-                          .filter(user -> user.getSteamId() != null)
-                          .map(user -> {
-                               List<OwnedSteamGameDTO> ownedGames = getOwnedGames(user.getSteamId());
-                               long totalTime = ownedGames.stream()
-                                                          .mapToLong(OwnedSteamGameDTO::getTotalTime)
-                                                          .sum();
-
-                               return new SteamUserTopDTO(
-                                       user.getUsername(),
-                                       totalTime
-                               );
-                              })
+                          .filter(user -> user.getSteamUser().getSteamId() != null)
+                          .map(user -> new SteamUserTopDTO(
+                                  user.getUsername(),
+                                  steamUserService.getTotalTimePlayed(user.getSteamUser().getSteamId())
+                                  )
+                          )
                           .sorted(Comparator.comparingLong(SteamUserTopDTO::getTotalTimePlayed).reversed())
                           .toList();
     }
@@ -54,5 +57,28 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     @Override
     public Long getSteamIdByUsername(String username) {
         return steamUserService.getSteamIdByUsername(username);
+    }
+
+    @Override
+    public SteamUserDTO getSteamUserById(Long steamId) {
+        SteamPlayerProfile profile = steamUserService.getPlayerProfile(steamId);
+
+        Long totalTimePlayed = steamUserService.getTotalTimePlayed(steamId);
+
+        return steamPlayerProfileToSteamUserDTOConverter.convert(profile, totalTimePlayed, null);
+    }
+
+    @Override
+    public String getUsernameBySteamId(Long steamId) {
+        return steamUserService.getUsernameBySteamId(steamId);
+    }
+
+    @Override
+    public SteamUserDTO save(SteamUserDTO steamUserDTO) {
+        SteamUserModel steamUserModel = steamUserDTOToSteamUserModelConverter.convert(steamUserDTO);
+
+        SteamUserModel saved = steamUserService.save(steamUserModel);
+
+        return steamUserModelToSteamUserDTOConverter.convert(saved);
     }
 }

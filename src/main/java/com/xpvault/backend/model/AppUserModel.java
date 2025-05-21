@@ -1,10 +1,14 @@
 package com.xpvault.backend.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,11 +59,9 @@ public class AppUserModel implements UserDetails {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @Column(name = "steam_id")
-    private Long steamId;
-
-    @Column(name = "steam_username")
-    private String steamUsername;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "steam_id")
+    private SteamUserModel steamUser;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
