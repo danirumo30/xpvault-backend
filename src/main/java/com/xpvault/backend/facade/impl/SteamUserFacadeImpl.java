@@ -34,21 +34,21 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     @Override
     public List<SteamUserTopDTO> getAllUsers() {
         return userService.allUsers()
-                   .stream()
-                   .filter(user -> user.getSteamId() != null)
-                   .map(user -> {
-                       List<OwnedSteamGameDTO> ownedGames = getOwnedGames(user.getSteamId());
-                       long totalTime = ownedGames.stream()
-                                                  .mapToLong(OwnedSteamGameDTO::getTotalTime)
-                                                  .sum();
+                          .stream()
+                          .filter(user -> user.getSteamId() != null)
+                          .map(user -> {
+                               List<OwnedSteamGameDTO> ownedGames = getOwnedGames(user.getSteamId());
+                               long totalTime = ownedGames.stream()
+                                                          .mapToLong(OwnedSteamGameDTO::getTotalTime)
+                                                          .sum();
 
-                       return new SteamUserTopDTO(
-                               user.getSteamId(),
-                               totalTime
-                       );
-                   })
-                   .sorted(Comparator.comparingLong(SteamUserTopDTO::getTotalTimePlayed).reversed())
-                   .toList();
+                               return new SteamUserTopDTO(
+                                       user.getUsername(),
+                                       totalTime
+                               );
+                              })
+                          .sorted(Comparator.comparingLong(SteamUserTopDTO::getTotalTimePlayed).reversed())
+                          .toList();
     }
 
     @Override

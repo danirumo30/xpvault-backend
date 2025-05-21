@@ -58,6 +58,9 @@ public class AppUserModel implements UserDetails {
     @Column(name = "steam_id")
     private Long steamId;
 
+    @Column(name = "steam_username")
+    private String steamUsername;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

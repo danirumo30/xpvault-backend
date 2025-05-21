@@ -1,16 +1,19 @@
 package com.xpvault.backend.service.impl;
 
-
 import com.xpvault.backend.service.TvSerieService;
+import info.movito.themoviedbapi.TmdbDiscover;
+import info.movito.themoviedbapi.TmdbGenre;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.TmdbTvEpisodes;
 import info.movito.themoviedbapi.TmdbTvSeasons;
 import info.movito.themoviedbapi.TmdbTvSeries;
 import info.movito.themoviedbapi.TmdbTvSeriesLists;
+import info.movito.themoviedbapi.model.core.IdElement;
 import info.movito.themoviedbapi.model.tv.core.credits.Credits;
 import info.movito.themoviedbapi.model.tv.episode.TvEpisodeDb;
 import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
+import info.movito.themoviedbapi.tools.builders.discover.DiscoverTvParamBuilder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,8 @@ public class TvSerieServiceImpl implements TvSerieService {
     private final TmdbTvSeries tmdbTvSeries;
     private final TmdbTvSeriesLists tmdbTvSeriesLists;
     private final TmdbSearch tmdbSearch;
+    private final TmdbDiscover tmdbDiscover;
+    private final TmdbGenre tmdbGenre;
 
     @SneakyThrows
     @Override
@@ -73,12 +79,37 @@ public class TvSerieServiceImpl implements TvSerieService {
     }
 
     @SneakyThrows
-    private TvSeriesDb getTvSerieDetails(int tvSerieId, String language) {
+    @Override
+    public List<TvSeriesDb> getTvSeriesByGenre(String genre, String language, int page) {
+
+        Optional<Integer> genreId = tmdbGenre.getTvList(language)
+                                   .stream()
+                                   .filter(g -> g.getName().equalsIgnoreCase(genre))
+                                   .map(IdElement::getId)
+                                   .findFirst();
+
+        DiscoverTvParamBuilder builder = new DiscoverTvParamBuilder().withOriginalLanguage(language)
+                                                                     .page(page)
+                                                                     .withGenres(List.of(genreId.orElse(0)), false);
+
+        return tmdbDiscover.getTv(builder)
+                           .getResults()
+                           .stream()
+                           .map(tvSerie-> {
+                                TvSeriesDb tvSeriesDb = getTvSerieDetails(tvSerie.getId(), language);
+                                tvSeriesDb.setCredits(getTvSerieCredits(tvSerie.getId(), language));
+                                return tvSeriesDb;
+                           })
+                           .toList();
+    }
+
+    @SneakyThrows
+    public TvSeriesDb getTvSerieDetails(int tvSerieId, String language) {
         return tmdbTvSeries.getDetails(tvSerieId, language);
     }
 
     @SneakyThrows
-    private Credits getTvSerieCredits(int tvSerieId, String language) {
+    public Credits getTvSerieCredits(int tvSerieId, String language) {
         return tmdbTvSeries.getCredits(tvSerieId, language);
     }
 

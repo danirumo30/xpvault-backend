@@ -1,6 +1,8 @@
 package com.xpvault.backend.facade.impl;
 
+import com.xpvault.backend.converter.TvSerieDBToBasicTvSerieDTOConverter;
 import com.xpvault.backend.converter.TvSerieDBToTvSerieDTOConverter;
+import com.xpvault.backend.dto.BasicTvSerieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.TvSerieFacade;
 import com.xpvault.backend.service.TvSerieService;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -19,12 +22,13 @@ public class TvSerieFacadeImpl implements TvSerieFacade {
 
     private final TvSerieService tvSerieService;
     private final TvSerieDBToTvSerieDTOConverter tvSerieDBToTvSerieDTOConverter;
+    private final TvSerieDBToBasicTvSerieDTOConverter tvSerieDBToBasicTvSerieDTOConverter;
 
     @Override
-    public List<TvSerieDTO> getPopularTvSeries(String language, int page) {
+    public List<BasicTvSerieDTO> getPopularTvSeries(String language, int page) {
         return tvSerieService.getPopularTvSeries(language, page)
                              .stream()
-                             .map(tvSerieDBToTvSerieDTOConverter::convert)
+                             .map(tvSerieDBToBasicTvSerieDTOConverter::convert)
                              .toList();
     }
 
@@ -34,18 +38,37 @@ public class TvSerieFacadeImpl implements TvSerieFacade {
     }
 
     @Override
-    public List<TvSerieDTO> getTopRatedTvSeries(String language, int page) {
+    public List<BasicTvSerieDTO> getTopRatedTvSeries(String language, int page) {
         return tvSerieService.getTopRatedTvSeries(language, page)
                              .stream()
-                             .map(tvSerieDBToTvSerieDTOConverter::convert)
+                             .map(tvSerieDBToBasicTvSerieDTOConverter::convert)
                              .toList();
     }
 
     @Override
-    public List<TvSerieDTO> getTvSeriesByTitle(String title, String language, int page) {
+    public List<BasicTvSerieDTO> getTvSeriesByTitle(String title, String language, int page) {
         return tvSerieService.getTvSeriesByTitle(title, language, page)
                              .stream()
-                             .map(tvSerieDBToTvSerieDTOConverter::convert)
+                             .map(tvSerieDBToBasicTvSerieDTOConverter::convert)
                              .toList();
+    }
+
+    @Override
+    public List<BasicTvSerieDTO> getTvSeriesByGenre(String genre, String language, int page) {
+        return tvSerieService.getTvSeriesByGenre(genre, language, page)
+                             .stream()
+                             .map(tvSerieDBToBasicTvSerieDTOConverter::convert)
+                             .toList();
+    }
+
+    @Override
+    public TvSerieDTO getTvSerieDetailsById(int id, String language) {
+        return Optional.of(tvSerieService.getTvSerieDetails(id, language))
+                       .map(serie -> {
+                            serie.setCredits(tvSerieService.getTvSerieCredits(id, language));
+                            return serie;
+                       })
+                       .map(tvSerieDBToTvSerieDTOConverter::convert)
+                       .orElse(null);
     }
 }

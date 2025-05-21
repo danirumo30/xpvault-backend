@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,9 +71,9 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/title/{title}")
     public ResponseEntity<Object> getMovieByTitle(
-            @RequestParam String title,
+            @PathVariable String title,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "US") String region,
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
@@ -84,5 +85,34 @@ public class MovieController {
         }
 
         return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<Object> getMovieByGenre(
+            @PathVariable String genre,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        List<MovieDTO> movies = movieFacade.getMovieByGenre(genre, language, page);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with genre: " + genre);
+        }
+
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Object> getMovieById(
+            @PathVariable Integer id,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        MovieDTO movie = movieFacade.getMovieDetailsById(id, language);
+
+        if (movie == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with id: " + id);
+        }
+
+        return ResponseEntity.ok(movie);
     }
 }

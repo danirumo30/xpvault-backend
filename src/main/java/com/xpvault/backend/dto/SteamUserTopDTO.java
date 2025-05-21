@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class SteamUserTopDTO {
 
-    private Long steamId;
+    private String nickname;
     private Long totalTimePlayed;
 
 }

@@ -10,5 +10,7 @@ public interface MovieFacade {
     List<MovieDTO> getTopRatedMovies(String language, int page, String region);
     List<MovieDTO> getUpcomingMovies(String language, int page, String region);
     List<MovieDTO> getMovieByTitle(String title, String language, int page, String region);
+    List<MovieDTO> getMovieByGenre(String genre, String language, int page);
+    MovieDTO getMovieDetailsById(int id, String language);
 
 }

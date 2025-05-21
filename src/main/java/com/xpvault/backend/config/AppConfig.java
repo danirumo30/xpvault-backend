@@ -8,6 +8,8 @@ import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.xpvault.backend.dao.UserDAO;
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbDiscover;
+import info.movito.themoviedbapi.TmdbGenre;
 import info.movito.themoviedbapi.TmdbMovieLists;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbSearch;
@@ -131,5 +133,15 @@ public class AppConfig {
     @Bean
     public TmdbTvEpisodes tmdbTvEpisodes(TmdbApi tmdbApi) {
         return tmdbApi.getTvEpisodes();
+    }
+
+    @Bean
+    public TmdbDiscover tmdbDiscover(TmdbApi tmdbApi) {
+        return tmdbApi.getDiscover();
+    }
+
+    @Bean
+    public TmdbGenre tmdbGenre(TmdbApi tmdbApi) {
+        return tmdbApi.getGenre();
     }
 }

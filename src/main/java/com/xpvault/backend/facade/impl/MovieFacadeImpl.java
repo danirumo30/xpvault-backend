@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -49,5 +50,24 @@ public class MovieFacadeImpl implements MovieFacade {
                            .stream()
                            .map(movieDBToMovieDTOConverter::convert)
                            .toList();
+    }
+
+    @Override
+    public List<MovieDTO> getMovieByGenre(String genre, String language, int page) {
+        return movieService.getMovieByGenre(genre, language, page)
+                           .stream()
+                           .map(movieDBToMovieDTOConverter::convert)
+                           .toList();
+    }
+
+    @Override
+    public MovieDTO getMovieDetailsById(int id, String language) {
+        return Optional.of(movieService.getMovieDetails(id, language))
+                       .map(movie -> {
+                            movie.setCredits(movieService.getMovieCredits(id, language));
+                            return movie;
+                       })
+                       .map(movieDBToMovieDTOConverter::convert)
+                       .orElse(null);
     }
 }

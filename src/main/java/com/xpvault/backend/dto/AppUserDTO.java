@@ -21,6 +21,6 @@ public class AppUserDTO {
     private String password;
     private String verificationCode;
     private LocalDateTime verificationExpiration;
-    private Long steamId;
+    private String steamUsername;
 
 }

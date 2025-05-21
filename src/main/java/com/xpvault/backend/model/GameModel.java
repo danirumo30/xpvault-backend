@@ -1,6 +1,7 @@
 package com.xpvault.backend.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class GameModel {
 
     @Id

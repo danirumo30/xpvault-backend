@@ -1,5 +1,6 @@
 package com.xpvault.backend.controller;
 
+import com.xpvault.backend.dto.BasicTvSerieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.TvSerieFacade;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,7 +31,7 @@ public class TvSerieController {
             @RequestParam(defaultValue = "0") int page,
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
-        List<TvSerieDTO> tvSeries = tvSerieFacade.getPopularTvSeries(language, page);
+        List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getPopularTvSeries(language, page);
 
         if (tvSeries == null) {
             return ResponseEntity
@@ -58,10 +60,10 @@ public class TvSerieController {
 
     @GetMapping("/top-rated")
     public ResponseEntity<Object> getTopRatedTvSeries(
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
-        List<TvSerieDTO> tvSeries = tvSerieFacade.getTopRatedTvSeries(language, page);
+        List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTopRatedTvSeries(language, page);
 
         if (tvSeries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No top-rated tv series found.");
@@ -70,18 +72,47 @@ public class TvSerieController {
         return ResponseEntity.ok(tvSeries);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/title/{title}")
     public ResponseEntity<Object> getTvSeriesByTitle(
-            @RequestParam String title,
-            @RequestParam(defaultValue = "1") int page,
+            @PathVariable String title,
+            @RequestParam(defaultValue = "0") int page,
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
-        List<TvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByTitle(title, language, page);
+        List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByTitle(title, language, page);
 
         if (tvSeries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tv series found with title: " + title);
         }
 
         return ResponseEntity.ok(tvSeries);
+    }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<Object> getTvSeriesByGenre(
+            @PathVariable String genre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByGenre(genre, language, page);
+
+        if (tvSeries.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tv series found with genre: " + genre);
+        }
+
+        return ResponseEntity.ok(tvSeries);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Object> getTvSeriesById(
+            @PathVariable Integer id,
+            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+    ) {
+        TvSerieDTO tvSerie = tvSerieFacade.getTvSerieDetailsById(id, language);
+
+        if (tvSerie == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tv series found with id: " + id);
+        }
+
+        return ResponseEntity.ok(tvSerie);
     }
 }

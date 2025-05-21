@@ -11,16 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MovieDTO {
+public class BasicTvSerieDTO {
 
     private Integer tmbdId;
     private String posterUrl;
     private String title;
     private String description;
-    private String releaseDate;
-    private Double rating;
-    private BasicDirectorDTO director;
-    private List<BasicCastDTO> casting;
+    private Integer totalSeasons;
+    private Integer totalEpisodes;
     private List<String> genres;
 
 }
