@@ -1,6 +1,8 @@
 package com.xpvault.backend.service;
 
 import com.xpvault.backend.model.AppUserModel;
+import com.xpvault.backend.model.MovieModel;
+import com.xpvault.backend.model.TvSerieModel;
 
 import java.util.List;
 
@@ -12,5 +14,7 @@ public interface UserService {
     void addTvSerieToUser(String username, Integer tvSerieId, String language);
     Integer getTotalMoviesTime(AppUserModel appUserModel);
     Integer getTotalTvSeriesTime(AppUserModel appUserModel);
+    List<MovieModel> findMoviesByUsername(String username);
+    List<TvSerieModel> findTvSeriesByUsername(String username);
 
 }

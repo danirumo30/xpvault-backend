@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,6 @@ public class UserServiceImpl implements UserService {
                 .ifPresentOrElse(user ->
                         Optional.ofNullable(movieService.getMovieDetails(movieId, language))
                                 .map(movieDb -> MovieModel.builder()
-                                                          .id(movieService.findByTmdbId(movieId) == null ? null : movieService.findByTmdbId(movieId).getId())
                                                           .title(movieDb.getTitle())
                                                           .description(movieDb.getOverview())
                                                           .tmdbId(movieId)
@@ -91,12 +91,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer getTotalMoviesTime(AppUserModel appUserModel) {
-        return appUserModel.getMovies().stream().mapToInt(MovieModel::getRuntime).sum();
+        return Optional.ofNullable(appUserModel.getMovies())
+                       .stream()
+                       .flatMap(Set::stream)
+                       .filter(movie -> movie.getRuntime() != null)
+                       .mapToInt(MovieModel::getRuntime)
+                       .sum();
     }
 
     @Override
     public Integer getTotalTvSeriesTime(AppUserModel appUserModel) {
-        return appUserModel.getTvSeries().stream().mapToInt(TvSerieModel::getRuntime).sum();
+        return Optional.ofNullable(appUserModel.getTvSeries())
+                       .stream()
+                       .flatMap(Set::stream)
+                       .filter(tvSerie -> tvSerie.getRuntime() != null)
+                       .mapToInt(TvSerieModel::getRuntime)
+                       .sum();
+    }
+
+    @Override
+    public List<MovieModel> findMoviesByUsername(String username) {
+        return userDAO.findMoviesByUsername(username);
+    }
+
+    @Override
+    public List<TvSerieModel> findTvSeriesByUsername(String username) {
+        return userDAO.findTvSeriesByUsername(username);
     }
 
 

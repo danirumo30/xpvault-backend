@@ -54,4 +54,5 @@ public class TvSerieModel implements Serializable {
 
     @ManyToMany(mappedBy = "tvSeries")
     private List<AppUserModel> users = new ArrayList<>();
+
 }

@@ -1,6 +1,9 @@
 package com.xpvault.backend.controller;
 
 import com.xpvault.backend.dto.AppUserDTO;
+import com.xpvault.backend.dto.AppUserDetailsDTO;
+import com.xpvault.backend.dto.MovieDTO;
+import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -70,6 +73,45 @@ public class UserController {
         }
 
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{username}/tv-series")
+    public ResponseEntity<Object> getUserTvSeries(@PathVariable String username) {
+        List<TvSerieDTO> series = userFacade.getTvSeries(username);
+
+        if (series.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(NO_USERS_FOUND);
+        }
+
+        return ResponseEntity.ok(series);
+    }
+
+    @GetMapping("/{username}/movies")
+    public ResponseEntity<Object> getUserMovies(@PathVariable String username) {
+        List<MovieDTO> movies = userFacade.getMovies(username);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(NO_USERS_FOUND);
+        }
+
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/{username}/content")
+    public ResponseEntity<Object> getUserContent(@PathVariable String username) {
+        AppUserDetailsDTO user = userFacade.findFullUserDetails(username);
+
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User not found or has no content.");
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/{username}/movies/add")

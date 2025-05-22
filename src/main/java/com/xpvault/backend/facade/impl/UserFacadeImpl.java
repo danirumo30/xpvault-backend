@@ -1,7 +1,13 @@
 package com.xpvault.backend.facade.impl;
 
 import com.xpvault.backend.converter.AppUserModelToAppUserDTOConverter;
+import com.xpvault.backend.converter.AppUserModelToAppUserDetailsDTOConverter;
+import com.xpvault.backend.converter.MovieModelToMovieDTOConverter;
+import com.xpvault.backend.converter.TvSerieModelToTvSerieDTOConverter;
 import com.xpvault.backend.dto.AppUserDTO;
+import com.xpvault.backend.dto.AppUserDetailsDTO;
+import com.xpvault.backend.dto.MovieDTO;
+import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.UserFacade;
 import com.xpvault.backend.service.UserService;
 import lombok.AccessLevel;
@@ -20,6 +26,9 @@ public class UserFacadeImpl implements UserFacade {
 
     private final UserService userService;
     private final AppUserModelToAppUserDTOConverter appUserModelToAppUserDTOConverter;
+    private final AppUserModelToAppUserDetailsDTOConverter appUserModelToAppUserDetailsDTOConverter;
+    private final MovieModelToMovieDTOConverter movieModelToMovieDTOConverter;
+    private final TvSerieModelToTvSerieDTOConverter tvSerieModelToTvSerieDTOConverter;
 
     @Override
     public List<AppUserDTO> allUsers() {
@@ -64,5 +73,26 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public void addTvSerieToUser(String username, Integer tvSerieId, String language) {
         userService.addTvSerieToUser(username, tvSerieId, language);
+    }
+
+    @Override
+    public AppUserDetailsDTO findFullUserDetails(String username) {
+        return appUserModelToAppUserDetailsDTOConverter.convert(userService.findByUsername(username));
+    }
+
+    @Override
+    public List<MovieDTO> getMovies(String username) {
+        return userService.findMoviesByUsername(username)
+                          .stream()
+                          .map(movieModelToMovieDTOConverter::convert)
+                          .toList();
+    }
+
+    @Override
+    public List<TvSerieDTO> getTvSeries(String username) {
+        return userService.findTvSeriesByUsername(username)
+                          .stream()
+                          .map(tvSerieModelToTvSerieDTOConverter::convert)
+                          .toList();
     }
 }
