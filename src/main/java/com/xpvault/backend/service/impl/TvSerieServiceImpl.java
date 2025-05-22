@@ -12,9 +12,11 @@ import info.movito.themoviedbapi.TmdbTvSeries;
 import info.movito.themoviedbapi.TmdbTvSeriesLists;
 import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.core.IdElement;
+import info.movito.themoviedbapi.model.tv.core.credits.Cast;
 import info.movito.themoviedbapi.model.tv.core.credits.Credits;
 import info.movito.themoviedbapi.model.tv.episode.TvEpisodeDb;
 import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
+import info.movito.themoviedbapi.model.tv.series.CreatedBy;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.builders.discover.DiscoverTvParamBuilder;
 import lombok.AccessLevel;
@@ -24,6 +26,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -39,6 +42,7 @@ public class TvSerieServiceImpl implements TvSerieService {
     private final TmdbSearch tmdbSearch;
     private final TmdbDiscover tmdbDiscover;
     private final TmdbGenre tmdbGenre;
+    private final TvSerieService tvSerieService;
 
     @SneakyThrows
     @Override
@@ -154,5 +158,35 @@ public class TvSerieServiceImpl implements TvSerieService {
     @SneakyThrows
     public TvEpisodeDb getTvSerieEpisodes(int tvSerieId, String language, int seasonNumber, int episodeNumber) {
         return tmdbTvEpisodes.getDetails(tvSerieId, seasonNumber, episodeNumber, language);
+    }
+
+    @Override
+    public List<CreatedBy> getDirectors(TvSeriesDb source) {
+        return source.getCreatedBy()
+                     .stream()
+                     .toList();
+    }
+
+    @Override
+    public List<Cast> getCasting(TvSeriesDb source) {
+        return source.getCredits()
+                     .getCast()
+                     .stream()
+                     .toList();
+    }
+
+    @Override
+    public int getSeasonTime(TvSeasonDb source) {
+        return source.getEpisodes()
+                     .stream()
+                     .filter(Objects::nonNull)
+                     .mapToInt(episode -> {
+                        if (episode.getRuntime() != null) {
+                            return episode.getRuntime();
+                        } else {
+                            return 0;
+                        }
+                    })
+                    .sum();
     }
 }

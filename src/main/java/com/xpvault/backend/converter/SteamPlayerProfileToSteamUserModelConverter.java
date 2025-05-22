@@ -11,10 +11,10 @@ public class SteamPlayerProfileToSteamUserModelConverter implements Converter<St
     @Override
     public SteamUserModel convert(SteamPlayerProfile source) {
         return SteamUserModel.builder()
-                .steamId(Long.valueOf(source.getSteamId()))
-                .profileUrl(source.getProfileUrl())
-                .avatar(source.getAvatarFullUrl())
-                .nickname(source.getName())
-                .build();
+                             .steamId(Long.valueOf(source.getSteamId()))
+                             .profileUrl(source.getProfileUrl())
+                             .avatar(source.getAvatarFullUrl())
+                             .nickname(source.getName())
+                             .build();
     }
 }

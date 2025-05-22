@@ -8,7 +8,11 @@ import com.xpvault.backend.converter.TvSerieModelToTvSerieDTOConverter;
 import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.AppUserDetailsDTO;
 import com.xpvault.backend.dto.MovieDTO;
+import com.xpvault.backend.dto.SteamUserDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
+import com.xpvault.backend.facade.MovieFacade;
+import com.xpvault.backend.facade.SteamUserFacade;
+import com.xpvault.backend.facade.TvSerieFacade;
 import com.xpvault.backend.literals.enums.AddFriendResultEnum;
 import com.xpvault.backend.literals.enums.AddMediaResultEnum;
 import com.xpvault.backend.facade.UserFacade;
@@ -29,11 +33,15 @@ import java.util.Objects;
 public class UserFacadeImpl implements UserFacade {
 
     private final UserService userService;
+    private final MovieFacade movieFacade;
+    private final TvSerieFacade tvSerieFacade;
+
     private final AppUserModelToAppUserDTOConverter appUserModelToAppUserDTOConverter;
     private final AppUserModelToAppUserDetailsDTOConverter appUserModelToAppUserDetailsDTOConverter;
     private final MovieModelToMovieDTOConverter movieModelToMovieDTOConverter;
     private final TvSerieModelToTvSerieDTOConverter tvSerieModelToTvSerieDTOConverter;
     private final AppUserDTOToAppUserModelConverter appUserDTOToAppUserModelConverter;
+    private final SteamUserFacade steamUserFacade;
 
     @Override
     public List<AppUserDTO> allUsers() {
@@ -82,7 +90,24 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public AppUserDetailsDTO findFullUserDetails(String username) {
-        return appUserModelToAppUserDetailsDTOConverter.convert(userService.findByUsername(username));
+        AppUserModel appUser = userService.findByUsername(username);
+        List<TvSerieDTO> tvSeries = appUser.getTvSeries()
+                                           .stream()
+                                           .map(tvSerieModel ->
+                                                   tvSerieFacade.getTvSerieDetailsById(tvSerieModel.getTmdbId(), "en")
+                                           )
+                                          .toList();
+
+        List<MovieDTO> movies = appUser.getMovies()
+                                       .stream()
+                                       .map(movieModel ->
+                                            movieFacade.getMovieDetailsById(movieModel.getTmdbId(), "en")
+                                       )
+                                       .toList();
+
+        SteamUserDTO steamUser = appUser.getSteamUser() == null ? null : steamUserFacade.getSteamUserById(appUser.getSteamUser().getSteamId());
+
+        return appUserModelToAppUserDetailsDTOConverter.convert(appUser, steamUser, tvSeries, movies);
     }
 
     @Override

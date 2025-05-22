@@ -21,11 +21,12 @@ public class StoreAppDetailsToGameSteamDTOConverter implements Converter<StoreAp
         if (achievements != null && achievements.getAchievementHighlights() != null) {
                 totalAchievements = achievements.getTotal();
                 achievementDTOs = achievements.getAchievementHighlights()
-                        .stream()
-                        .map(ach -> new SteamAchievementDTO(ach.getName(), ach.getPathUrl()))
-                        .toList();
+                                              .stream()
+                                              .map(ach ->
+                                                      new SteamAchievementDTO(ach.getName(), ach.getPathUrl())
+                                              )
+                                              .toList();
             }
-
 
         return new GameSteamDTO(
                 storeAppDetails.getHeaderImageUrl(),
