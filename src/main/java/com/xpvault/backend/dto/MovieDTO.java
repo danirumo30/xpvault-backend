@@ -19,6 +19,7 @@ public class MovieDTO {
     private String description;
     private String releaseDate;
     private Double rating;
+    private Integer totalTime;
     private BasicDirectorDTO director;
     private List<BasicCastDTO> casting;
     private List<String> genres;

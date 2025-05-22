@@ -1,5 +1,6 @@
 package com.xpvault.backend.service;
 
+import com.xpvault.backend.model.TvSerieModel;
 import info.movito.themoviedbapi.model.tv.core.credits.Credits;
 import info.movito.themoviedbapi.model.tv.episode.TvEpisodeDb;
 import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
@@ -17,5 +18,8 @@ public interface TvSerieService {
     TvEpisodeDb getTvSerieEpisodes(int tvSerieId, String language, int seasonNumber, int episodeNumber);
     TvSeriesDb getTvSerieDetails(int tvSerieId, String language);
     Credits getTvSerieCredits(int tvSerieId, String language);
+    Integer getTotalTvSerieTime(TvSeriesDb tvSeriesDb);
+    List<String> getTvSerieGenres(TvSeriesDb tvSeriesDb);
+    TvSerieModel findByTmdbId(Integer tvSerieId);
 
 }

@@ -14,6 +14,7 @@ public class TvEpisodeDBToTvEpisodeDTOConverter implements Converter<TvEpisodeDb
                 source.getId(),
                 source.getName(),
                 source.getOverview(),
+                source.getRuntime(),
                 source.getSeasonNumber(),
                 source.getEpisodeNumber()
         );

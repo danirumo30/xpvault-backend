@@ -1,11 +1,14 @@
 package com.xpvault.backend.service.impl;
 
+import com.xpvault.backend.dao.MovieDAO;
+import com.xpvault.backend.model.MovieModel;
 import com.xpvault.backend.service.MovieService;
 import info.movito.themoviedbapi.TmdbDiscover;
 import info.movito.themoviedbapi.TmdbGenre;
 import info.movito.themoviedbapi.TmdbMovieLists;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.core.IdElement;
 import info.movito.themoviedbapi.model.movies.Credits;
 import info.movito.themoviedbapi.model.movies.MovieDb;
@@ -24,6 +27,7 @@ import java.util.Optional;
 @Getter(AccessLevel.PROTECTED)
 public class MovieServiceImpl implements MovieService {
 
+    private final MovieDAO movieDAO;
     private final TmdbMovies tmdbMovies;
     private final TmdbMovieLists tmdbMoviesList;
     private final TmdbSearch tmdbSearch;
@@ -121,5 +125,18 @@ public class MovieServiceImpl implements MovieService {
     @SneakyThrows
     public Credits getMovieCredits(int movieId, String language) {
         return tmdbMovies.getCredits(movieId, language);
+    }
+
+    @Override
+    public MovieModel findByTmdbId(Integer movieId) {
+        return movieDAO.findByTmdbId(movieId);
+    }
+
+    @Override
+    public List<String> getMovieGenres(MovieDb source) {
+        return source.getGenres()
+                     .stream()
+                     .map(Genre::getName)
+                     .toList();
     }
 }

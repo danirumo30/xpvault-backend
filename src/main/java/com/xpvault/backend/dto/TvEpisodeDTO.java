@@ -14,6 +14,7 @@ public class TvEpisodeDTO {
     private Integer tmbdId;
     private String title;
     private String description;
+    private Integer totalTime;
     private Integer seasonNumber;
     private Integer episodeNumber;
 

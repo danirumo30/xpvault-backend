@@ -5,7 +5,6 @@ import com.xpvault.backend.dto.BasicDirectorDTO;
 import com.xpvault.backend.dto.TvSeasonDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.service.TvSerieService;
-import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +27,6 @@ public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvS
 
         List<BasicDirectorDTO> directors = null;
         List<BasicCastDTO> casting = null;
-
-        List<String> genres = source.getGenres()
-                                    .stream()
-                                    .map(Genre::getName)
-                                    .toList();
 
         List<TvSeasonDTO> seasons = source.getSeasons()
                                           .stream()
@@ -73,10 +67,11 @@ public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvS
                 source.getVoteAverage(),
                 source.getNumberOfSeasons(),
                 source.getNumberOfEpisodes(),
+                tvSerieService.getTotalTvSerieTime(source),
                 seasons,
                 directors,
                 casting,
-                genres
+                tvSerieService.getTvSerieGenres(source)
         );
     }
 }

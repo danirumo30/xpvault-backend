@@ -42,7 +42,7 @@ public class SteamUserController {
     }
 
     @GetMapping("/top")
-    public ResponseEntity<List<SteamUserTopDTO>> topGamesMostAchievements() {
+    public ResponseEntity<List<SteamUserTopDTO>> topGames() {
         List<SteamUserTopDTO> users = steamUserFacade.getAllUsers();
         return ResponseEntity.ok(users);
     }
@@ -73,7 +73,7 @@ public class SteamUserController {
             return ResponseEntity.ok(username);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error resolving SteamID: " + e.getMessage());
+                    .body("Error resolving Steam username: " + e.getMessage());
         }
     }
 

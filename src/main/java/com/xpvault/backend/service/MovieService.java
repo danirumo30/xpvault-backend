@@ -1,5 +1,6 @@
 package com.xpvault.backend.service;
 
+import com.xpvault.backend.model.MovieModel;
 import info.movito.themoviedbapi.model.movies.Credits;
 import info.movito.themoviedbapi.model.movies.MovieDb;
 
@@ -14,5 +15,7 @@ public interface MovieService {
     List<MovieDb> getMovieByGenre(String genre, String language, int page);
     MovieDb getMovieDetails(int movieId, String language);
     Credits getMovieCredits(int movieId, String language);
+    MovieModel findByTmdbId(Integer movieId);
+    List<String> getMovieGenres(MovieDb source);
 
 }

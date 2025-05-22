@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -30,5 +32,37 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public AppUserDTO findByUsername(String username) {
         return appUserModelToAppUserDTOConverter.convert(userService.findByUsername(username));
+    }
+
+    @Override
+    public List<AppUserDTO> getAllUsersTopTimeMovies() {
+        return userService.allUsers()
+                          .stream()
+                          .map(appUserModelToAppUserDTOConverter::convert)
+                          .filter(Objects::nonNull)
+                          .filter(user -> user.getTotalTimeMoviesWatched() != null)
+                          .sorted(Comparator.comparingLong(AppUserDTO::getTotalTimeMoviesWatched).reversed())
+                          .toList();
+    }
+
+    @Override
+    public List<AppUserDTO> getAllUsersTopTimeTvSeries() {
+        return userService.allUsers()
+                          .stream()
+                          .map(appUserModelToAppUserDTOConverter::convert)
+                          .filter(Objects::nonNull)
+                          .filter(user -> user.getTotalTimeEpisodesWatched() != null)
+                          .sorted(Comparator.comparingLong(AppUserDTO::getTotalTimeEpisodesWatched).reversed())
+                          .toList();
+    }
+
+    @Override
+    public void addMovieToUser(String username, Integer movieId, String language) {
+        userService.addMovieToUser(username, movieId, language);
+    }
+
+    @Override
+    public void addTvSerieToUser(String username, Integer tvSerieId, String language) {
+        userService.addTvSerieToUser(username, tvSerieId, language);
     }
 }

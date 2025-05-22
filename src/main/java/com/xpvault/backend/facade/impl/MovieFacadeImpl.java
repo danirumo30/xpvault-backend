@@ -4,6 +4,7 @@ import com.xpvault.backend.converter.MovieDBToMovieDTOConverter;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.facade.MovieFacade;
 import com.xpvault.backend.service.MovieService;
+import info.movito.themoviedbapi.model.movies.MovieDb;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -69,5 +70,10 @@ public class MovieFacadeImpl implements MovieFacade {
                        })
                        .map(movieDBToMovieDTOConverter::convert)
                        .orElse(null);
+    }
+
+    @Override
+    public MovieDb getMovieFullDetailsById(int id, String language) {
+        return movieService.getMovieDetails(id, language);
     }
 }

@@ -19,6 +19,7 @@ public class TvSeasonDTO {
     private String description;
     private Integer seasonNumber;
     private Integer episodesCount;
+    private Integer totalTime;
     private List<TvEpisodeDTO> episodes;
 
 }

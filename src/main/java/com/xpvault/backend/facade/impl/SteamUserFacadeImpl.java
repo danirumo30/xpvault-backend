@@ -44,7 +44,7 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     public List<SteamUserTopDTO> getAllUsers() {
         return userService.allUsers()
                           .stream()
-                          .filter(user -> user.getSteamUser().getSteamId() != null)
+                          .filter(user -> user.getSteamUser() != null)
                           .map(user -> new SteamUserTopDTO(
                                   user.getUsername(),
                                   steamUserService.getTotalTimePlayed(user.getSteamUser().getSteamId())

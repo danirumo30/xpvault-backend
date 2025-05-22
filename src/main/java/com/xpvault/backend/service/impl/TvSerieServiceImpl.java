@@ -1,5 +1,7 @@
 package com.xpvault.backend.service.impl;
 
+import com.xpvault.backend.dao.TvSerieDAO;
+import com.xpvault.backend.model.TvSerieModel;
 import com.xpvault.backend.service.TvSerieService;
 import info.movito.themoviedbapi.TmdbDiscover;
 import info.movito.themoviedbapi.TmdbGenre;
@@ -8,6 +10,7 @@ import info.movito.themoviedbapi.TmdbTvEpisodes;
 import info.movito.themoviedbapi.TmdbTvSeasons;
 import info.movito.themoviedbapi.TmdbTvSeries;
 import info.movito.themoviedbapi.TmdbTvSeriesLists;
+import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.core.IdElement;
 import info.movito.themoviedbapi.model.tv.core.credits.Credits;
 import info.movito.themoviedbapi.model.tv.episode.TvEpisodeDb;
@@ -28,6 +31,7 @@ import java.util.Optional;
 @Getter(AccessLevel.PROTECTED)
 public class TvSerieServiceImpl implements TvSerieService {
 
+    private final TvSerieDAO tvSerieDAO;
     private final TmdbTvEpisodes tmdbTvEpisodes;
     private final TmdbTvSeasons tmdbTvSeasons;
     private final TmdbTvSeries tmdbTvSeries;
@@ -111,6 +115,35 @@ public class TvSerieServiceImpl implements TvSerieService {
     @SneakyThrows
     public Credits getTvSerieCredits(int tvSerieId, String language) {
         return tmdbTvSeries.getCredits(tvSerieId, language);
+    }
+
+    @Override
+    public Integer getTotalTvSerieTime(TvSeriesDb tvSeriesDb) {
+        return tvSeriesDb.getSeasons().stream()
+                                      .mapToInt(season -> {
+                                            TvSeasonDb tvSeasonDb = getTvSerieSeasons(
+                                                    tvSeriesDb.getId(),
+                                                    tvSeriesDb.getOriginalLanguage(),
+                                                    season.getSeasonNumber()
+                                            );
+                                            return tvSeasonDb.getEpisodes()
+                                                    .stream()
+                                                    .mapToInt(episode -> episode.getRuntime() != null ? episode.getRuntime() : 0)
+                                                    .sum();
+                                      }).sum();
+    }
+
+    @Override
+    public List<String> getTvSerieGenres(TvSeriesDb tvSeriesDb) {
+        return tvSeriesDb.getGenres()
+                         .stream()
+                         .map(Genre::getName)
+                         .toList();
+    }
+
+    @Override
+    public TvSerieModel findByTmdbId(Integer tvSerieId) {
+        return tvSerieDAO.findByTmdbId(tvSerieId);
     }
 
     @SneakyThrows

@@ -7,6 +7,8 @@ import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class TvSeasonDBToTvSeasonDTOConverter {
@@ -22,6 +24,13 @@ public class TvSeasonDBToTvSeasonDTOConverter {
                 source.getOverview(),
                 source.getSeasonNumber(),
                 source.getEpisodes().size(),
+                source.getEpisodes().stream().filter(Objects::nonNull).mapToInt(episode -> {
+                    if (episode.getRuntime() != null) {
+                        return episode.getRuntime();
+                    } else {
+                        return 0;
+                    }
+                }).sum(),
                 source.getEpisodes().stream()
                                     .map(episode -> {
                                         TvEpisodeDb tvEpisodeDb = tvSerieService.getTvSerieEpisodes(

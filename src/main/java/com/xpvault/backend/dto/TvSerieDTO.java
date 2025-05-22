@@ -21,6 +21,7 @@ public class TvSerieDTO {
     private Double rating;
     private Integer totalSeasons;
     private Integer totalEpisodes;
+    private Integer totalTime;
     private List<TvSeasonDTO> seasons;
     private List<BasicDirectorDTO> director;
     private List<BasicCastDTO> casting;

@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AppUserDTO {
+public class AppUserDetailsDTO {
 
     private Long id;
     private String username;
@@ -25,8 +26,8 @@ public class AppUserDTO {
     private Integer totalTimePlayed;
     private Integer totalTimeMoviesWatched;
     private Integer totalTimeEpisodesWatched;
-    private Integer totalGames;
-    private Integer totalMovies;
-    private Integer totalEpisodes;
+    private List<MovieDTO> movies;
+    private List<TvSerieDTO> tvSeries;
+    private List<OwnedSteamGameDTO> games;
 
 }
