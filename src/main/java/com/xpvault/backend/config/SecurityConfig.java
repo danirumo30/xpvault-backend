@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/movies/**").permitAll()
                         .requestMatchers("/tv-series/**").permitAll()
                         .requestMatchers("/users/profile/**").permitAll()
+                        .requestMatchers("/users/top/**").permitAll()
+                        .requestMatchers("/users/search/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

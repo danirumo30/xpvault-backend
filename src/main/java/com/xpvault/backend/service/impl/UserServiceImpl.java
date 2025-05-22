@@ -118,4 +118,39 @@ public class UserServiceImpl implements UserService {
     public List<TvSerieModel> findTvSeriesByUsername(String username) {
         return userDAO.findTvSeriesByUsername(username);
     }
+
+    @Override
+    public List<AppUserModel> findByUsernameContainsIgnoreCase(String username) {
+        return userDAO.findByUsernameContainsIgnoreCase(username);
+    }
+
+    @Override
+    public void addFriendToUser(String username, String friendUsername) {
+        Optional.ofNullable(findByUsername(username))
+                .ifPresentOrElse(user ->
+                                Optional.ofNullable(findByUsername(friendUsername))
+                                        .ifPresent(friend -> {
+                                            if (user.getFriends() == null) {
+                                                user.setFriends(new HashSet<>());
+                                            }
+                                            if (!user.getFriends().contains(friend)) {
+                                                user.getFriends().add(friend);
+                                                if (friend.getFriends() == null) {
+                                                    friend.setFriends(new HashSet<>());
+                                                }
+                                                friend.getFriends().add(user);
+                                                userDAO.save(user);
+                                                userDAO.save(friend);
+                                            }
+                                        }),
+                                () -> {
+                                    throw new IllegalArgumentException("User not found with username: " + username);
+                                }
+                );
+    }
+
+    @Override
+    public AppUserModel save(AppUserModel appUserModel) {
+        return userDAO.save(appUserModel);
+    }
 }

@@ -16,6 +16,7 @@ public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, 
     public AppUserModel convert(AppUserDTO source) {
         return AppUserModel.builder()
                            .id(source.getId())
+                           .profileImage(source.getProfilePhoto())
                            .username(source.getUsername())
                            .email(source.getEmail())
                            .password(source.getPassword())
