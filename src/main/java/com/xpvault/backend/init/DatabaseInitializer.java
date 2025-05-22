@@ -1,13 +1,17 @@
 package com.xpvault.backend.init;
 
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import com.xpvault.backend.dao.GameDAO;
 import com.xpvault.backend.dao.UserDAO;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.model.GameModel;
+import com.xpvault.backend.model.SteamUserModel;
+import com.xpvault.backend.service.SteamUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,19 +19,39 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DatabaseInitializer implements ApplicationRunner {
 
+    private static final String MAIL = "xpvault.team@gmail.com";
     private final UserDAO userDAO;
     private final GameDAO gameDAO;
+    private final SteamUserService steamUserService;
 
     @Override
+    @Transactional
     public void run(ApplicationArguments args) {
-        if (!userDAO.existsByEmail("xpvault.team@gmail.com")) {
+
+        userDAO.findByEmail(MAIL)
+                .ifPresent(user -> userDAO.deleteById(user.getId()));
+
+        if (!userDAO.existsByEmail(MAIL)) {
+            SteamPlayerProfile profile = steamUserService.getPlayerProfile(76561198344317420L);
+
+            SteamUserModel steamUser = SteamUserModel.builder()
+                    .steamId(76561198344317420L)
+                    .avatar(profile.getAvatarFullUrl())
+                    .nickname(profile.getName())
+                    .profileUrl(profile.getProfileUrl())
+                    .totalTimePlayed(steamUserService.getTotalTimePlayed(76561198344317420L))
+                    .build();
+
             AppUserModel admin = AppUserModel.builder()
                     .username("admin")
                     .password("$2a$10$BSFg8tEFD9762qMMxkTbouBhk0EHGTNmiwGNZ3vVLpwJzRiiBIdTS")
-                    .email("xpvault.team@gmail.com")
+                    .email(MAIL)
                     .role("REGISTERED")
                     .enabled(true)
+                    .steamUser(steamUser)
                     .build();
+
+            steamUser.setAppUser(admin);
 
             userDAO.save(admin);
         }
