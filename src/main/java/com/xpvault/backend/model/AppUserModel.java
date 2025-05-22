@@ -70,6 +70,9 @@ public class AppUserModel implements UserDetails, Serializable {
     @Column(name = "enabled")
     private Boolean enabled;
 
+    @Column(name = "profile_image", columnDefinition = "BYTEA")
+    private byte[] profileImage;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "steam_id")
     private SteamUserModel steamUser;

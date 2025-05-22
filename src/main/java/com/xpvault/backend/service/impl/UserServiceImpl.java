@@ -148,4 +148,9 @@ public class UserServiceImpl implements UserService {
                                 }
                 );
     }
+
+    @Override
+    public AppUserModel save(AppUserModel appUserModel) {
+        return userDAO.save(appUserModel);
+    }
 }

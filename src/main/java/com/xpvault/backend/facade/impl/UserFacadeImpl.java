@@ -1,5 +1,6 @@
 package com.xpvault.backend.facade.impl;
 
+import com.xpvault.backend.converter.AppUserDTOToAppUserModelConverter;
 import com.xpvault.backend.converter.AppUserModelToAppUserDTOConverter;
 import com.xpvault.backend.converter.AppUserModelToAppUserDetailsDTOConverter;
 import com.xpvault.backend.converter.MovieModelToMovieDTOConverter;
@@ -9,6 +10,7 @@ import com.xpvault.backend.dto.AppUserDetailsDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.UserFacade;
+import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.service.UserService;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,6 +31,7 @@ public class UserFacadeImpl implements UserFacade {
     private final AppUserModelToAppUserDetailsDTOConverter appUserModelToAppUserDetailsDTOConverter;
     private final MovieModelToMovieDTOConverter movieModelToMovieDTOConverter;
     private final TvSerieModelToTvSerieDTOConverter tvSerieModelToTvSerieDTOConverter;
+    private final AppUserDTOToAppUserModelConverter appUserDTOToAppUserModelConverter;
 
     @Override
     public List<AppUserDTO> allUsers() {
@@ -107,5 +110,14 @@ public class UserFacadeImpl implements UserFacade {
                           .stream()
                           .map(appUserModelToAppUserDTOConverter::convert)
                           .toList();
+    }
+
+    @Override
+    public AppUserDTO save(AppUserDTO appUserDTO) {
+        AppUserModel appUserModel = appUserDTOToAppUserModelConverter.convert(appUserDTO);
+
+        AppUserModel saved = userService.save(appUserModel);
+
+        return appUserModelToAppUserDTOConverter.convert(saved);
     }
 }

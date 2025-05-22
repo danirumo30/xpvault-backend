@@ -18,5 +18,6 @@ public interface UserService {
     List<TvSerieModel> findTvSeriesByUsername(String username);
     List<AppUserModel> findByUsernameContainsIgnoreCase(String username);
     void addFriendToUser(String username, String friendUsername);
+    AppUserModel save(AppUserModel appUserModel);
 
 }

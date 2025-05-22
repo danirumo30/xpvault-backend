@@ -20,5 +20,6 @@ public interface UserFacade {
     List<TvSerieDTO> getTvSeries(String username);
     void addFriendToUser(String username, String friendUsername);
     List<AppUserDTO> findByUsernameContainsIgnoreCase(String username);
+    AppUserDTO save(AppUserDTO appUserDTO);
 
 }

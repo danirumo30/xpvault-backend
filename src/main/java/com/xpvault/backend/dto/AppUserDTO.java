@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class AppUserDTO {
 
     private Long id;
+    private byte[] profilePhoto;
     private String username;
     private String email;
     private String password;
