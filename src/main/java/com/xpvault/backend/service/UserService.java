@@ -16,5 +16,7 @@ public interface UserService {
     Integer getTotalTvSeriesTime(AppUserModel appUserModel);
     List<MovieModel> findMoviesByUsername(String username);
     List<TvSerieModel> findTvSeriesByUsername(String username);
+    List<AppUserModel> findByUsernameContainsIgnoreCase(String username);
+    void addFriendToUser(String username, String friendUsername);
 
 }

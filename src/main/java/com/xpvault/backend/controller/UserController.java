@@ -49,9 +49,9 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/top/time/movies")
+    @GetMapping("/top/movies")
     public ResponseEntity<Object> topMovies() {
-        List<AppUserDTO> users = userFacade.getAllUsersTopTimeMovies();
+        List<AppUserDTO> users = userFacade.getAllUsersTopMovies();
 
         if (users.isEmpty()) {
             return ResponseEntity
@@ -62,9 +62,9 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/top/time/tv-series")
+    @GetMapping("/top/tv-series")
     public ResponseEntity<Object> topTvSeries() {
-        List<AppUserDTO> users = userFacade.getAllUsersTopTimeTvSeries();
+        List<AppUserDTO> users = userFacade.getAllUsersTopTvSeries();
 
         if (users.isEmpty()) {
             return ResponseEntity
@@ -131,6 +131,30 @@ public class UserController {
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
         userFacade.addTvSerieToUser(username, tvSerieId, language);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Object> searchUserByUsername(
+            @RequestParam String username
+    ) {
+        List<AppUserDTO> users = userFacade.findByUsernameContainsIgnoreCase(username);
+
+        if (users == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(NO_USERS_FOUND);
+        }
+
+        return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/{username}/friends/add")
+    public ResponseEntity<Void> addFriend(
+            @PathVariable String username,
+            @RequestParam String friendUsername
+    ) {
+        userFacade.addFriendToUser(username, friendUsername);
         return ResponseEntity.ok().build();
     }
 }

@@ -44,7 +44,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public List<AppUserDTO> getAllUsersTopTimeMovies() {
+    public List<AppUserDTO> getAllUsersTopMovies() {
         return userService.allUsers()
                           .stream()
                           .map(appUserModelToAppUserDTOConverter::convert)
@@ -55,7 +55,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public List<AppUserDTO> getAllUsersTopTimeTvSeries() {
+    public List<AppUserDTO> getAllUsersTopTvSeries() {
         return userService.allUsers()
                           .stream()
                           .map(appUserModelToAppUserDTOConverter::convert)
@@ -93,6 +93,19 @@ public class UserFacadeImpl implements UserFacade {
         return userService.findTvSeriesByUsername(username)
                           .stream()
                           .map(tvSerieModelToTvSerieDTOConverter::convert)
+                          .toList();
+    }
+
+    @Override
+    public void addFriendToUser(String username, String friendUsername) {
+        userService.addFriendToUser(username, friendUsername);
+    }
+
+    @Override
+    public List<AppUserDTO> findByUsernameContainsIgnoreCase(String username) {
+        return userService.findByUsernameContainsIgnoreCase(username)
+                          .stream()
+                          .map(appUserModelToAppUserDTOConverter::convert)
                           .toList();
     }
 }

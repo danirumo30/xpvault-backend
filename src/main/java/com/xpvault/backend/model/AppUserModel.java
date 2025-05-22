@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class AppUserModel implements UserDetails, Serializable {
 
     @Serial
@@ -44,6 +46,7 @@ public class AppUserModel implements UserDetails, Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
@@ -86,6 +89,17 @@ public class AppUserModel implements UserDetails, Serializable {
             inverseJoinColumns = @JoinColumn(name = "tv_serie_id")
     )
     private Set<TvSerieModel> tvSeries;
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "user_friends",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private Set<AppUserModel> friends;
+
+    @ManyToMany(mappedBy = "friends")
+    private Set<AppUserModel> friendOf;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
