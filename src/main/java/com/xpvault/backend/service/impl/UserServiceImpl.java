@@ -118,6 +118,4 @@ public class UserServiceImpl implements UserService {
     public List<TvSerieModel> findTvSeriesByUsername(String username) {
         return userDAO.findTvSeriesByUsername(username);
     }
-
-
 }

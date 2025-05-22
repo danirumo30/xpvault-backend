@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MovieDAO extends JpaRepository<MovieModel, Long> {
 
-
     MovieModel findByTmdbId(Integer tmdbId);
+
 }

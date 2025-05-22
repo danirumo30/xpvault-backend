@@ -1,6 +1,7 @@
 package com.xpvault.backend.converter;
 
 import com.xpvault.backend.dto.AppUserDetailsDTO;
+import com.xpvault.backend.dto.SteamUserDTO;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.model.MovieModel;
 import com.xpvault.backend.model.TvSerieModel;
@@ -28,12 +29,13 @@ public class AppUserModelToAppUserDetailsDTOConverter implements Converter<AppUs
 
         Set<MovieModel> movies = source.getMovies() == null ? null : source.getMovies();
         Set<TvSerieModel> tvSeries = source.getTvSeries() == null ? null : source.getTvSeries();
+        SteamUserDTO steamUser = source.getSteamUser() == null ? null : steamUserModelToSteamUserDTOConverter.convert(source.getSteamUser());
 
         return new AppUserDetailsDTO(
                 source.getId(),
                 source.getUsername(),
-                steamUserModelToSteamUserDTOConverter.convert(source.getSteamUser()),
-                steamUserService.getTotalTimePlayed(source.getSteamUser().getSteamId()),
+                steamUser,
+                steamUser == null ? null : steamUserService.getTotalTimePlayed(steamUser.getSteamId()),
                 userService.getTotalMoviesTime(source),
                 userService.getTotalTvSeriesTime(source),
                 movies == null ? null : movies.stream()
@@ -42,10 +44,10 @@ public class AppUserModelToAppUserDetailsDTOConverter implements Converter<AppUs
                 tvSeries == null ? null : tvSeries.stream()
                                                   .map(tvSerieModelToTvSerieDTOConverter::convert)
                                                   .toList(),
-                steamUserService.getOwnedGames(source.getSteamUser().getSteamId())
-                                .stream()
-                                .map(steamPlayerOwnedGameToOwnedSteamGameDTOConverter::convert)
-                                .toList()
+                steamUser == null ? null : steamUserService.getOwnedGames(steamUser.getSteamId())
+                                                           .stream()
+                                                           .map(steamPlayerOwnedGameToOwnedSteamGameDTOConverter::convert)
+                                                           .toList()
         );
     }
 }

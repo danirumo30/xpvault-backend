@@ -75,7 +75,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{username}/tv-series")
+    @GetMapping("/profile/{username}/tv-series")
     public ResponseEntity<Object> getUserTvSeries(@PathVariable String username) {
         List<TvSerieDTO> series = userFacade.getTvSeries(username);
 
@@ -88,7 +88,7 @@ public class UserController {
         return ResponseEntity.ok(series);
     }
 
-    @GetMapping("/{username}/movies")
+    @GetMapping("/profile/{username}/movies")
     public ResponseEntity<Object> getUserMovies(@PathVariable String username) {
         List<MovieDTO> movies = userFacade.getMovies(username);
 
@@ -101,7 +101,7 @@ public class UserController {
         return ResponseEntity.ok(movies);
     }
 
-    @GetMapping("/{username}/content")
+    @GetMapping("/profile/{username}/content")
     public ResponseEntity<Object> getUserContent(@PathVariable String username) {
         AppUserDetailsDTO user = userFacade.findFullUserDetails(username);
 
@@ -133,5 +133,4 @@ public class UserController {
         userFacade.addTvSerieToUser(username, tvSerieId, language);
         return ResponseEntity.ok().build();
     }
-
 }
