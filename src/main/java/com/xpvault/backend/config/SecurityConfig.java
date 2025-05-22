@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/steam-user/**").permitAll()
                         .requestMatchers("/movies/**").permitAll()
                         .requestMatchers("/tv-series/**").permitAll()
+                        .requestMatchers("/users/profile/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
