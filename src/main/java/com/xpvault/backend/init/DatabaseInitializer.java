@@ -15,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.xpvault.backend.literals.constants.AppConstants.ADMIN_MAIL;
+
 @Component
 @RequiredArgsConstructor
 public class DatabaseInitializer implements ApplicationRunner {
 
-    private static final String MAIL = "xpvault.team@gmail.com";
     private final UserDAO userDAO;
     private final GameDAO gameDAO;
     private final SteamUserService steamUserService;
@@ -28,10 +29,10 @@ public class DatabaseInitializer implements ApplicationRunner {
     @Transactional
     public void run(ApplicationArguments args) {
 
-        userDAO.findByEmail(MAIL)
+        userDAO.findByEmail(ADMIN_MAIL)
                 .ifPresent(user -> userDAO.deleteById(user.getId()));
 
-        if (!userDAO.existsByEmail(MAIL)) {
+        if (!userDAO.existsByEmail(ADMIN_MAIL)) {
             SteamPlayerProfile profile = steamUserService.getPlayerProfile(76561198344317420L);
 
             SteamUserModel steamUser = SteamUserModel.builder()
@@ -45,7 +46,7 @@ public class DatabaseInitializer implements ApplicationRunner {
             AppUserModel admin = AppUserModel.builder()
                     .username("admin")
                     .password("$2a$10$BSFg8tEFD9762qMMxkTbouBhk0EHGTNmiwGNZ3vVLpwJzRiiBIdTS")
-                    .email(MAIL)
+                    .email(ADMIN_MAIL)
                     .role("REGISTERED")
                     .enabled(true)
                     .steamUser(steamUser)

@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.xpvault.backend.literals.constants.AppConstants.*;
+
 @RestController
-@RequestMapping("/steam-user")
+@RequestMapping(STEAM_USER_PATH)
 @RequiredArgsConstructor
 @Getter(AccessLevel.PROTECTED)
 public class SteamUserController {
@@ -36,44 +38,44 @@ public class SteamUserController {
         if (ownedGames == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No owned games.");
+                    .body(NO_OWNED_GAMES);
         }
         return ResponseEntity.ok(ownedGames);
     }
 
-    @GetMapping("/top")
+    @GetMapping(TOP_PATH)
     public ResponseEntity<List<SteamUserTopDTO>> topGames() {
         List<SteamUserTopDTO> users = steamUserFacade.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/resolve/id")
+    @GetMapping(RESOLVE_PATH + "/id")
     public ResponseEntity<Object> resolveSteamId(@RequestParam String username) {
         try {
             Long steamId = steamUserFacade.getSteamIdByUsername(username);
             if (steamId == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                     .body("SteamID not found for vanity URL: " + username);
+                                     .body(STEAM_ID_NOT_FOUND_FOR_USERNAME + username);
             }
             return ResponseEntity.ok(steamId);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error resolving SteamID: " + e.getMessage());
+                                 .body(ERROR_RESOLVING_STEAM_ID + e.getMessage());
         }
     }
 
-    @GetMapping("/resolve/username")
+    @GetMapping(RESOLVE_PATH + "/username")
     public ResponseEntity<Object> resolveSteamUsername(@RequestParam Long id) {
         try {
             String username = steamUserFacade.getUsernameBySteamId(id);
             if (username == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Username could not be resolved by ID: " + id);
+                        .body(USERNAME_NOT_FOUND_FOR_STEAM_ID + id);
             }
             return ResponseEntity.ok(username);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error resolving Steam username: " + e.getMessage());
+                    .body(ERROR_RESOLVING_STEAM_USERNAME + e.getMessage());
         }
     }
 
@@ -83,7 +85,7 @@ public class SteamUserController {
             SteamUserDTO steamUserDTO = steamUserFacade.getSteamUserById(steamId);
             if (steamUserDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Steam profile not found for SteamID: " + steamId);
+                        .body(STEAM_PROFILE_NOT_FOUND + steamId);
             }
             return ResponseEntity.ok(steamUserDTO);
         } catch (Exception e) {

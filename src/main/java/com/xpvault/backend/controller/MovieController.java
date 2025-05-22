@@ -17,56 +17,58 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.xpvault.backend.literals.constants.AppConstants.*;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/movies")
+@RequestMapping(MOVIES_PATH)
 @Getter(AccessLevel.PROTECTED)
 public class MovieController {
 
     private final MovieFacade movieFacade;
 
-    @GetMapping("/popular")
+    @GetMapping(POPULAR_PATH)
     public ResponseEntity<Object> getPopularMovies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "US") String region,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<MovieDTO> movies = movieFacade.getPopularMovies(language, page, region);
 
         if (movies == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No popular movies found.");
+                    .body(POPULAR_MOVIE_NOT_FOUND);
         }
 
         return ResponseEntity.ok(movies);
     }
 
-    @GetMapping("/top-rated")
+    @GetMapping(TOP_RATED_PATH)
     public ResponseEntity<Object> getTopRatedMovies(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "US") String region,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<MovieDTO> movies = movieFacade.getTopRatedMovies(language, page, region);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No top-rated movies found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TOP_RATED_MOVIE_NOT_FOUND);
         }
 
         return ResponseEntity.ok(movies);
     }
 
-    @GetMapping("/upcoming")
+    @GetMapping(UPCOMING_PATH)
     public ResponseEntity<Object> getUpcomingMovies(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "US") String region,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<MovieDTO> movies = movieFacade.getUpcomingMovies(language, page, region);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No upcoming movies found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(UPCOMING_MOVIE_NOT_FOUND);
         }
 
         return ResponseEntity.ok(movies);
@@ -77,12 +79,12 @@ public class MovieController {
             @PathVariable String title,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "US") String region,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<MovieDTO> movies = movieFacade.getMovieByTitle(title, language, page, region);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with title: " + title);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_TITLE_NOT_FOUND + title);
         }
 
         return ResponseEntity.ok(movies);
@@ -92,12 +94,12 @@ public class MovieController {
     public ResponseEntity<Object> getMovieByGenre(
             @PathVariable String genre,
             @RequestParam(defaultValue = "1") int page,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<MovieDTO> movies = movieFacade.getMovieByGenre(genre, language, page);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with genre: " + genre);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_GENRE_NOT_FOUND + genre);
         }
 
         return ResponseEntity.ok(movies);
@@ -106,12 +108,12 @@ public class MovieController {
     @GetMapping("/id/{id}")
     public ResponseEntity<Object> getMovieById(
             @PathVariable Integer id,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         MovieDTO movie = movieFacade.getMovieDetailsById(id, language);
 
         if (movie == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_NOT_FOUND + id);
         }
 
         return ResponseEntity.ok(movie);
@@ -120,12 +122,12 @@ public class MovieController {
     @GetMapping("/id/full/{id}")
     public ResponseEntity<Object> getFullMovieById(
             @PathVariable Integer id,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         MovieDb movie = movieFacade.getMovieFullDetailsById(id, language);
 
         if (movie == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No movies found with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_NOT_FOUND + id);
         }
 
         return ResponseEntity.ok(movie);

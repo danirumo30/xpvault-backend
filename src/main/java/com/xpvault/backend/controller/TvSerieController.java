@@ -18,55 +18,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.xpvault.backend.literals.constants.AppConstants.*;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tv-series")
+@RequestMapping(TV_SERIES_PATH)
 @Getter(AccessLevel.PROTECTED)
 public class TvSerieController {
 
     private final TvSerieFacade tvSerieFacade;
 
-    @GetMapping("/popular")
+    @GetMapping(POPULAR_PATH)
     public ResponseEntity<Object> getPopularTvSeries(
             @RequestParam(defaultValue = "0") int page,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getPopularTvSeries(language, page);
 
         if (tvSeries == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No popular tv series found.");
+                    .body(POPULAR_TV_SERIE_NOT_FOUND);
         }
 
         return ResponseEntity.ok(tvSeries);
     }
 
-    @GetMapping("/popular/full")
+    @GetMapping(POPULAR_PATH + "/full")
     public ResponseEntity<Object> getPopularTvSeriesFull(
             @RequestParam(defaultValue = "0") int page,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<TvSeriesDb> tvSeries = tvSerieFacade.getPopularTvSeriesFull(language, page);
 
         if (tvSeries == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No popular tv series found.");
+                    .body(POPULAR_TV_SERIE_NOT_FOUND);
         }
 
         return ResponseEntity.ok(tvSeries);
     }
 
-    @GetMapping("/top-rated")
+    @GetMapping(TOP_RATED_PATH)
     public ResponseEntity<Object> getTopRatedTvSeries(
             @RequestParam(defaultValue = "0") int page,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTopRatedTvSeries(language, page);
 
         if (tvSeries.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No top-rated tv series found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TOP_RATED_TV_SERIE_NOT_FOUND);
         }
 
         return ResponseEntity.ok(tvSeries);
@@ -76,12 +78,12 @@ public class TvSerieController {
     public ResponseEntity<Object> getTvSeriesByTitle(
             @PathVariable String title,
             @RequestParam(defaultValue = "0") int page,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByTitle(title, language, page);
 
         if (tvSeries.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tv series found with title: " + title);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_TITLE_NOT_FOUND + title);
         }
 
         return ResponseEntity.ok(tvSeries);
@@ -91,12 +93,12 @@ public class TvSerieController {
     public ResponseEntity<Object> getTvSeriesByGenre(
             @PathVariable String genre,
             @RequestParam(defaultValue = "0") int page,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByGenre(genre, language, page);
 
         if (tvSeries.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tv series found with genre: " + genre);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_GENRE_NOT_FOUND + genre);
         }
 
         return ResponseEntity.ok(tvSeries);
@@ -105,12 +107,12 @@ public class TvSerieController {
     @GetMapping("/id/{id}")
     public ResponseEntity<Object> getTvSeriesById(
             @PathVariable Integer id,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         TvSerieDTO tvSerie = tvSerieFacade.getTvSerieDetailsById(id, language);
 
         if (tvSerie == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tv series found with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_NOT_FOUND + id);
         }
 
         return ResponseEntity.ok(tvSerie);

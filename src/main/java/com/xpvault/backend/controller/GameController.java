@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 
+import static com.xpvault.backend.literals.constants.AppConstants.*;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/game")
+@RequestMapping(GAME_PATH)
 @Getter(AccessLevel.PROTECTED)
 public class GameController {
 
@@ -48,7 +50,7 @@ public class GameController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         gameFacade.delete(id);
-        return ResponseEntity.ok("Game deleted successfully!");
+        return ResponseEntity.ok(SUCCESS_GAME_DELETE);
     }
 
     @PostMapping("/new")
@@ -69,96 +71,96 @@ public class GameController {
         return ResponseEntity.ok(updatedGame);
     }
 
-    @GetMapping("/steam/details/{steamId}")
+    @GetMapping(STEAM_PATH + "/details/{steamId}")
     public ResponseEntity<Object> steamDetails(@PathVariable Integer steamId,
-                                               @RequestHeader(value = "Accept-Language", defaultValue = "en") String language) {
+                                               @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language) {
         GameSteamDTO steamData = gameFacade.getSteamDetailsBySteamId(steamId, language);
 
         if (steamData == null || steamData.getScreenshotUrl() == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No details found for Steam ID: " + steamId);
+                    .body(NO_STEAM_DETAILS + steamId);
         }
         return ResponseEntity.ok(steamData);
     }
 
-    @GetMapping("/steam/details/full/{steamId}")
+    @GetMapping(STEAM_PATH + "/details/full/{steamId}")
     public ResponseEntity<Object> steamFullDetails(@PathVariable Integer steamId,
-                                                   @RequestHeader(value = "Accept-Language", defaultValue = "en") String language) {
+                                                   @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language) {
         StoreAppDetails steamData = gameFacade.getFullSteamDetailsBySteamId(steamId, language);
 
         if (steamData == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No details found for Steam ID: " + steamId);
+                    .body(NO_STEAM_DETAILS + steamId);
         }
         return ResponseEntity.ok(steamData);
     }
 
-    @GetMapping("/steam/featured")
+    @GetMapping(STEAM_PATH + "/featured")
     public ResponseEntity<Object> steamFeaturedGames() {
         List<SteamFeaturedGameDTO> featuredApps = gameFacade.getFeaturedGames();
 
         if (featuredApps == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No featured games.");
+                    .body(NO_FEATURED_GAME);
         }
         return ResponseEntity.ok(featuredApps);
     }
 
-    @GetMapping("/steam/news/{steamId}")
+    @GetMapping(STEAM_PATH + "/news/{steamId}")
     public ResponseEntity<Object> steamNews(@PathVariable Integer steamId) {
         List<GameSteamNewsDTO> news = gameFacade.getSteamNewsBySteamId(steamId);
         if (news == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No news found for Steam ID: " + steamId);
+                    .body(NO_STEAM_NEWS + steamId);
         }
         return ResponseEntity.ok(news);
     }
 
-    @GetMapping("/steam/all")
+    @GetMapping(STEAM_PATH + "/all")
     public ResponseEntity<Object> steamApss() {
         List<BasicGameSteamDTO> steamApps = gameFacade.getSteamApps();
 
         if (steamApps == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No featured games.");
+                    .body(NO_STEAM_APPS);
         }
         return ResponseEntity.ok(steamApps);
     }
 
-    @GetMapping("/steam/{title}")
+    @GetMapping(STEAM_PATH + "/{title}")
     public ResponseEntity<Object> steamApss(
             @PathVariable String title,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<BasicGameSteamDTO> steamApps = gameFacade.getSteamAppsWithHeaderImageByTitle(title, page, size, language);
 
         if (steamApps == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No games for this title.");
+                    .body(NO_GAMES_FOR_TITLE);
         }
         return ResponseEntity.ok(steamApps);
     }
 
-    @GetMapping("/steam/apps-with-details")
+    @GetMapping(STEAM_PATH + "/apps-with-details")
     public ResponseEntity<Object> getSteamAppsWithImages(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
-            @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
         List<BasicGameSteamDTO> result = gameFacade.getSteamAppsWithHeaderImage(page, size, language);
 
         if (result.isEmpty()) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("No Steam apps found for this page.");
+                    .body(NO_GAMES_FOR_PAGE);
         }
 
         return ResponseEntity.ok(result);

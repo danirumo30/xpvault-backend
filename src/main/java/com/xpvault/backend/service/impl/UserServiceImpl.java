@@ -1,6 +1,8 @@
 package com.xpvault.backend.service.impl;
 
 import com.xpvault.backend.dao.UserDAO;
+import com.xpvault.backend.literals.enums.AddFriendResultEnum;
+import com.xpvault.backend.literals.enums.AddMediaResultEnum;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.model.MovieModel;
 import com.xpvault.backend.model.TvSerieModel;
@@ -37,56 +39,61 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addMovieToUser(String username, Integer movieId, String language) {
-        Optional.ofNullable(findByUsername(username))
-                .ifPresentOrElse(user ->
+    public AddMediaResultEnum addMovieToUser(String username, Integer movieId, String language) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user ->
                         Optional.ofNullable(movieService.getMovieDetails(movieId, language))
-                                .map(movieDb -> MovieModel.builder()
-                                                          .title(movieDb.getTitle())
-                                                          .description(movieDb.getOverview())
-                                                          .tmdbId(movieId)
-                                                          .runtime(movieDb.getRuntime())
-                                                          .build())
-                                .ifPresent(movie -> {
+                                .map(movieDb ->
+                                        MovieModel.builder()
+                                                  .id(movieService.findByTmdbId(movieId) == null ? null : movieService.findByTmdbId(movieId).getId())
+                                                  .title(movieDb.getTitle())
+                                                  .description(movieDb.getOverview())
+                                                  .tmdbId(movieId)
+                                                  .runtime(movieDb.getRuntime())
+                                                  .build()
+                                )
+                                .map(movie -> {
                                     if (user.getMovies() == null) {
                                         user.setMovies(new HashSet<>());
                                     }
-                                    if (!user.getMovies().contains(movie)) {
-                                        user.getMovies().add(movie);
-                                        userDAO.save(user);
+                                    if (user.getMovies().contains(movie)) {
+                                        return AddMediaResultEnum.ALREADY_EXISTS;
                                     }
-                                }),
-                        () -> {
-                            throw new IllegalArgumentException("User not found with username: " + username);
-                        }
-                );
+                                    user.getMovies().add(movie);
+                                    userDAO.save(user);
+                                    return AddMediaResultEnum.SUCCESS;
+                                })
+                                .orElse(AddMediaResultEnum.MOVIE_NOT_FOUND)
+                )
+                .orElse(AddMediaResultEnum.USER_NOT_FOUND);
     }
 
     @Override
-    public void addTvSerieToUser(String username, Integer tvSerieId, String language) {
-        Optional.ofNullable(findByUsername(username))
-                .ifPresentOrElse(user ->
+    public AddMediaResultEnum addTvSerieToUser(String username, Integer tvSerieId, String language) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user ->
                         Optional.ofNullable(tvSerieService.getTvSerieDetails(tvSerieId, language))
                                 .map(tvSeriesDb -> TvSerieModel.builder()
-                                                                 .id(tvSerieService.findByTmdbId(tvSerieId) == null ? null : tvSerieService.findByTmdbId(tvSerieId).getId())
-                                                                 .title(tvSeriesDb.getName())
-                                                                 .description(tvSeriesDb.getOverview())
-                                                                 .tmdbId(tvSerieId)
-                                                                 .runtime(tvSerieService.getTotalTvSerieTime(tvSeriesDb))
-                                                                 .build())
-                                .ifPresent(tvSerie -> {
+                                        .id(tvSerieService.findByTmdbId(tvSerieId) == null ? null : tvSerieService.findByTmdbId(tvSerieId).getId())
+                                        .title(tvSeriesDb.getName())
+                                        .description(tvSeriesDb.getOverview())
+                                        .tmdbId(tvSerieId)
+                                        .runtime(tvSerieService.getTotalTvSerieTime(tvSeriesDb))
+                                        .build())
+                                .map(tvSerie -> {
                                     if (user.getTvSeries() == null) {
                                         user.setTvSeries(new HashSet<>());
                                     }
-                                    if (!user.getTvSeries().contains(tvSerie)) {
-                                        user.getTvSeries().add(tvSerie);
-                                        userDAO.save(user);
+                                    if (user.getTvSeries().contains(tvSerie)) {
+                                        return AddMediaResultEnum.ALREADY_EXISTS;
                                     }
-                                }),
-                        () -> {
-                            throw new IllegalArgumentException("User not found with username: " + username);
-                        }
-                );
+                                    user.getTvSeries().add(tvSerie);
+                                    userDAO.save(user);
+                                    return AddMediaResultEnum.SUCCESS;
+                                })
+                                .orElse(AddMediaResultEnum.TV_SERIE_NOT_FOUND)
+                )
+                .orElse(AddMediaResultEnum.USER_NOT_FOUND);
     }
 
     @Override
@@ -117,5 +124,44 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<TvSerieModel> findTvSeriesByUsername(String username) {
         return userDAO.findTvSeriesByUsername(username);
+    }
+
+    @Override
+    public List<AppUserModel> findByUsernameContainsIgnoreCase(String username) {
+        return userDAO.findByUsernameContainsIgnoreCase(username);
+    }
+
+    @Override
+    public AddFriendResultEnum addFriendToUser(String username, String friendUsername) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user ->
+                        Optional.ofNullable(findByUsername(friendUsername))
+                                .map(friend -> {
+                                    if (user.getFriends() == null) {
+                                        user.setFriends(new HashSet<>());
+                                    }
+                                    if (user.getFriends().contains(friend)) {
+                                        return AddFriendResultEnum.ALREADY_FRIENDS;
+                                    }
+                                    user.getFriends().add(friend);
+                                    if (friend.getFriends() == null) {
+                                        friend.setFriends(new HashSet<>());
+                                    }
+                                    friend.getFriends().add(user);
+
+                                    userDAO.save(user);
+                                    userDAO.save(friend);
+
+                                    return AddFriendResultEnum.SUCCESS;
+                                })
+                                .orElse(AddFriendResultEnum.FRIEND_NOT_FOUND)
+                )
+                .orElse(AddFriendResultEnum.USER_NOT_FOUND);
+    }
+
+
+    @Override
+    public AppUserModel save(AppUserModel appUserModel) {
+        return userDAO.save(appUserModel);
     }
 }

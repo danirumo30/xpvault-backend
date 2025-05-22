@@ -1,5 +1,6 @@
 package com.xpvault.backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,8 +17,14 @@ import java.time.LocalDateTime;
 public class AppUserDTO {
 
     private Long id;
+    private byte[] profilePhoto;
+    @NotBlank(message = "Username is required")
     private String username;
+
+    @NotBlank(message = "Email is required")
     private String email;
+
+    @NotBlank(message = "Password is required")
     private String password;
     private String verificationCode;
     private LocalDateTime verificationExpiration;
