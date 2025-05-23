@@ -4,11 +4,11 @@ import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.AppUserDetailsDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
-import com.xpvault.backend.literals.enums.AddFriendResultEnum;
-import com.xpvault.backend.literals.enums.AddMediaResultEnum;
+import com.xpvault.backend.literals.enums.AddResultEnum;
 import com.xpvault.backend.facade.UserFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.xpvault.backend.literals.constants.AppConstants.*;
 
@@ -126,20 +127,9 @@ public class UserController {
             @RequestParam Integer movieId,
             @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
     ) {
-        AddMediaResultEnum result = userFacade.addMovieToUser(username, movieId, language);
+        AddResultEnum result = userFacade.addMovieToUser(username, movieId, language);
 
-        return switch (result) {
-            case SUCCESS ->
-                    ResponseEntity.ok(SUCCESS_ADD_MOVIE);
-            case USER_NOT_FOUND ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username);
-            case MOVIE_NOT_FOUND ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_NOT_FOUND + movieId);
-            case ALREADY_EXISTS ->
-                    ResponseEntity.status(HttpStatus.CONFLICT).body(ALREADY_EXISTS);
-            default ->
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR);
-        };
+        return getAddResultResponse(username, movieId.toString(), MOVIE_NOT_FOUND, SUCCESS_ADD_MOVIE, result, AddResultEnum.MOVIE_NOT_FOUND);
     }
 
     @PostMapping("/{username}/tv-series/add")
@@ -148,20 +138,9 @@ public class UserController {
             @RequestParam Integer tvSerieId,
             @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
-        AddMediaResultEnum result = userFacade.addTvSerieToUser(username, tvSerieId, language);
+        AddResultEnum result = userFacade.addTvSerieToUser(username, tvSerieId, language);
 
-        return switch (result) {
-            case SUCCESS ->
-                    ResponseEntity.ok(SUCCESS_ADD_TV_SERIE);
-            case USER_NOT_FOUND ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username);
-            case TV_SERIE_NOT_FOUND ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_NOT_FOUND + tvSerieId);
-            case ALREADY_EXISTS ->
-                    ResponseEntity.status(HttpStatus.CONFLICT).body(ALREADY_EXISTS);
-            default ->
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR);
-        };
+        return getAddResultResponse(username, tvSerieId.toString(), TV_SERIE_NOT_FOUND, SUCCESS_ADD_TV_SERIE, result, AddResultEnum.TV_SERIE_NOT_FOUND);
     }
 
     @GetMapping("/search")
@@ -184,18 +163,9 @@ public class UserController {
             @PathVariable String username,
             @RequestParam String friendUsername
     ) {
-        AddFriendResultEnum result = userFacade.addFriendToUser(username, friendUsername);
+        AddResultEnum result = userFacade.addFriendToUser(username, friendUsername);
 
-        return switch (result) {
-            case SUCCESS ->
-                    ResponseEntity.ok(SUCCESS_ADD_FRIEND);
-            case USER_NOT_FOUND ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username);
-            case FRIEND_NOT_FOUND ->
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(FRIEND_NOT_FOUND + friendUsername);
-            case ALREADY_FRIENDS ->
-                    ResponseEntity.status(HttpStatus.CONFLICT).body(ALREADY_EXISTS);
-        };
+        return getAddResultResponse(username, friendUsername, FRIEND_NOT_FOUND, SUCCESS_ADD_FRIEND, result, AddResultEnum.FRIEND_NOT_FOUND);
     }
 
     @PostMapping("/save")
@@ -205,5 +175,31 @@ public class UserController {
         }
         AppUserDTO saved = userFacade.save(appUserDTO);
         return ResponseEntity.ok(saved);
+    }
+
+    private static @NotNull ResponseEntity<String> getAddResultResponse(
+            String username,
+            String notFoundParam,
+            String notFoundConstant,
+            String successResult,
+            AddResultEnum result,
+            AddResultEnum notFoundResult
+    ) {
+        Map<AddResultEnum, ResponseEntity<String>> responses =
+                Map.of(
+                        AddResultEnum.SUCCESS,
+                            ResponseEntity.ok(successResult),
+                        AddResultEnum.USER_NOT_FOUND,
+                            ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username),
+                        notFoundResult,
+                            ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFoundConstant + notFoundParam),
+                        AddResultEnum.ALREADY_EXISTS,
+                            ResponseEntity.status(HttpStatus.CONFLICT).body(ALREADY_EXISTS)
+                );
+
+        return responses.getOrDefault(
+                result,
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR)
+        );
     }
 }

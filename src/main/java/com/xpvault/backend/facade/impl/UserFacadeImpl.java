@@ -9,8 +9,7 @@ import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.AppUserDetailsDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
-import com.xpvault.backend.literals.enums.AddFriendResultEnum;
-import com.xpvault.backend.literals.enums.AddMediaResultEnum;
+import com.xpvault.backend.literals.enums.AddResultEnum;
 import com.xpvault.backend.facade.UserFacade;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.service.UserService;
@@ -71,12 +70,12 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public AddMediaResultEnum addMovieToUser(String username, Integer movieId, String language) {
+    public AddResultEnum addMovieToUser(String username, Integer movieId, String language) {
         return userService.addMovieToUser(username, movieId, language);
     }
 
     @Override
-    public AddMediaResultEnum addTvSerieToUser(String username, Integer tvSerieId, String language) {
+    public AddResultEnum addTvSerieToUser(String username, Integer tvSerieId, String language) {
         return userService.addTvSerieToUser(username, tvSerieId, language);
     }
 
@@ -102,7 +101,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public AddFriendResultEnum addFriendToUser(String username, String friendUsername) {
+    public AddResultEnum addFriendToUser(String username, String friendUsername) {
         return userService.addFriendToUser(username, friendUsername);
     }
 

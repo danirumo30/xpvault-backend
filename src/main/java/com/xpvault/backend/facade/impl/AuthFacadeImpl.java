@@ -1,7 +1,6 @@
 package com.xpvault.backend.facade.impl;
 
 import com.xpvault.backend.converter.*;
-import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.LoginUserDTO;
 import com.xpvault.backend.dto.RegisterUserDTO;
 import com.xpvault.backend.dto.VerifyUserDTO;
@@ -45,10 +44,5 @@ public class AuthFacadeImpl implements AuthFacade {
     @Override
     public void resendVerificationCode(String email) {
         authService.resendVerificationCode(email);
-    }
-
-    @Override
-    public void sendVerificationEmail(AppUserDTO appUserDTO) {
-        authService.sendVerificationEmail(appUserDTOToAppUserModelConverter.convert(appUserDTO));
     }
 }

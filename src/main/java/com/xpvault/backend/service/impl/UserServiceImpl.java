@@ -1,8 +1,7 @@
 package com.xpvault.backend.service.impl;
 
 import com.xpvault.backend.dao.UserDAO;
-import com.xpvault.backend.literals.enums.AddFriendResultEnum;
-import com.xpvault.backend.literals.enums.AddMediaResultEnum;
+import com.xpvault.backend.literals.enums.AddResultEnum;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.model.MovieModel;
 import com.xpvault.backend.model.TvSerieModel;
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddMediaResultEnum addMovieToUser(String username, Integer movieId, String language) {
+    public AddResultEnum addMovieToUser(String username, Integer movieId, String language) {
         return Optional.ofNullable(findByUsername(username))
                 .map(user ->
                         Optional.ofNullable(movieService.getMovieDetails(movieId, language))
@@ -57,19 +56,19 @@ public class UserServiceImpl implements UserService {
                                         user.setMovies(new HashSet<>());
                                     }
                                     if (user.getMovies().contains(movie)) {
-                                        return AddMediaResultEnum.ALREADY_EXISTS;
+                                        return AddResultEnum.ALREADY_EXISTS;
                                     }
                                     user.getMovies().add(movie);
                                     userDAO.save(user);
-                                    return AddMediaResultEnum.SUCCESS;
+                                    return AddResultEnum.SUCCESS;
                                 })
-                                .orElse(AddMediaResultEnum.MOVIE_NOT_FOUND)
+                                .orElse(AddResultEnum.MOVIE_NOT_FOUND)
                 )
-                .orElse(AddMediaResultEnum.USER_NOT_FOUND);
+                .orElse(AddResultEnum.USER_NOT_FOUND);
     }
 
     @Override
-    public AddMediaResultEnum addTvSerieToUser(String username, Integer tvSerieId, String language) {
+    public AddResultEnum addTvSerieToUser(String username, Integer tvSerieId, String language) {
         return Optional.ofNullable(findByUsername(username))
                 .map(user ->
                         Optional.ofNullable(tvSerieService.getTvSerieDetails(tvSerieId, language))
@@ -85,15 +84,15 @@ public class UserServiceImpl implements UserService {
                                         user.setTvSeries(new HashSet<>());
                                     }
                                     if (user.getTvSeries().contains(tvSerie)) {
-                                        return AddMediaResultEnum.ALREADY_EXISTS;
+                                        return AddResultEnum.ALREADY_EXISTS;
                                     }
                                     user.getTvSeries().add(tvSerie);
                                     userDAO.save(user);
-                                    return AddMediaResultEnum.SUCCESS;
+                                    return AddResultEnum.SUCCESS;
                                 })
-                                .orElse(AddMediaResultEnum.TV_SERIE_NOT_FOUND)
+                                .orElse(AddResultEnum.TV_SERIE_NOT_FOUND)
                 )
-                .orElse(AddMediaResultEnum.USER_NOT_FOUND);
+                .orElse(AddResultEnum.USER_NOT_FOUND);
     }
 
     @Override
@@ -132,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AddFriendResultEnum addFriendToUser(String username, String friendUsername) {
+    public AddResultEnum addFriendToUser(String username, String friendUsername) {
         return Optional.ofNullable(findByUsername(username))
                 .map(user ->
                         Optional.ofNullable(findByUsername(friendUsername))
@@ -141,7 +140,7 @@ public class UserServiceImpl implements UserService {
                                         user.setFriends(new HashSet<>());
                                     }
                                     if (user.getFriends().contains(friend)) {
-                                        return AddFriendResultEnum.ALREADY_FRIENDS;
+                                        return AddResultEnum.ALREADY_EXISTS;
                                     }
                                     user.getFriends().add(friend);
                                     if (friend.getFriends() == null) {
@@ -152,11 +151,11 @@ public class UserServiceImpl implements UserService {
                                     userDAO.save(user);
                                     userDAO.save(friend);
 
-                                    return AddFriendResultEnum.SUCCESS;
+                                    return AddResultEnum.SUCCESS;
                                 })
-                                .orElse(AddFriendResultEnum.FRIEND_NOT_FOUND)
+                                .orElse(AddResultEnum.FRIEND_NOT_FOUND)
                 )
-                .orElse(AddFriendResultEnum.USER_NOT_FOUND);
+                .orElse(AddResultEnum.USER_NOT_FOUND);
     }
 
 

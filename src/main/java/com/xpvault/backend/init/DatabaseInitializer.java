@@ -61,108 +61,106 @@ public class DatabaseInitializer implements ApplicationRunner {
 
         List<GameModel> demoGames = List.of(
                 GameModel.builder()
-                         .title("Counter-Strike 2")
-                         .description("Shooter multijugador competitivo con mecánicas tácticas.")
-                         .steamId(730)
-                         .build(),
+                        .title("Counter-Strike 2")
+                        .description("Competitive multiplayer shooter with tactical mechanics.")
+                        .steamId(730)
+                        .build(),
                 GameModel.builder()
-                         .title("Dota 2")
-                         .description("MOBA gratuito con héroes únicos y partidas intensas.")
-                         .steamId(570)
-                         .build(),
+                        .title("Dota 2")
+                        .description("Free MOBA with unique heroes and intense matches.")
+                        .steamId(570)
+                        .build(),
                 GameModel.builder()
-                         .title("PUBG: BATTLEGROUNDS")
-                         .description("Battle royale en el que luchas por ser el último en pie.")
-                         .steamId(578080)
-                         .build(),
+                        .title("PUBG: BATTLEGROUNDS")
+                        .description("Battle royale where you fight to be the last one standing.")
+                        .steamId(578080)
+                        .build(),
                 GameModel.builder()
-                         .title("Apex Legends")
-                         .description("Battle royale con personajes únicos y habilidades especiales.")
-                         .steamId(1172470)
-                         .build(),
+                        .title("Apex Legends")
+                        .description("Battle royale with unique characters and special abilities.")
+                        .steamId(1172470)
+                        .build(),
                 GameModel.builder()
-                         .title("Rust")
-                         .description("Juego de supervivencia en un mundo abierto hostil.")
-                         .steamId(252490)
-                         .build(),
+                        .title("Rust")
+                        .description("Survival game set in a hostile open world.")
+                        .steamId(252490)
+                        .build(),
                 GameModel.builder()
-                         .title("Baldurs Gate 3")
-                         .description("RPG basado en Dungeons & Dragons con narrativa profunda.")
-                         .steamId(1086940)
-                         .build(),
+                        .title("Baldur's Gate 3")
+                        .description("RPG based on Dungeons & Dragons with deep narrative.")
+                        .steamId(1086940)
+                        .build(),
                 GameModel.builder()
-                         .title("Cyberpunk 2077")
-                         .description("RPG de mundo abierto ambientado en un futuro distópico.")
-                         .steamId(1091500)
-                         .build(),
+                        .title("Cyberpunk 2077")
+                        .description("Open-world RPG set in a dystopian future.")
+                        .steamId(1091500)
+                        .build(),
                 GameModel.builder()
-                         .title("The Witcher 3: Wild Hunt")
-                         .description("Aventura épica de Geralt de Rivia en un mundo abierto.")
-                         .steamId(292030)
-                         .build(),
+                        .title("The Witcher 3: Wild Hunt")
+                        .description("Epic adventure of Geralt of Rivia in an open world.")
+                        .steamId(292030)
+                        .build(),
                 GameModel.builder()
-                         .title("Stardew Valley")
-                         .description("Simulador de granja con elementos de RPG y vida social.")
-                         .steamId(413150)
-                         .build(),
+                        .title("Stardew Valley")
+                        .description("Farming simulator with RPG and social life elements.")
+                        .steamId(413150)
+                        .build(),
                 GameModel.builder()
-                         .title("Terraria")
-                         .description("Juego de aventuras en 2D con exploración y construcción.")
-                         .steamId(105600)
-                         .build(),
+                        .title("Terraria")
+                        .description("2D adventure game with exploration and building.")
+                        .steamId(105600)
+                        .build(),
                 GameModel.builder()
-                         .title("Hades")
-                         .description("Roguelike de acción rápida ambientado en la mitología griega.")
-                         .steamId(1145360)
-                         .build(),
+                        .title("Hades")
+                        .description("Fast-paced roguelike set in Greek mythology.")
+                        .steamId(1145360)
+                        .build(),
                 GameModel.builder()
-                         .title("Slay the Spire")
-                         .description("Juego de cartas y roguelike con estrategia profunda.")
-                         .steamId(646570)
-                         .build(),
+                        .title("Slay the Spire")
+                        .description("Card game and roguelike with deep strategy.")
+                        .steamId(646570)
+                        .build(),
                 GameModel.builder()
-                         .title("Vampire Survivors")
-                         .description("Acción retro en la que sobrevives a hordas de enemigos.")
-                         .steamId(1794680)
-                         .build(),
+                        .title("Vampire Survivors")
+                        .description("Retro-style action where you survive waves of enemies.")
+                        .steamId(1794680)
+                        .build(),
                 GameModel.builder()
-                         .title("Left 4 Dead 2")
-                         .description("Shooter cooperativo contra hordas de zombis.")
-                         .steamId(550)
-                         .build(),
+                        .title("Left 4 Dead 2")
+                        .description("Cooperative shooter against zombie hordes.")
+                        .steamId(550)
+                        .build(),
                 GameModel.builder()
-                         .title("Garrys Mod")
-                         .description("Sandbox que permite crear y jugar con físicas y mods.")
-                         .steamId(4000)
-                         .build(),
+                        .title("Garry's Mod")
+                        .description("Sandbox that lets you create and play with physics and mods.")
+                        .steamId(4000)
+                        .build(),
                 GameModel.builder()
-                         .title("Euro Truck Simulator 2")
-                         .description("Simulador de conducción de camiones por Europa.")
-                         .steamId(227300)
-                         .build(),
+                        .title("Euro Truck Simulator 2")
+                        .description("Truck driving simulator across Europe.")
+                        .steamId(227300)
+                        .build(),
                 GameModel.builder()
-                         .title("Portal 2")
-                         .description("Juego de puzzles en primera persona con portales.")
-                         .steamId(620)
-                         .build(),
+                        .title("Portal 2")
+                        .description("First-person puzzle game with portals.")
+                        .steamId(620)
+                        .build(),
                 GameModel.builder()
-                         .title("Team Fortress 2")
-                         .description("Shooter multijugador por equipos con clases variadas.")
-                         .steamId(440)
-                         .build(),
+                        .title("Team Fortress 2")
+                        .description("Team-based multiplayer shooter with varied classes.")
+                        .steamId(440)
+                        .build(),
                 GameModel.builder()
-                         .title("ARK: Survival Evolved")
-                         .description("Supervivencia en un mundo lleno de dinosaurios.")
-                         .steamId(346110)
-                         .build(),
+                        .title("ARK: Survival Evolved")
+                        .description("Survival game in a world full of dinosaurs.")
+                        .steamId(346110)
+                        .build(),
                 GameModel.builder()
-                         .title("Among Us")
-                         .description("Juego multijugador de deducción social en el espacio.")
-                         .steamId(945360)
-                         .build()
+                        .title("Among Us")
+                        .description("Multiplayer social deduction game in space.")
+                        .steamId(945360)
+                        .build()
         );
-
-
 
         gameDAO.saveAll(demoGames);
     }

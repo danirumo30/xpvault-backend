@@ -62,8 +62,8 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.CREATED).body(gameDTO);
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Object> edit(@PathVariable Long id, @RequestBody @Valid GameDTO game, BindingResult bindingResult) {
+    @PutMapping("/edit/{ignoredId}")
+    public ResponseEntity<Object> edit(@PathVariable Long ignoredId, @RequestBody @Valid GameDTO game, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }

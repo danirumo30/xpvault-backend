@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class TvEpisodeDTO {
 
-    private Integer tmbdId;
+    private Integer tmdbId;
     private String title;
     private String description;
     private Integer totalTime;

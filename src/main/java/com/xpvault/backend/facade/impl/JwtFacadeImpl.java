@@ -4,15 +4,11 @@ import com.xpvault.backend.converter.LoginUserDTOToAppUserModelConverter;
 import com.xpvault.backend.dto.LoginUserDTO;
 import com.xpvault.backend.facade.JwtFacade;
 import com.xpvault.backend.service.JwtService;
-import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -28,18 +24,8 @@ public class JwtFacadeImpl implements JwtFacade {
     }
 
     @Override
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        return jwtService.extractClaim(token, claimsResolver);
-    }
-
-    @Override
     public String generateToken(LoginUserDTO loginUserDTO) {
         return jwtService.generateToken(loginUserDTOToAppUserModelConverter.convert(loginUserDTO));
-    }
-
-    @Override
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return jwtService.generateToken(extraClaims, userDetails);
     }
 
     @Override

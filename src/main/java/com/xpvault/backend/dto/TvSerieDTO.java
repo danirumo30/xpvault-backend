@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 public class TvSerieDTO {
 
-    private Integer tmbdId;
+    private Integer tmdbId;
     private String posterUrl;
     private String title;
     private String description;

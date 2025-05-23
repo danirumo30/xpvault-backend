@@ -1,6 +1,6 @@
 package com.xpvault.backend.config;
 
-import com.xpvault.backend.service.JwtService;
+import com.xpvault.backend.facade.JwtFacade;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
-    private final JwtService jwtService;
+    private final JwtFacade jwtFacade;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -45,14 +45,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             final String jwt = authHeader.substring(7);
 
-            final String userEmail = jwtService.extractUsername(jwt);
+            final String userEmail = jwtFacade.extractUsername(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                boolean valid = jwtService.isTokenValid(jwt, userDetails);
+                boolean valid = jwtFacade.isTokenValid(jwt, userDetails);
 
                 if (valid) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
