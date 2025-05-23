@@ -42,7 +42,6 @@ public class TvSerieServiceImpl implements TvSerieService {
     private final TmdbSearch tmdbSearch;
     private final TmdbDiscover tmdbDiscover;
     private final TmdbGenre tmdbGenre;
-    private final TvSerieService tvSerieService;
 
     @SneakyThrows
     @Override
