@@ -23,5 +23,6 @@ public interface GameFacade {
     List<BasicGameSteamDTO> getSteamApps();
     List<BasicGameSteamDTO> getSteamAppsWithHeaderImage(int page, int size, String language);
     List<BasicGameSteamDTO> getSteamAppsWithHeaderImageByTitle(String title, int page, int size, String language);
+    List<BasicGameSteamDTO> getSteamAppsByGenre(String genre, int page, int size, String language);
 
 }

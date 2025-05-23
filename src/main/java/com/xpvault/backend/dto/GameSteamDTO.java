@@ -22,5 +22,6 @@ public class GameSteamDTO {
     private Integer steamId;
     private Integer totalAchievements;
     private List<SteamAchievementDTO> achievements;
+    private List<String> genres;
 
 }

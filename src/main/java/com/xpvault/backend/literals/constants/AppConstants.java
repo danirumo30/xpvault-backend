@@ -15,6 +15,7 @@ public final class AppConstants {
     public static final String NO_STEAM_NEWS = "No news found for Steam ID: %d";
     public static final String NO_STEAM_APPS = "No steam apps found.";
     public static final String NO_GAMES_FOR_TITLE = "No games for this title.";
+    public static final String NO_GAMES_FOR_GENRE = "No games for this genre.";
     public static final String NO_GAMES_FOR_PAGE = "No Steam apps found for this page.";
     public static final String USER_NOT_FOUND = "User not found with username: %s";
     public static final String FRIEND_NOT_FOUND = "Friend not found with username: %s";

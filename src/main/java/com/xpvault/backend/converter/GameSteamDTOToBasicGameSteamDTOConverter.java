@@ -14,7 +14,8 @@ public class GameSteamDTOToBasicGameSteamDTOConverter implements Converter<GameS
                 source.getTitle(),
                 source.getSteamId(),
                 source.getScreenshotUrl(),
-                source.getDescription()
+                source.getDescription(),
+                source.getGenres()
         );
     }
 }

@@ -2,6 +2,7 @@ package com.xpvault.backend.converter;
 
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppAchievements;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppGenre;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.SteamAchievementDTO;
 import org.springframework.core.convert.converter.Converter;
@@ -35,7 +36,11 @@ public class StoreAppDetailsToGameSteamDTOConverter implements Converter<StoreAp
                 storeAppDetails.getPriceOverview() != null ? storeAppDetails.getPriceOverview().getInitialPrice() : 0,
                 storeAppDetails.getAppId(),
                 totalAchievements,
-                achievementDTOs
+                achievementDTOs,
+                storeAppDetails.getGenres()
+                               .stream()
+                               .map(StoreAppGenre::getDescription)
+                               .toList()
         );
     }
 }

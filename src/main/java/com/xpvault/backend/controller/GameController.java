@@ -121,7 +121,7 @@ public class GameController {
     }
 
     @GetMapping(STEAM_PATH + "/all")
-    public ResponseEntity<Object> steamApss() {
+    public ResponseEntity<Object> steamApps() {
         List<BasicGameSteamDTO> steamApps = gameFacade.getSteamApps();
 
         if (steamApps == null) {
@@ -132,8 +132,8 @@ public class GameController {
         return ResponseEntity.ok(steamApps);
     }
 
-    @GetMapping(STEAM_PATH + "/{title}")
-    public ResponseEntity<Object> steamApss(
+    @GetMapping(STEAM_PATH + "/title/{title}")
+    public ResponseEntity<Object> steamAppsByTitle(
             @PathVariable String title,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
@@ -145,6 +145,23 @@ public class GameController {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(NO_GAMES_FOR_TITLE);
+        }
+        return ResponseEntity.ok(steamApps);
+    }
+
+    @GetMapping(STEAM_PATH + "/genre/{genre}")
+    public ResponseEntity<Object> steamAppsByGenre(
+            @PathVariable String genre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
+    ) {
+        List<BasicGameSteamDTO> steamApps = gameFacade.getSteamAppsByGenre(genre, page, size, language);
+
+        if (steamApps == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(NO_GAMES_FOR_GENRE);
         }
         return ResponseEntity.ok(steamApps);
     }
