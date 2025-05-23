@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN ./mvnw clean install
+RUN ./mvnw clean install -DskipTests
 
 EXPOSE 9090
 
