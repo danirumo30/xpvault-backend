@@ -46,16 +46,15 @@ public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvS
 
 
         if (source.getCredits() != null) {
-            directors = source.getCreatedBy()
-                              .stream()
-                              .map(createdByToBasicDirectorDTOConverter::convert)
-                              .toList();
+            directors = tvSerieService.getDirectors(source)
+                                      .stream()
+                                      .map(createdByToBasicDirectorDTOConverter::convert)
+                                      .toList();
 
-            casting = source.getCredits()
-                            .getCast()
-                            .stream()
-                            .map(tvSerieCastToBasicCastDTOConverter::convert)
-                            .toList();
+            casting = tvSerieService.getCasting(source)
+                                    .stream()
+                                    .map(tvSerieCastToBasicCastDTOConverter::convert)
+                                    .toList();
         }
 
         return new TvSerieDTO(

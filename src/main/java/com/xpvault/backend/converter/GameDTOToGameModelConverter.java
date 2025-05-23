@@ -10,7 +10,6 @@ public class GameDTOToGameModelConverter implements Converter<GameDTO, GameModel
 
     @Override
     public GameModel convert(GameDTO gameDTO) {
-
         return new GameModel(
                 gameDTO.getId(),
                 gameDTO.getTitle(),

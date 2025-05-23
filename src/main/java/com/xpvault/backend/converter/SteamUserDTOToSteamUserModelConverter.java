@@ -11,11 +11,11 @@ public class SteamUserDTOToSteamUserModelConverter implements Converter<SteamUse
     @Override
     public SteamUserModel convert(SteamUserDTO source) {
         return SteamUserModel.builder()
-                .steamId(source.getSteamId())
-                .avatar(source.getAvatar())
-                .totalTimePlayed(source.getTotalTimePlayed())
-                .nickname(source.getNickname())
-                .profileUrl(source.getProfileUrl())
-                .build();
+                             .steamId(source.getSteamId())
+                             .avatar(source.getAvatar())
+                             .totalTimePlayed(source.getTotalTimePlayed())
+                             .nickname(source.getNickname())
+                             .profileUrl(source.getProfileUrl())
+                             .build();
     }
 }

@@ -10,7 +10,9 @@ import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.core.IdElement;
+import info.movito.themoviedbapi.model.movies.Cast;
 import info.movito.themoviedbapi.model.movies.Credits;
+import info.movito.themoviedbapi.model.movies.Crew;
 import info.movito.themoviedbapi.model.movies.MovieDb;
 import info.movito.themoviedbapi.tools.builders.discover.DiscoverMovieParamBuilder;
 import lombok.AccessLevel;
@@ -137,6 +139,23 @@ public class MovieServiceImpl implements MovieService {
         return source.getGenres()
                      .stream()
                      .map(Genre::getName)
+                     .toList();
+    }
+
+    @Override
+    public Optional<Crew> getDirector(MovieDb source) {
+        return source.getCredits()
+                     .getCrew()
+                     .stream()
+                     .filter(d -> d.getJob().equals("Director"))
+                     .findFirst();
+    }
+
+    @Override
+    public List<Cast> getCasting(MovieDb source) {
+        return source.getCredits()
+                     .getCast()
+                     .stream()
                      .toList();
     }
 }

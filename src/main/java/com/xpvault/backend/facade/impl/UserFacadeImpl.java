@@ -10,6 +10,8 @@ import com.xpvault.backend.dto.AppUserDetailsDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.literals.enums.AddResultEnum;
+import com.xpvault.backend.facade.MovieFacade;
+import com.xpvault.backend.facade.TvSerieFacade;
 import com.xpvault.backend.facade.UserFacade;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.service.UserService;
@@ -28,6 +30,8 @@ import java.util.Objects;
 public class UserFacadeImpl implements UserFacade {
 
     private final UserService userService;
+    private final MovieFacade movieFacade;
+    private final TvSerieFacade tvSerieFacade;
     private final AppUserModelToAppUserDTOConverter appUserModelToAppUserDTOConverter;
     private final AppUserModelToAppUserDetailsDTOConverter appUserModelToAppUserDetailsDTOConverter;
     private final MovieModelToMovieDTOConverter movieModelToMovieDTOConverter;
@@ -81,7 +85,22 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public AppUserDetailsDTO findFullUserDetails(String username) {
-        return appUserModelToAppUserDetailsDTOConverter.convert(userService.findByUsername(username));
+        AppUserModel appUser = userService.findByUsername(username);
+        List<TvSerieDTO> tvSeries = appUser.getTvSeries()
+                                           .stream()
+                                           .map(tvSerieModel ->
+                                                   tvSerieFacade.getTvSerieDetailsById(tvSerieModel.getTmdbId(), "en")
+                                           )
+                                          .toList();
+
+        List<MovieDTO> movies = appUser.getMovies()
+                                       .stream()
+                                       .map(movieModel ->
+                                            movieFacade.getMovieDetailsById(movieModel.getTmdbId(), "en")
+                                       )
+                                       .toList();
+
+        return appUserModelToAppUserDetailsDTOConverter.convert(appUser, tvSeries, movies);
     }
 
     @Override

@@ -9,9 +9,9 @@ import com.xpvault.backend.dto.OwnedSteamGameDTO;
 import com.xpvault.backend.dto.SteamUserDTO;
 import com.xpvault.backend.dto.SteamUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
+import com.xpvault.backend.facade.UserFacade;
 import com.xpvault.backend.model.SteamUserModel;
 import com.xpvault.backend.service.SteamUserService;
-import com.xpvault.backend.service.UserService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.List;
 @Getter(AccessLevel.PROTECTED)
 public class SteamUserFacadeImpl implements SteamUserFacade {
 
-    private final UserService userService;
+    private final UserFacade userFacade;
     private final SteamUserService steamUserService;
     private final SteamPlayerOwnedGameToOwnedSteamGameDTOConverter steamPlayerOwnedGameToOwnedSteamGameDTOConverter;
     private final SteamPlayerProfileToSteamUserDTOConverter steamPlayerProfileToSteamUserDTOConverter;
@@ -42,7 +42,7 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
 
     @Override
     public List<SteamUserTopDTO> getAllUsers() {
-        return userService.allUsers()
+        return userFacade.allUsers()
                           .stream()
                           .filter(user -> user.getSteamUser() != null)
                           .map(user -> new SteamUserTopDTO(
@@ -65,7 +65,9 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
 
         Long totalTimePlayed = steamUserService.getTotalTimePlayed(steamId);
 
-        return steamPlayerProfileToSteamUserDTOConverter.convert(profile, totalTimePlayed, null);
+        List<OwnedSteamGameDTO> ownedSteamGames = getOwnedGames(steamId);
+
+        return steamPlayerProfileToSteamUserDTOConverter.convert(profile, totalTimePlayed, ownedSteamGames);
     }
 
     @Override

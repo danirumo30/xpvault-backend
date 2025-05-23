@@ -1,6 +1,10 @@
 package com.xpvault.backend.facade.impl;
 
+import com.xpvault.backend.converter.CrewToBasicDirectorDTOConverter;
+import com.xpvault.backend.converter.MovieCastToBasicCastDTOConverter;
 import com.xpvault.backend.converter.MovieDBToMovieDTOConverter;
+import com.xpvault.backend.dto.BasicCastDTO;
+import com.xpvault.backend.dto.BasicDirectorDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.facade.MovieFacade;
 import com.xpvault.backend.service.MovieService;
@@ -20,6 +24,8 @@ public class MovieFacadeImpl implements MovieFacade {
 
     private final MovieService movieService;
     private final MovieDBToMovieDTOConverter movieDBToMovieDTOConverter;
+    private final CrewToBasicDirectorDTOConverter crewToBasicDirectorDTOConverter;
+    private final MovieCastToBasicCastDTOConverter movieCastToBasicCastDTOConverter;
 
     @Override
     public List<MovieDTO> getPopularMovies(String language, int page, String region) {
@@ -75,5 +81,19 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public MovieDb getMovieFullDetailsById(int id, String language) {
         return movieService.getMovieDetails(id, language);
+    }
+
+    @Override
+    public Optional<BasicDirectorDTO> getBasicDirectorDTO(MovieDb source) {
+        return movieService.getDirector(source)
+                            .map(crewToBasicDirectorDTOConverter::convert);
+    }
+
+    @Override
+    public List<BasicCastDTO> getBasicCastDTO(MovieDb source) {
+        return movieService.getCasting(source)
+                           .stream()
+                           .map(movieCastToBasicCastDTOConverter::convert)
+                           .toList();
     }
 }

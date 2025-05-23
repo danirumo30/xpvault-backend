@@ -27,18 +27,13 @@ public class MovieDBToMovieDTOConverter implements Converter<MovieDb, MovieDTO> 
         List<BasicCastDTO> casting = null;
 
         if (source.getCredits() != null) {
-            director = source.getCredits()
-                    .getCrew()
-                    .stream()
-                    .filter(d -> d.getJob().equals("Director"))
-                    .findFirst()
-                    .map(crewToBasicDirectorDTOConverter::convert);
+            director = movieService.getDirector(source)
+                                   .map(crewToBasicDirectorDTOConverter::convert);
 
-            casting = source.getCredits()
-                    .getCast()
-                    .stream()
-                    .map(movieCastToBasicCastDTOConverter::convert)
-                    .toList();
+            casting = movieService.getCasting(source)
+                                  .stream()
+                                  .map(movieCastToBasicCastDTOConverter::convert)
+                                  .toList();
         }
 
         return new MovieDTO(
