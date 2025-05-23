@@ -249,7 +249,7 @@ pip install awsebcli --upgrade --user
 5. **Haz el build del proyecto:**
 
    ```bash
-   ./mvnw package -DskipTests
+   ./mvnw clean package
    ```
 
 6. **Despliega:**
@@ -258,10 +258,23 @@ pip install awsebcli --upgrade --user
    eb deploy
    ```
 
-7. **Accede a tu aplicación:**
+7. **Comprueba el estado de tu aplicación:**
+
+   ```bash
+   eb status
+   ```
+
+8. **Accede a tu aplicación:**
 
    ```bash
    eb open
+   ```
+
+8. **Comprieba los logs:**
+
+   ```bash
+   eb logs
+   eb logs --all
    ```
 
 > Asegúrate de configurar las **variables de entorno** necesarias desde la consola de AWS EB (por ejemplo: `SPRING_DATASOURCE_URL`, `JWT_SECRET_KEY`, etc.).
