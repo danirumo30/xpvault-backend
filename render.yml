@@ -2,7 +2,7 @@ services:
   - type: web
     name: xpvault-backend
     runtime: java
-    javaVersion: 23
+    javaVersion: 20
     buildCommand: ./mvnw clean install
     startCommand: java -jar target/xpvault-0.0.1-SNAPSHOT.jar
     envVars:
