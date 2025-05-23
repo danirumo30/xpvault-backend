@@ -41,6 +41,11 @@
    spring.mail.port=587
    spring.mail.username=tu_correo
    spring.mail.password=tu_password
+
+   security.jwt.secret-key=tu_jwt_key_secreta
+
+   steam.api.key=tu_key_steam_api
+   tmdb.api.key=tu_key_tmdb_api
    ```
 
 3. Instala dependencias y ejecuta la aplicación:
@@ -87,6 +92,58 @@ Puedes ejecutar las pruebas con:
 ```bash
 ./mvnw test
 ```
+
+🚀 Despliegue en AWS Elastic Beanstalk
+
+Puedes desplegar este backend fácilmente usando AWS Elastic Beanstalk. Para ello, asegúrate de tener instalado:
+
+Python 3
+
+AWS Elastic Beanstalk CLI (awsebcli)
+
+✅ Instalación de EB CLI
+
+pip install awsebcli --upgrade --user
+
+Nota: Asegúrate de tener el binario de Python en tu PATH (puede requerir reiniciar terminal).
+
+🔭 Pasos para desplegar
+
+Inicia Elastic Beanstalk en tu proyecto:
+
+eb init
+
+Selecciona la región adecuada (ej: eu-west-1)
+
+Plataforma: Corretto 21 running on 64bit Amazon Linux 2023
+
+Crea un entorno (una vez):
+
+eb create spring-env
+
+Agrega un archivo Procfile en la raíz con este contenido:
+
+web: java -jar target/backend-0.0.1-SNAPSHOT.jar
+
+Agrega un archivo .ebignore en la raíz con este contenido para subir solo lo necesario:
+
+*
+!target/backend-0.0.1-SNAPSHOT.jar
+!Procfile
+
+Haz el build del proyecto:
+
+./mvnw package -DskipTests
+
+Despliega:
+
+eb deploy
+
+Accede a tu aplicación:
+
+eb open
+
+Asegúrate de configurar las variables de entorno necesarias desde la consola de AWS EB (por ejemplo: SPRING_DATASOURCE_URL, JWT_SECRET_KEY, etc.).
 
 ## 👥 Autores
 
