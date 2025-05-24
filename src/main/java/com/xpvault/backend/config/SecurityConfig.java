@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/steam-auth/**").permitAll()
                         .requestMatchers("/game/**").permitAll()
                         .requestMatchers("/steam-user/**").permitAll()
                         .requestMatchers("/movies/**").permitAll()
