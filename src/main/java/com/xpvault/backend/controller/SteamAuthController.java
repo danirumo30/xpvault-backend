@@ -30,7 +30,7 @@ public class SteamAuthController {
     }
 
     @GetMapping(LOGIN_PATH + "/return")
-    public ResponseEntity<String> handleSteamReturn(HttpServletRequest request) throws IOException {
+    public ResponseEntity<Object> handleSteamReturn(HttpServletRequest request) throws IOException {
         String steamId = steamAuthFacade.processSteamReturn(request);
 
         if (steamId == null) {
@@ -38,7 +38,7 @@ public class SteamAuthController {
                                  .body(INVALID_STEAM_LOGIN);
         }
 
-        return ResponseEntity.ok(SUCCESS_LOGIN_STEAM + steamId);
+        return ResponseEntity.ok(steamId);
     }
 }
 
