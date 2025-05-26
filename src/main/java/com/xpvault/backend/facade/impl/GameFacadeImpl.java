@@ -151,10 +151,6 @@ public class GameFacadeImpl implements GameFacade {
     private List<BasicGameSteamDTO> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
         return gameService.getSteamAppsPaged(page, size, language, apps)
                           .stream()
-                          .filter(app -> {
-                                StoreAppDetails details = gameService.getSteamDetailsBySteamId(app.getAppid(), language);
-                                return details != null && "game".equalsIgnoreCase(details.getType());
-                          })
                           .map(steamAppToBasicGameSteamDTOConverter::convert)
                           .filter(Objects::nonNull)
                           .map(dto -> {

@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,15 +98,22 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
-        int fromIndex = page * size;
-        int toIndex = Math.min(fromIndex + size, apps.size());
+        List<SteamApp> result = new ArrayList<>();
+        int collected = 0;
+        int index = page * size;
 
-        if (fromIndex >= apps.size()) {
-            return List.of();
+        while (index < apps.size() && collected < size) {
+            SteamApp app = apps.get(index);
+            StoreAppDetails details = getSteamDetailsBySteamId(app.getAppid(), language);
+
+            if (details != null && "game".equalsIgnoreCase(details.getType())) {
+                result.add(app);
+                collected++;
+            }
+
+            index++;
         }
 
-        return apps.subList(fromIndex, toIndex)
-                   .stream()
-                   .toList();
+        return result;
     }
 }
