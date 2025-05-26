@@ -184,22 +184,6 @@ Puedes ejecutar las pruebas con:
 ./mvnw test
 ```
 
-## 👥 Autores
-
-* Daniel Rubio Mora
-* David Calderón Daza
-* Manuel Martín Rodríguez
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
-
-## 🤝‍️ Contribuciones
-
-¡Las contribuciones son bienvenidas! Abre un issue o un pull request con tus mejoras.
-
----
-
 ## 🚀 Despliegue en AWS Elastic Beanstalk
 
 Puedes desplegar este backend fácilmente usando **AWS Elastic Beanstalk**. Para ello, asegúrate de tener instalado:
