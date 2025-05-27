@@ -58,7 +58,6 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("*", "https://danirumo30.github.io/xpvault-frontend/"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
