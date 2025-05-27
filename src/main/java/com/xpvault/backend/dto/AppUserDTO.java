@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class AppUserDTO {
 
     private Long id;
-    private byte[] profilePhoto;
+    private String profilePhoto;
     @NotBlank(message = "Username is required")
     private String username;
 
