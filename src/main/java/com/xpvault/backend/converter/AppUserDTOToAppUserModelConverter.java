@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+
 @Component
 @RequiredArgsConstructor
 public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, AppUserModel> {
@@ -19,7 +21,9 @@ public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, 
     public AppUserModel convert(AppUserDTO source) {
         return AppUserModel.builder()
                            .id(source.getId())
-                           .profileImage(source.getProfilePhoto())
+                           .profileImage(source.getProfilePhoto() != null
+                                ? Base64.getDecoder().decode(source.getProfilePhoto())
+                                : null)
                            .username(source.getUsername())
                            .email(source.getEmail())
                            .password(source.getPassword())
