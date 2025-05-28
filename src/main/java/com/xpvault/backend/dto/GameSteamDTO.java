@@ -16,6 +16,7 @@ import java.util.List;
 public class GameSteamDTO {
 
     private String screenshotUrl;
+    private String headerUrl;
     private String title;
     private String description;
     private Integer price;

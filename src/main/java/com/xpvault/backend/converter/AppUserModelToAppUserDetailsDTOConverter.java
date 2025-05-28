@@ -46,6 +46,7 @@ public class AppUserModelToAppUserDetailsDTOConverter {
                 totalTimePlayed,
                 userService.getTotalMoviesTime(source),
                 userService.getTotalTvSeriesTime(source),
+                source.getFriends().size(),
                 movies,
                 tvSeries,
                 ownedSteamGames

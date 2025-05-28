@@ -60,6 +60,7 @@ public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvS
         return new TvSerieDTO(
                 source.getId(),
                 "https://image.tmdb.org/t/p/w500" + source.getPosterPath(),
+                "https://image.tmdb.org/t/p/w500" + source.getBackdropPath(),
                 source.getName(),
                 source.getOverview(),
                 source.getFirstAirDate(),

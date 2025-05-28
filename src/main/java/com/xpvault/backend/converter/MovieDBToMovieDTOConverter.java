@@ -39,6 +39,7 @@ public class MovieDBToMovieDTOConverter implements Converter<MovieDb, MovieDTO> 
         return new MovieDTO(
                 source.getId(),
                 "https://image.tmdb.org/t/p/w500" + source.getPosterPath(),
+                "https://image.tmdb.org/t/p/w500" + source.getBackdropPath(),
                 source.getTitle(),
                 source.getOverview(),
                 source.getReleaseDate(),

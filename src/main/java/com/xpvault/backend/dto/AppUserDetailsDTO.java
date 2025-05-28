@@ -21,6 +21,7 @@ public class AppUserDetailsDTO {
     private Long totalTimePlayed;
     private Integer totalTimeMoviesWatched;
     private Integer totalTimeEpisodesWatched;
+    private Integer totalFriends;
     private List<MovieDTO> movies;
     private List<TvSerieDTO> tvSeries;
     private List<OwnedSteamGameDTO> games;

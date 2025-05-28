@@ -15,6 +15,7 @@ public class MovieDTO {
 
     private Integer tmbdId;
     private String posterUrl;
+    private String headerUrl;
     private String title;
     private String description;
     private String releaseDate;

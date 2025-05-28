@@ -31,6 +31,7 @@ public class StoreAppDetailsToGameSteamDTOConverter implements Converter<StoreAp
 
         return new GameSteamDTO(
                 storeAppDetails.getHeaderImageUrl(),
+                storeAppDetails.getBackgroundUrl(),
                 storeAppDetails.getName(),
                 storeAppDetails.getShortDescription(),
                 storeAppDetails.getPriceOverview() != null ? storeAppDetails.getPriceOverview().getInitialPrice() : 0,
