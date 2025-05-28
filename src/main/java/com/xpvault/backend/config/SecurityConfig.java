@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/profile/**").permitAll()
                         .requestMatchers("/users/top/**").permitAll()
                         .requestMatchers("/users/search/**").permitAll()
+                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
