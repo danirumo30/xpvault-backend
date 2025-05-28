@@ -12,6 +12,6 @@ import lombok.Setter;
 public class OwnedSteamGameDTO {
 
     private Integer totalTime;
-    private GameSteamDTO game;
+    private BasicGameSteamDTO game;
 
 }

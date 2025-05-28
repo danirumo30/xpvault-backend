@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 public class SteamPlayerOwnedGameToOwnedSteamGameDTOConverter implements Converter<SteamPlayerOwnedGame, OwnedSteamGameDTO> {
 
     private final GameFacade gameFacade;
+    private final GameSteamDTOToBasicGameSteamDTOConverter steamDTOToBasicGameSteamDTOConverter;
+
 
     @Override
     public OwnedSteamGameDTO convert(SteamPlayerOwnedGame source) {
@@ -21,7 +23,7 @@ public class SteamPlayerOwnedGameToOwnedSteamGameDTOConverter implements Convert
 
         return new OwnedSteamGameDTO(
                 source.getTotalPlaytime(),
-                gameSteamDTO
+                steamDTOToBasicGameSteamDTOConverter.convert(gameSteamDTO)
         );
     }
 }
