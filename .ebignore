@@ -1,6 +1,3 @@
-# Ignore all
-*
-
 # Include Target
 !target/
 !target/**
