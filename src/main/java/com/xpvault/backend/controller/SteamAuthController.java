@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,15 +28,15 @@ public class SteamAuthController {
     }
 
     @GetMapping(LOGIN_PATH + "/return")
-    public ResponseEntity<Object> handleSteamReturn(HttpServletRequest request) throws IOException {
+    public void handleSteamReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String steamId = steamAuthFacade.processSteamReturn(request);
 
         if (steamId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                 .body(INVALID_STEAM_LOGIN);
+            response.sendRedirect("http://localhost:5500/#steamError");
+            return;
         }
 
-        return ResponseEntity.ok(steamId);
+        response.sendRedirect("http://localhost:5500/#" + steamId);
     }
 }
 

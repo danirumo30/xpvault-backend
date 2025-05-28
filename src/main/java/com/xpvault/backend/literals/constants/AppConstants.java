@@ -40,11 +40,9 @@ public final class AppConstants {
     public static final String SUCCESS_VERIFY = "Account verified successfully.";
     public static final String SUCCESS_RESEND = "Account resend successfully.";
     public static final String SUCCESS_GAME_DELETE = "Game deleted successfully!";
-    public static final String SUCCESS_LOGIN_STEAM = "Successful login, SteamID: ";
     public static final String UNEXPECTED_ERROR = "Unexpected error";
     public static final String ERROR_RESOLVING_STEAM_ID = "Error resolving SteamID: ";
     public static final String ERROR_RESOLVING_STEAM_USERNAME = "Error resolving Steam username: ";
-    public static final String INVALID_STEAM_LOGIN = "Invalid login with Steam or SteamID not found";
 
     // -------------------------------------------
     // PATHS / URLS
