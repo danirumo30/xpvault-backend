@@ -197,7 +197,7 @@ public class GameController {
             ByteArrayResource resource = new ByteArrayResource(imageBytes);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            headers.set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
             headers.setContentType(MediaType.IMAGE_JPEG);
 
             return ResponseEntity
