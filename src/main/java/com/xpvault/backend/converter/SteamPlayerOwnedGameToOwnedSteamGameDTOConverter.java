@@ -1,6 +1,7 @@
 package com.xpvault.backend.converter;
 
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerOwnedGame;
+import com.xpvault.backend.dto.BasicGameSteamDTO;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
 import com.xpvault.backend.facade.GameFacade;
@@ -21,9 +22,14 @@ public class SteamPlayerOwnedGameToOwnedSteamGameDTOConverter implements Convert
 
         GameSteamDTO gameSteamDTO = gameFacade.getSteamDetailsBySteamId(source.getAppId(), "en");
 
+        BasicGameSteamDTO basicGameSteamDTO = null;
+        if (gameSteamDTO != null) {
+            basicGameSteamDTO = steamDTOToBasicGameSteamDTOConverter.convert(gameSteamDTO);
+        }
+
         return new OwnedSteamGameDTO(
                 source.getTotalPlaytime(),
-                steamDTOToBasicGameSteamDTOConverter.convert(gameSteamDTO)
+                basicGameSteamDTO
         );
     }
 }
