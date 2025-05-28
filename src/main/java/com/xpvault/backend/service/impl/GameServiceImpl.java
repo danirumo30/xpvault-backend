@@ -31,6 +31,8 @@ public class GameServiceImpl implements GameService {
     private final SteamNews steamNews;
     private final SteamApps steamApps;
 
+    private List<SteamApp> appsCache = new ArrayList<>();
+
     @Value("${steam.news.maxLength}")
     private int maxLength;
 
@@ -99,12 +101,20 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
+        List<Integer> cachedAppIds = appsCache.stream()
+                                              .map(SteamApp::getAppid)
+                                              .toList();
+
+        List<SteamApp> filteredApps = apps.stream()
+                                          .filter(app -> !cachedAppIds.contains(app.getAppid()))
+                                          .toList();
+
         List<SteamApp> result = new ArrayList<>();
         int collected = 0;
         int index = page * size;
 
-        while (index < apps.size() && collected < size) {
-            SteamApp app = apps.get(index);
+        while (index < filteredApps.size() && collected < size) {
+            SteamApp app = filteredApps.get(index);
             StoreAppDetails details = getSteamDetailsBySteamId(app.getAppid(), language);
 
             if (details != null && "game".equalsIgnoreCase(details.getType())) {
@@ -115,6 +125,7 @@ public class GameServiceImpl implements GameService {
             index++;
         }
 
+        appsCache = result;
         return result;
     }
 
