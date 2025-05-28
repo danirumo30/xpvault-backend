@@ -22,5 +22,6 @@ public interface GameService {
     List<SteamApp> getSteamApps();
     List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps);
     List<SteamApp> getSteamAppsFilteredByTitle(String title);
+    Optional<String> getRandomScreenshotUrl(Integer steamId, String language);
 
 }

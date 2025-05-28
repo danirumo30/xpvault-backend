@@ -5,13 +5,18 @@ import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppGenre;
 import com.xpvault.backend.dto.GameSteamDTO;
 import com.xpvault.backend.dto.SteamAchievementDTO;
+import com.xpvault.backend.service.GameService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class StoreAppDetailsToGameSteamDTOConverter implements Converter<StoreAppDetails, GameSteamDTO> {
+
+    private final GameService gameService;
 
     @Override
     public GameSteamDTO convert(StoreAppDetails storeAppDetails) {
@@ -31,7 +36,7 @@ public class StoreAppDetailsToGameSteamDTOConverter implements Converter<StoreAp
 
         return new GameSteamDTO(
                 storeAppDetails.getHeaderImageUrl(),
-                storeAppDetails.getBackgroundUrl(),
+                gameService.getRandomScreenshotUrl(storeAppDetails.getAppId(), "en").orElse(null),
                 storeAppDetails.getName(),
                 storeAppDetails.getShortDescription(),
                 storeAppDetails.getPriceOverview() != null ? storeAppDetails.getPriceOverview().getInitialPrice() : 0,

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -115,5 +116,16 @@ public class GameServiceImpl implements GameService {
         }
 
         return result;
+    }
+
+    @Override
+    public Optional<String> getRandomScreenshotUrl(Integer steamId, String language) {
+        StoreAppDetails details = getSteamDetailsBySteamId(steamId, language);
+        if (details != null && details.getScreenshots() != null && !details.getScreenshots().isEmpty()) {
+            Random random = new Random();
+            int index = random.nextInt(details.getScreenshots().size());
+            return Optional.ofNullable(details.getScreenshots().get(index).getFullPath());
+        }
+        return Optional.empty();
     }
 }
