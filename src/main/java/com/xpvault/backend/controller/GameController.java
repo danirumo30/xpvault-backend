@@ -10,12 +10,19 @@ import com.xpvault.backend.facade.GameFacade;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.Resource;
 
 import jakarta.validation.Valid;
+
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import static com.xpvault.backend.literals.constants.AppConstants.*;
@@ -181,5 +188,24 @@ public class GameController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping(STEAM_PATH + "/image-proxy")
+    public ResponseEntity<Resource> proxySteamImage(@RequestParam("url") String imageUrl) {
+        try (InputStream inputStream = new URL(imageUrl).openStream()) {
+            byte[] imageBytes = inputStream.readAllBytes();
+            ByteArrayResource resource = new ByteArrayResource(imageBytes);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            headers.setContentType(MediaType.IMAGE_JPEG);
+
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }
