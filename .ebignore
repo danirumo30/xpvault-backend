@@ -1,6 +1,0 @@
-# Include Target
-!target/
-!target/**
-
-# Include Procfile
-!Procfile
