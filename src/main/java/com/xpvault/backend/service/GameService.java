@@ -19,10 +19,10 @@ public interface GameService {
     StoreAppDetails getSteamDetailsBySteamId(Integer steamId, String language);
     List<SteamNewsItem> getSteamNewsBySteamId(Integer steamId);
     StoreFeaturedApps getFeaturedGames();
-    List<SteamApp> getSteamApps();
-    List<SteamApp> getSteamAppsFilteredByGenre(String genre);
+    List<SteamApp> getSteamApps(int page, int size);
+    List<SteamApp> getSteamAppsFilteredByGenre(int page, int size, String genre);
     List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps);
-    List<SteamApp> getSteamAppsFilteredByTitle(String title);
+    List<SteamApp> getSteamAppsFilteredByTitle(int page, int size, String title);
     Optional<String> getRandomScreenshotUrl(Integer steamId, String language);
 
 }

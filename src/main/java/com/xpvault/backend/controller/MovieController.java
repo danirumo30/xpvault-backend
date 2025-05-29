@@ -1,5 +1,6 @@
 package com.xpvault.backend.controller;
 
+import com.xpvault.backend.dto.BasicMovieDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.facade.MovieFacade;
 import info.movito.themoviedbapi.model.movies.MovieDb;
@@ -33,7 +34,7 @@ public class MovieController {
             @RequestParam(defaultValue = "US") String region,
             @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
-        List<MovieDTO> movies = movieFacade.getPopularMovies(language, page, region);
+        List<BasicMovieDTO> movies = movieFacade.getPopularMovies(language, page, region);
 
         if (movies == null) {
             return ResponseEntity
@@ -50,7 +51,7 @@ public class MovieController {
             @RequestParam(defaultValue = "US") String region,
             @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
-        List<MovieDTO> movies = movieFacade.getTopRatedMovies(language, page, region);
+        List<BasicMovieDTO> movies = movieFacade.getTopRatedMovies(language, page, region);
 
         if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TOP_RATED_MOVIE_NOT_FOUND);
@@ -65,7 +66,7 @@ public class MovieController {
             @RequestParam(defaultValue = "US") String region,
             @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
-        List<MovieDTO> movies = movieFacade.getUpcomingMovies(language, page, region);
+        List<BasicMovieDTO> movies = movieFacade.getUpcomingMovies(language, page, region);
 
         if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(UPCOMING_MOVIE_NOT_FOUND);
@@ -81,7 +82,7 @@ public class MovieController {
             @RequestParam(defaultValue = "US") String region,
             @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
-        List<MovieDTO> movies = movieFacade.getMovieByTitle(title, language, page, region);
+        List<BasicMovieDTO> movies = movieFacade.getMovieByTitle(title, language, page, region);
 
         if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_TITLE_NOT_FOUND + title);
@@ -96,7 +97,7 @@ public class MovieController {
             @RequestParam(defaultValue = "1") int page,
             @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
     ) {
-        List<MovieDTO> movies = movieFacade.getMovieByGenre(genre, language, page);
+        List<BasicMovieDTO> movies = movieFacade.getMovieByGenre(genre, language, page);
 
         if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_GENRE_NOT_FOUND + genre);

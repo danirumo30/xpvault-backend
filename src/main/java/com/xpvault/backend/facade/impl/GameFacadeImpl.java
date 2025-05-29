@@ -45,24 +45,24 @@ public class GameFacadeImpl implements GameFacade {
     @Override
     public List<GameDTO> findAll() {
         return gameService.findAll()
-                .stream()
-                .map(gameModelToGameDTOConverter::convert)
-                .toList();
+                          .stream()
+                          .map(gameModelToGameDTOConverter::convert)
+                          .toList();
     }
 
     @Override
     public GameDTO findById(Long id) {
         return gameService.findById(id)
-                .map(gameModelToGameDTOConverter::convert)
-                .orElse(null);
+                          .map(gameModelToGameDTOConverter::convert)
+                          .orElse(null);
     }
 
     @Override
     public List<GameDTO> findByTitle(String title) {
         return gameService.findByTitle(title)
-                .stream()
-                .map(gameModelToGameDTOConverter::convert)
-                .toList();
+                          .stream()
+                          .map(gameModelToGameDTOConverter::convert)
+                          .toList();
     }
 
     @Override
@@ -104,8 +104,8 @@ public class GameFacadeImpl implements GameFacade {
         }
 
         return steamNewsItems.stream()
-                             .map(steamNewsItemToGameSteamNewsDataDTOConverter::convert)
-                             .toList();
+                              .map(steamNewsItemToGameSteamNewsDataDTOConverter::convert)
+                              .toList();
     }
 
     @Override
@@ -118,8 +118,8 @@ public class GameFacadeImpl implements GameFacade {
     }
 
     @Override
-    public List<BasicGameSteamDTO> getSteamApps() {
-        return gameService.getSteamApps()
+    public List<BasicGameSteamDTO> getSteamApps(int page, int size) {
+        return gameService.getSteamApps(page, size)
                           .stream()
                           .filter(Objects::nonNull)
                           .filter(app -> !app.getName().isBlank())
@@ -129,32 +129,31 @@ public class GameFacadeImpl implements GameFacade {
 
     @Override
     public List<BasicGameSteamDTO> getSteamAppsWithHeaderImage(int page, int size, String language) {
-        return getSteamAppsPaged(page, size, language, gameService.getSteamApps());
+        return getSteamAppsPaged(language, gameService.getSteamApps(page, size));
     }
 
     @Override
     public List<BasicGameSteamDTO> getSteamAppsWithHeaderImageByTitle(String title, int page, int size, String language) {
-        return getSteamAppsPaged(page, size, language, gameService.getSteamAppsFilteredByTitle(title));
+        return getSteamAppsPaged(language, gameService.getSteamAppsFilteredByTitle(page, size, title));
     }
 
     @Override
     public List<BasicGameSteamDTO> getSteamAppsByGenre(String genre, int page, int size, String language) {
-        return getSteamAppsPaged(page, size, language, gameService.getSteamAppsFilteredByGenre(genre));
+        return getSteamAppsPaged(language, gameService.getSteamAppsFilteredByGenre(page, size, genre));
     }
 
     @NotNull
-    private List<BasicGameSteamDTO> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
-        return gameService.getSteamAppsPaged(page, size, language, apps)
-                          .stream()
-                          .map(steamAppToBasicGameSteamDTOConverter::convert)
-                          .filter(Objects::nonNull)
-                          .map(dto -> {
-                              GameSteamDTO steamDetails = getSteamDetailsBySteamId(dto.getSteamId(), language);
-                              if (steamDetails == null) {
-                                  return dto;
-                              }
-                              return gameSteamDTOToBasicGameSteamDTOConverter.convert(steamDetails);
-                          })
-                          .toList();
+    private List<BasicGameSteamDTO> getSteamAppsPaged(String language, List<SteamApp> apps) {
+        return apps.stream()
+                   .map(steamAppToBasicGameSteamDTOConverter::convert)
+                   .filter(Objects::nonNull)
+                   .map(dto -> {
+                       GameSteamDTO steamDetails = getSteamDetailsBySteamId(dto.getSteamId(), language);
+                       if (steamDetails == null) {
+                           return dto;
+                       }
+                       return gameSteamDTOToBasicGameSteamDTOConverter.convert(steamDetails);
+                   })
+                   .toList();
     }
 }

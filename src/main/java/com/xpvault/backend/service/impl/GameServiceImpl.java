@@ -1,5 +1,6 @@
 package com.xpvault.backend.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -92,19 +94,16 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<SteamApp> getSteamApps() {
-        String url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?key=F7738655EF1D83B1DFF0C0536CCC31AE&include_games=true&include_dlc=false&include_software=false&include_videos=false&include_hardware=false";
-
+    public List<SteamApp> getSteamApps(int page, int size) {
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            String json = response.getBody();
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(json);
-            JsonNode appsNode = root.path("response").path("apps");
+            JsonNode appsNode = getAppsNode();
             List<SteamApp> apps = new ArrayList<>();
 
-            for (JsonNode appNode : appsNode) {
+            int fromIndex = page * size;
+            int toIndex = Math.min(fromIndex + size, appsNode.size());
+
+            for (int i = fromIndex; i < toIndex; i++) {
+                JsonNode appNode = appsNode.get(i);
                 SteamApp app = new SteamApp();
                 app.setAppid(appNode.path("appid").asInt());
                 app.setName(appNode.path("name").asText());
@@ -121,14 +120,36 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<SteamApp> getSteamAppsFilteredByTitle(String title) {
-        return getSteamApps().stream()
-                             .filter(app -> app.getName().toLowerCase().contains(title.toLowerCase()))
-                             .toList();
+    public List<SteamApp> getSteamAppsFilteredByTitle(int page, int size, String title) {
+        try {
+            JsonNode appsNode = getAppsNode();
+            List<SteamApp> filteredApps = new ArrayList<>();
+
+            for (JsonNode appNode : appsNode) {
+                String name = appNode.path("name").asText();
+                if (name != null && name.toLowerCase().contains(title.toLowerCase())) {
+                    SteamApp app = new SteamApp();
+                    app.setAppid(appNode.path("appid").asInt());
+                    app.setName(name);
+                    filteredApps.add(app);
+                }
+            }
+
+            int fromIndex = page * size;
+            if (fromIndex >= filteredApps.size()) {
+                return Collections.emptyList();
+            }
+            int toIndex = Math.min(fromIndex + size, filteredApps.size());
+
+            return filteredApps.subList(fromIndex, toIndex);
+
+        } catch (Exception e) {
+            throw new SteamApiException(e.getMessage());
+        }
     }
 
     @Override
-    public List<SteamApp> getSteamAppsFilteredByGenre(String genre) {
+    public List<SteamApp> getSteamAppsFilteredByGenre(int page, int size, String genre) {
         String url = "https://steamspy.com/api.php?request=genre&genre=" + genre;
 
         try {
@@ -137,18 +158,31 @@ public class GameServiceImpl implements GameService {
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(json);
+            List<JsonNode> appNodes = new ArrayList<>();
+            root.fields().forEachRemaining(entry -> appNodes.add(entry.getValue()));
+
+            int fromIndex = page * size;
+            if (fromIndex >= appNodes.size()) {
+                return Collections.emptyList();
+            }
+
+            int toIndex = Math.min(fromIndex + size, appNodes.size());
+
             List<SteamApp> apps = new ArrayList<>();
 
-            for (JsonNode appNode : root) {
-                SteamApp app = new SteamApp();
+            for (int i = fromIndex; i < toIndex; i++) {
+                JsonNode appNode = appNodes.get(i);
+                if (appNode == null) {
+                    continue;
+                }
 
                 int appid = appNode.path("appid").asInt();
                 String name = appNode.path("name").asText();
 
-                app.setAppid(appid);
-                app.setName(name);
-
                 if (name != null && !name.isBlank()) {
+                    SteamApp app = new SteamApp();
+                    app.setAppid(appid);
+                    app.setName(name);
                     apps.add(app);
                 }
             }
@@ -162,13 +196,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
-        int fromIndex = page * size;
-        if (fromIndex >= apps.size()) {
-            return List.of();
-        }
-
-        int toIndex = Math.min(fromIndex + size, apps.size());
-        return apps.subList(fromIndex, toIndex);
+        return List.of();
     }
 
     @Override
@@ -180,5 +208,15 @@ public class GameServiceImpl implements GameService {
             return Optional.ofNullable(details.getScreenshots().get(index).getFullPath());
         }
         return Optional.empty();
+    }
+
+    private JsonNode getAppsNode() throws JsonProcessingException {
+        String url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?key=F7738655EF1D83B1DFF0C0536CCC31AE&include_games=true&include_dlc=false&include_software=false&include_videos=false&include_hardware=false";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        String json = response.getBody();
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(json);
+        return root.path("response").path("apps");
     }
 }

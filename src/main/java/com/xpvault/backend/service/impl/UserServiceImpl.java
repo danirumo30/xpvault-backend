@@ -11,6 +11,7 @@ import com.xpvault.backend.service.UserService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
     private final MovieService movieService;
     private final TvSerieService tvSerieService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<AppUserModel> allUsers() {
@@ -161,6 +163,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AppUserModel save(AppUserModel appUserModel) {
+        String password = appUserModel.getPassword();
+        if (!password.startsWith("$2a$") && !password.startsWith("$2b$") && !password.startsWith("$2y$")) {
+            appUserModel.setPassword(passwordEncoder.encode(password));
+        }
         return userDAO.save(appUserModel);
     }
 }

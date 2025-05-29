@@ -128,8 +128,11 @@ public class GameController {
     }
 
     @GetMapping(STEAM_PATH + "/all")
-    public ResponseEntity<Object> steamApps() {
-        List<BasicGameSteamDTO> steamApps = gameFacade.getSteamApps();
+    public ResponseEntity<Object> steamApps(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size
+    ) {
+        List<BasicGameSteamDTO> steamApps = gameFacade.getSteamApps(page, size);
 
         if (steamApps == null) {
             return ResponseEntity

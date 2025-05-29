@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BasicTvSerieDTO {
+public class BasicMovieDTO {
 
     private Integer tmbdId;
     private String posterUrl;

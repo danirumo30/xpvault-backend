@@ -20,7 +20,7 @@ public interface GameFacade {
     StoreAppDetails getFullSteamDetailsBySteamId(Integer steamId, String language);
     List<GameSteamNewsDTO> getSteamNewsBySteamId(Integer steamId);
     List<SteamFeaturedGameDTO> getFeaturedGames();
-    List<BasicGameSteamDTO> getSteamApps();
+    List<BasicGameSteamDTO> getSteamApps(int page, int size);
     List<BasicGameSteamDTO> getSteamAppsWithHeaderImage(int page, int size, String language);
     List<BasicGameSteamDTO> getSteamAppsWithHeaderImageByTitle(String title, int page, int size, String language);
     List<BasicGameSteamDTO> getSteamAppsByGenre(String genre, int page, int size, String language);

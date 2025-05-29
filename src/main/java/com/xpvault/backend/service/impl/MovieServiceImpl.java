@@ -14,6 +14,7 @@ import info.movito.themoviedbapi.model.movies.Cast;
 import info.movito.themoviedbapi.model.movies.Credits;
 import info.movito.themoviedbapi.model.movies.Crew;
 import info.movito.themoviedbapi.model.movies.MovieDb;
+import info.movito.themoviedbapi.tools.TmdbException;
 import info.movito.themoviedbapi.tools.builders.discover.DiscoverMovieParamBuilder;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -86,9 +88,13 @@ public class MovieServiceImpl implements MovieService {
                          .stream()
                          .map(movie-> {
                                 MovieDb movieDb = getMovieDetails(movie.getId(), language);
-                                movieDb.setCredits(getMovieCredits(movie.getId(), language));
-                                return movieDb;
+                                if (movieDb != null) {
+                                    movieDb.setCredits(getMovieCredits(movie.getId(), language));
+                                    return movieDb;
+                                }
+                                return null;
                          })
+                         .filter(Objects::nonNull)
                          .toList();
     }
 
@@ -119,9 +125,12 @@ public class MovieServiceImpl implements MovieService {
                            .toList();
     }
 
-    @SneakyThrows
     public MovieDb getMovieDetails(int movieId, String language) {
-        return tmdbMovies.getDetails(movieId, language);
+        try {
+            return tmdbMovies.getDetails(movieId, language);
+        } catch (TmdbException e) {
+            return null;
+        }
     }
 
     @SneakyThrows
