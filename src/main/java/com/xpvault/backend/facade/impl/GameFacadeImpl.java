@@ -139,12 +139,7 @@ public class GameFacadeImpl implements GameFacade {
 
     @Override
     public List<BasicGameSteamDTO> getSteamAppsByGenre(String genre, int page, int size, String language) {
-        return getSteamAppsPaged(page, size, language, gameService.getSteamApps()).stream()
-                                                                                  .filter(app -> app.getGenres() != null)
-                                                                                  .filter(app ->
-                                                                                          app.getGenres().contains(genre)
-                                                                                  )
-                                                                                  .toList();
+        return getSteamAppsPaged(page, size, language, gameService.getSteamAppsFilteredByGenre(genre));
     }
 
     @NotNull

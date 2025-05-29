@@ -20,6 +20,7 @@ public interface GameService {
     List<SteamNewsItem> getSteamNewsBySteamId(Integer steamId);
     StoreFeaturedApps getFeaturedGames();
     List<SteamApp> getSteamApps();
+    List<SteamApp> getSteamAppsFilteredByGenre(String genre);
     List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps);
     List<SteamApp> getSteamAppsFilteredByTitle(String title);
     Optional<String> getRandomScreenshotUrl(Integer steamId, String language);

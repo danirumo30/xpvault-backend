@@ -1,6 +1,7 @@
 package com.xpvault.backend.service.impl;
 
-import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamApps;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamNews;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamStorefront;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamApp;
@@ -8,14 +9,18 @@ import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamNewsItem;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreAppDetails;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.StoreFeaturedApps;
 import com.xpvault.backend.dao.GameDAO;
+import com.xpvault.backend.exception.SteamApiException;
 import com.xpvault.backend.model.GameModel;
 import com.xpvault.backend.service.GameService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -28,7 +33,7 @@ public class GameServiceImpl implements GameService {
     private final GameDAO gameDAO;
     private final SteamStorefront steamStorefront;
     private final SteamNews steamNews;
-    private final SteamApps steamApps;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${steam.news.maxLength}")
     private int maxLength;
@@ -88,12 +93,31 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SteamApp> getSteamApps() {
-        return steamApps.getAppList()
-                        .thenApply(apps -> apps)
-                        .join()
-                        .stream()
-                        .filter(app -> !app.getName().isBlank())
-                        .toList();
+        String url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?key=F7738655EF1D83B1DFF0C0536CCC31AE&include_games=true&include_dlc=false&include_software=false&include_videos=false&include_hardware=false";
+
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            String json = response.getBody();
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(json);
+            JsonNode appsNode = root.path("response").path("apps");
+            List<SteamApp> apps = new ArrayList<>();
+
+            for (JsonNode appNode : appsNode) {
+                SteamApp app = new SteamApp();
+                app.setAppid(appNode.path("appid").asInt());
+                app.setName(appNode.path("name").asText());
+                apps.add(app);
+            }
+
+            return apps.stream()
+                       .filter(app -> app.getName() != null && !app.getName().isBlank())
+                       .toList();
+
+        } catch (Exception e) {
+            throw new SteamApiException(e.getMessage());
+        }
     }
 
     @Override
@@ -104,20 +128,48 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
-        List<SteamApp> filteredApps = apps.stream()
-                                          .filter(app -> !app.getName().isBlank())
-                                          .toList();
+    public List<SteamApp> getSteamAppsFilteredByGenre(String genre) {
+        String url = "https://steamspy.com/api.php?request=genre&genre=" + genre;
 
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            String json = response.getBody();
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(json);
+            List<SteamApp> apps = new ArrayList<>();
+
+            for (JsonNode appNode : root) {
+                SteamApp app = new SteamApp();
+
+                int appid = appNode.path("appid").asInt();
+                String name = appNode.path("name").asText();
+
+                app.setAppid(appid);
+                app.setName(name);
+
+                if (name != null && !name.isBlank()) {
+                    apps.add(app);
+                }
+            }
+
+            return apps;
+
+        } catch (Exception e) {
+            throw new SteamApiException("Error fetching SteamSpy genre data: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
         int fromIndex = page * size;
-        if (fromIndex >= filteredApps.size()) {
+        if (fromIndex >= apps.size()) {
             return List.of();
         }
 
-        int toIndex = Math.min(fromIndex + size, filteredApps.size());
-        return filteredApps.subList(fromIndex, toIndex);
+        int toIndex = Math.min(fromIndex + size, apps.size());
+        return apps.subList(fromIndex, toIndex);
     }
-
 
     @Override
     public Optional<String> getRandomScreenshotUrl(Integer steamId, String language) {
