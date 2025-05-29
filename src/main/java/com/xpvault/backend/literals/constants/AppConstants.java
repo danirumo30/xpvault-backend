@@ -65,6 +65,7 @@ public final class AppConstants {
     public static final String PROFILE_PATH = "/profile";
     public static final String TOP_PATH = "/top";
     public static final String STEAM_AUTH_PATH = "/steam-auth";
+    public static final String STEAM_API_URL = "https://steamspy.com/api.php?request=all";
 
     // -------------------------------------------
     // HEADER KEYS

@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.xpvault.backend.literals.constants.AppConstants.STEAM_API_URL;
+
 @Service
 @RequiredArgsConstructor
 @Getter(AccessLevel.PROTECTED)
@@ -96,7 +98,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<SteamApp> getSteamApps(int page, int size) {
         try {
-            JsonNode appsNode = getAppsNode();
+            List<JsonNode> appsNode = getAppsNode(STEAM_API_URL);
             List<SteamApp> apps = new ArrayList<>();
 
             int fromIndex = page * size;
@@ -122,7 +124,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<SteamApp> getSteamAppsFilteredByTitle(int page, int size, String title) {
         try {
-            JsonNode appsNode = getAppsNode();
+            List<JsonNode> appsNode = getAppsNode(STEAM_API_URL);
             List<SteamApp> filteredApps = new ArrayList<>();
 
             for (JsonNode appNode : appsNode) {
@@ -153,13 +155,7 @@ public class GameServiceImpl implements GameService {
         String url = "https://steamspy.com/api.php?request=genre&genre=" + genre;
 
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            String json = response.getBody();
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(json);
-            List<JsonNode> appNodes = new ArrayList<>();
-            root.fields().forEachRemaining(entry -> appNodes.add(entry.getValue()));
+            List<JsonNode> appNodes = getAppsNode(url);
 
             int fromIndex = page * size;
             if (fromIndex >= appNodes.size()) {
@@ -210,13 +206,14 @@ public class GameServiceImpl implements GameService {
         return Optional.empty();
     }
 
-    private JsonNode getAppsNode() throws JsonProcessingException {
-        String url = "https://api.steampowered.com/IStoreService/GetAppList/v1/?key=F7738655EF1D83B1DFF0C0536CCC31AE&include_games=true&include_dlc=false&include_software=false&include_videos=false&include_hardware=false";
+    private List<JsonNode> getAppsNode(String url) throws JsonProcessingException {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         String json = response.getBody();
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(json);
-        return root.path("response").path("apps");
+        List<JsonNode> appNodes = new ArrayList<>();
+        root.fields().forEachRemaining(entry -> appNodes.add(entry.getValue()));
+        return appNodes;
     }
 }
