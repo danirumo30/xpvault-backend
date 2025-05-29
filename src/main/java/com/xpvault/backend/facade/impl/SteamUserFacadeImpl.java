@@ -41,8 +41,8 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     }
 
     @Override
-    public List<OwnedSteamGameDTO> getTenOwnedGames(Long steamId) {
-        return steamUserService.getTenOwnedGames(steamId)
+    public List<OwnedSteamGameDTO> getTwentyOwnedGames(Long steamId) {
+        return steamUserService.getTwentyOwnedGames(steamId)
                                .stream()
                                .map(steamPlayerOwnedGameToOwnedSteamGameDTOConverter::convert)
                                .toList();

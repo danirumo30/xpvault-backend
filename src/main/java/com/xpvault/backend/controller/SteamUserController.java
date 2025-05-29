@@ -44,8 +44,8 @@ public class SteamUserController {
     }
 
     @GetMapping("/owned/ten/{steamId}")
-    public ResponseEntity<Object> steamTenOwnedGames(@PathVariable Long steamId) {
-        List<OwnedSteamGameDTO> ownedGames = steamUserFacade.getTenOwnedGames(steamId);
+    public ResponseEntity<Object> steamTwentyOwnedGames(@PathVariable Long steamId) {
+        List<OwnedSteamGameDTO> ownedGames = steamUserFacade.getTwentyOwnedGames(steamId);
 
         if (ownedGames == null) {
             return ResponseEntity

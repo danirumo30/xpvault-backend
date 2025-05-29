@@ -32,11 +32,11 @@ public class SteamUserServiceImpl implements SteamUserService {
     }
 
     @Override
-    public List<SteamPlayerOwnedGame> getTenOwnedGames(Long steamId) {
+    public List<SteamPlayerOwnedGame> getTwentyOwnedGames(Long steamId) {
         return playerService.getOwnedGames(steamId, true, true)
                             .thenApply(ownedGames -> ownedGames)
                             .join()
-                            .subList(0, 10);
+                            .subList(0, 20);
     }
 
     @Override

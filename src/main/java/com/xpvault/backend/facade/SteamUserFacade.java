@@ -9,7 +9,7 @@ import java.util.List;
 public interface SteamUserFacade {
 
     List<OwnedSteamGameDTO> getOwnedGames(Long steamId);
-    List<OwnedSteamGameDTO> getTenOwnedGames(Long steamId);
+    List<OwnedSteamGameDTO> getTwentyOwnedGames(Long steamId);
     List<SteamUserTopDTO> getAllUsers();
     Long getSteamIdByUsername(String username);
     SteamUserDTO getSteamUserById(Long steamId);
