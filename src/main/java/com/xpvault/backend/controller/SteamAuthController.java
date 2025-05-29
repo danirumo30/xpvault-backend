@@ -20,6 +20,7 @@ import static com.xpvault.backend.literals.constants.AppConstants.*;
 @Getter(AccessLevel.PROTECTED)
 public class SteamAuthController {
 
+    private final UserController userController;
     private final SteamAuthFacade steamAuthFacade;
 
     @GetMapping(LOGIN_PATH)
@@ -36,7 +37,7 @@ public class SteamAuthController {
             return;
         }
 
-        response.sendRedirect("http://localhost:5500/#" + steamId);
+        response.sendRedirect("http://localhost:5500/?steamId=" + steamId);
     }
 }
 

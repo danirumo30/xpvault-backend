@@ -160,8 +160,6 @@ public class GameFacadeImpl implements GameFacade {
                               }
                               return gameSteamDTOToBasicGameSteamDTOConverter.convert(steamDetails);
                           })
-                          .filter(Objects::nonNull)
-                          .filter(dto -> dto.getScreenshotUrl() != null && !dto.getTitle().isBlank())
                           .toList();
     }
 }

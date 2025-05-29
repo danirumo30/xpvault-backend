@@ -63,9 +63,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public StoreAppDetails getSteamDetailsBySteamId(Integer steamId, String language) {
-        return steamStorefront.getAppDetails(steamId, "US", language)
-                              .thenApply(storeAppDetails -> storeAppDetails)
-                              .join();
+        try {
+            return steamStorefront.getAppDetails(steamId, "US", language)
+                                  .thenApply(storeAppDetails -> storeAppDetails)
+                                  .join();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -86,7 +90,10 @@ public class GameServiceImpl implements GameService {
     public List<SteamApp> getSteamApps() {
         return steamApps.getAppList()
                         .thenApply(apps -> apps)
-                        .join();
+                        .join()
+                        .stream()
+                        .filter(app -> !app.getName().isBlank())
+                        .toList();
     }
 
     @Override
@@ -98,17 +105,19 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
-        int fromIndex = page * size;
-        int toIndex = Math.min(fromIndex + size, apps.size());
+        List<SteamApp> filteredApps = apps.stream()
+                                          .filter(app -> !app.getName().isBlank())
+                                          .toList();
 
-        if (fromIndex >= apps.size()) {
+        int fromIndex = page * size;
+        if (fromIndex >= filteredApps.size()) {
             return List.of();
         }
 
-        return apps.subList(fromIndex, toIndex)
-                   .stream()
-                   .toList();
+        int toIndex = Math.min(fromIndex + size, filteredApps.size());
+        return filteredApps.subList(fromIndex, toIndex);
     }
+
 
     @Override
     public Optional<String> getRandomScreenshotUrl(Integer steamId, String language) {
