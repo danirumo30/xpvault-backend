@@ -32,6 +32,14 @@ public class SteamUserServiceImpl implements SteamUserService {
     }
 
     @Override
+    public List<SteamPlayerOwnedGame> getTenOwnedGames(Long steamId) {
+        return playerService.getOwnedGames(steamId, true, true)
+                            .thenApply(ownedGames -> ownedGames)
+                            .join()
+                            .subList(0, 10);
+    }
+
+    @Override
     public Long getSteamIdByUsername(String username) {
         return steamUser.getSteamIdFromVanityUrl(username, VanityUrlType.INDIVIDUAL_PROFILE)
                         .thenApply(steamId -> steamId)

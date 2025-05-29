@@ -43,6 +43,18 @@ public class SteamUserController {
         return ResponseEntity.ok(ownedGames);
     }
 
+    @GetMapping("/owned/ten/{steamId}")
+    public ResponseEntity<Object> steamTenOwnedGames(@PathVariable Long steamId) {
+        List<OwnedSteamGameDTO> ownedGames = steamUserFacade.getTenOwnedGames(steamId);
+
+        if (ownedGames == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(NO_OWNED_GAMES);
+        }
+        return ResponseEntity.ok(ownedGames);
+    }
+
     @GetMapping(TOP_PATH)
     public ResponseEntity<List<SteamUserTopDTO>> topGames() {
         List<SteamUserTopDTO> users = steamUserFacade.getAllUsers();
