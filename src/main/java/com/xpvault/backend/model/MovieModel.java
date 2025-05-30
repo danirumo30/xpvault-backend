@@ -39,10 +39,10 @@ public class MovieModel implements Serializable {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 500)
+    @Column(name = "title", nullable = false, length = 1000)
     private String title;
 
-    @Column(name = "description", length = 500)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "tmdb_id", nullable = false, unique = true)

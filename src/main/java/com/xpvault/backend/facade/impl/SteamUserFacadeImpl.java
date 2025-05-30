@@ -7,7 +7,7 @@ import com.xpvault.backend.converter.SteamUserDTOToSteamUserModelConverter;
 import com.xpvault.backend.converter.SteamUserModelToSteamUserDTOConverter;
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
 import com.xpvault.backend.dto.SteamUserDTO;
-import com.xpvault.backend.dto.SteamUserTopDTO;
+import com.xpvault.backend.dto.AppUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
 import com.xpvault.backend.facade.UserFacade;
 import com.xpvault.backend.model.SteamUserModel;
@@ -49,16 +49,18 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
     }
 
     @Override
-    public List<SteamUserTopDTO> getAllUsers() {
+    public List<AppUserTopDTO> getAllUsers() {
         return userFacade.allUsers()
                           .stream()
                           .filter(user -> user.getSteamUser() != null)
-                          .map(user -> new SteamUserTopDTO(
+                          .map(user -> new AppUserTopDTO(
+                                  user.getId(),
                                   user.getUsername(),
+                                  user.getProfilePhoto(),
                                   steamUserService.getTotalTimePlayed(user.getSteamUser().getSteamId())
                                   )
                           )
-                          .sorted(Comparator.comparingLong(SteamUserTopDTO::getTotalTimePlayed).reversed())
+                          .sorted(Comparator.comparingLong(AppUserTopDTO::getTotalTime).reversed())
                           .toList();
     }
 

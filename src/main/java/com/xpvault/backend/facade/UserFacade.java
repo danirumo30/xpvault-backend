@@ -2,6 +2,7 @@ package com.xpvault.backend.facade;
 
 import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.AppUserDetailsDTO;
+import com.xpvault.backend.dto.AppUserTopDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.literals.enums.AddResultEnum;
@@ -12,8 +13,8 @@ public interface UserFacade {
 
     List<AppUserDTO> allUsers();
     AppUserDTO findByUsername(String username);
-    List<AppUserDTO> getAllUsersTopMovies();
-    List<AppUserDTO> getAllUsersTopTvSeries();
+    List<AppUserTopDTO> getAllUsersTopMovies();
+    List<AppUserTopDTO> getAllUsersTopTvSeries();
     AddResultEnum addMovieToUser(String username, Integer movieId, String language);
     AddResultEnum addTvSerieToUser(String username, Integer tvSerieId, String language);
     AppUserDetailsDTO findFullUserDetails(String username);

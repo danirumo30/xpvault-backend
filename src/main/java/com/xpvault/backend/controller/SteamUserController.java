@@ -2,7 +2,7 @@ package com.xpvault.backend.controller;
 
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
 import com.xpvault.backend.dto.SteamUserDTO;
-import com.xpvault.backend.dto.SteamUserTopDTO;
+import com.xpvault.backend.dto.AppUserTopDTO;
 import com.xpvault.backend.facade.SteamUserFacade;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -56,8 +56,8 @@ public class SteamUserController {
     }
 
     @GetMapping(TOP_PATH)
-    public ResponseEntity<List<SteamUserTopDTO>> topGames() {
-        List<SteamUserTopDTO> users = steamUserFacade.getAllUsers();
+    public ResponseEntity<List<AppUserTopDTO>> topGames() {
+        List<AppUserTopDTO> users = steamUserFacade.getAllUsers();
         return ResponseEntity.ok(users);
     }
 

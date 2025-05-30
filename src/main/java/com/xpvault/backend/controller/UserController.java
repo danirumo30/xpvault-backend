@@ -2,6 +2,7 @@ package com.xpvault.backend.controller;
 
 import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.AppUserDetailsDTO;
+import com.xpvault.backend.dto.AppUserTopDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.literals.enums.AddResultEnum;
@@ -58,7 +59,7 @@ public class UserController {
 
     @GetMapping(TOP_PATH + "/movies")
     public ResponseEntity<Object> topMovies() {
-        List<AppUserDTO> users = userFacade.getAllUsersTopMovies();
+        List<AppUserTopDTO> users = userFacade.getAllUsersTopMovies();
 
         if (users.isEmpty()) {
             return ResponseEntity
@@ -71,7 +72,7 @@ public class UserController {
 
     @GetMapping(TOP_PATH + "/tv-series")
     public ResponseEntity<Object> topTvSeries() {
-        List<AppUserDTO> users = userFacade.getAllUsersTopTvSeries();
+        List<AppUserTopDTO> users = userFacade.getAllUsersTopTvSeries();
 
         if (users.isEmpty()) {
             return ResponseEntity

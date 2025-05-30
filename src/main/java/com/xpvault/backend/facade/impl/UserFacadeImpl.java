@@ -7,6 +7,7 @@ import com.xpvault.backend.converter.MovieModelToMovieDTOConverter;
 import com.xpvault.backend.converter.TvSerieModelToTvSerieDTOConverter;
 import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.AppUserDetailsDTO;
+import com.xpvault.backend.dto.AppUserTopDTO;
 import com.xpvault.backend.dto.MovieDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.literals.enums.AddResultEnum;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -52,25 +52,33 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public List<AppUserDTO> getAllUsersTopMovies() {
-        return userService.allUsers()
-                          .stream()
-                          .map(appUserModelToAppUserDTOConverter::convert)
-                          .filter(Objects::nonNull)
-                          .filter(user -> user.getTotalTimeMoviesWatched() != null)
-                          .sorted(Comparator.comparingLong(AppUserDTO::getTotalTimeMoviesWatched).reversed())
-                          .toList();
+    public List<AppUserTopDTO> getAllUsersTopMovies() {
+        return allUsers().stream()
+                         .map(user -> new AppUserTopDTO(
+                                  user.getId(),
+                                  user.getUsername(),
+                                  user.getProfilePhoto(),
+                                  user.getTotalTimeMoviesWatched().longValue()
+                             )
+                         )
+                         .filter(user -> user.getTotalTime() != null)
+                         .sorted(Comparator.comparingLong(AppUserTopDTO::getTotalTime).reversed())
+                         .toList();
     }
 
     @Override
-    public List<AppUserDTO> getAllUsersTopTvSeries() {
-        return userService.allUsers()
-                          .stream()
-                          .map(appUserModelToAppUserDTOConverter::convert)
-                          .filter(Objects::nonNull)
-                          .filter(user -> user.getTotalTimeEpisodesWatched() != null)
-                          .sorted(Comparator.comparingLong(AppUserDTO::getTotalTimeEpisodesWatched).reversed())
-                          .toList();
+    public List<AppUserTopDTO> getAllUsersTopTvSeries() {
+        return allUsers().stream()
+                         .map(user -> new AppUserTopDTO(
+                                        user.getId(),
+                                        user.getUsername(),
+                                        user.getProfilePhoto(),
+                                        user.getTotalTimeEpisodesWatched().longValue()
+                                )
+                         )
+                         .filter(user -> user.getTotalTime() != null)
+                         .sorted(Comparator.comparingLong(AppUserTopDTO::getTotalTime).reversed())
+                         .toList();
     }
 
     @Override

@@ -39,10 +39,10 @@ public class TvSerieModel implements Serializable {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 1000)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "tmdb_id", nullable = false, unique = true)

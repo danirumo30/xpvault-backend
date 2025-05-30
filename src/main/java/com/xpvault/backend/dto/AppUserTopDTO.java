@@ -9,10 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SteamUserTopDTO {
+public class AppUserTopDTO {
 
+    private Long id;
     private String nickname;
-    private Long totalTimePlayed;
+    private String photoUrl;
+    private Long totalTime;
 
 }
 
