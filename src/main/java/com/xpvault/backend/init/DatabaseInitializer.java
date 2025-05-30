@@ -1,12 +1,9 @@
 package com.xpvault.backend.init;
 
-import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import com.xpvault.backend.dao.GameDAO;
 import com.xpvault.backend.dao.UserDAO;
 import com.xpvault.backend.model.AppUserModel;
 import com.xpvault.backend.model.GameModel;
-import com.xpvault.backend.model.SteamUserModel;
-import com.xpvault.backend.service.SteamUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -23,7 +20,6 @@ public class DatabaseInitializer implements ApplicationRunner {
 
     private final UserDAO userDAO;
     private final GameDAO gameDAO;
-    private final SteamUserService steamUserService;
 
     @Override
     @Transactional
@@ -33,26 +29,14 @@ public class DatabaseInitializer implements ApplicationRunner {
                 .ifPresent(user -> userDAO.deleteById(user.getId()));
 
         if (!userDAO.existsByEmail(ADMIN_MAIL)) {
-            SteamPlayerProfile profile = steamUserService.getPlayerProfile(76561198344317420L);
-
-            SteamUserModel steamUser = SteamUserModel.builder()
-                    .steamId(76561198344317420L)
-                    .avatar(profile.getAvatarFullUrl())
-                    .nickname(profile.getName())
-                    .profileUrl(profile.getProfileUrl())
-                    .totalTimePlayed(steamUserService.getTotalTimePlayed(76561198344317420L))
-                    .build();
-
             AppUserModel admin = AppUserModel.builder()
                     .username("admin")
                     .password("$2a$10$BSFg8tEFD9762qMMxkTbouBhk0EHGTNmiwGNZ3vVLpwJzRiiBIdTS")
                     .email(ADMIN_MAIL)
                     .role("REGISTERED")
                     .enabled(true)
-                    .steamUser(steamUser)
+                    .steamUser(null)
                     .build();
-
-            steamUser.setAppUser(admin);
 
             userDAO.save(admin);
         }

@@ -26,17 +26,18 @@ public class SteamUserServiceImpl implements SteamUserService {
 
     @Override
     public List<SteamPlayerOwnedGame> getOwnedGames(Long steamId) {
-        return playerService.getOwnedGames(steamId, true, true)
-                            .thenApply(ownedGames -> ownedGames)
-                            .join();
+        List<SteamPlayerOwnedGame> games = playerService.getOwnedGames(steamId, true, true)
+                                                        .thenApply(ownedGames -> ownedGames)
+                                                        .join();
+        return games != null ? games : List.of();
     }
 
     @Override
     public List<SteamPlayerOwnedGame> getTwentyOwnedGames(Long steamId) {
-        return playerService.getOwnedGames(steamId, true, true)
-                            .thenApply(ownedGames -> ownedGames)
-                            .join()
-                            .subList(0, 20);
+        List<SteamPlayerOwnedGame> games =  playerService.getOwnedGames(steamId, true, true)
+                                                         .thenApply(ownedGames -> ownedGames)
+                                                         .join();
+        return games != null ? games.subList(0, 20) : List.of();
     }
 
     @Override
