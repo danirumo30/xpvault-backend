@@ -98,7 +98,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<SteamApp> getSteamApps(int page, int size) {
         try {
-            List<JsonNode> appsNode = getAppsNode(STEAM_API_URL);
+            List<JsonNode> appsNode = getAppsNode();
             List<SteamApp> apps = new ArrayList<>();
 
             int fromIndex = page * size;
@@ -124,7 +124,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<SteamApp> getSteamAppsFilteredByTitle(int page, int size, String title) {
         try {
-            List<JsonNode> appsNode = getAppsNode(STEAM_API_URL);
+            List<JsonNode> appsNode = getAppsNode();
             List<SteamApp> filteredApps = new ArrayList<>();
 
             for (JsonNode appNode : appsNode) {
@@ -152,10 +152,8 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<SteamApp> getSteamAppsFilteredByGenre(int page, int size, String genre) {
-        String url = "https://steamspy.com/api.php?request=genre&genre=" + genre;
-
         try {
-            List<JsonNode> appNodes = getAppsNode(url);
+            List<JsonNode> appNodes = getAppsNodeV2(genre);
 
             int fromIndex = page * size;
             if (fromIndex >= appNodes.size()) {
@@ -206,8 +204,8 @@ public class GameServiceImpl implements GameService {
         return Optional.empty();
     }
 
-    private List<JsonNode> getAppsNode(String url) throws JsonProcessingException {
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+    private List<JsonNode> getAppsNode() throws JsonProcessingException {
+        ResponseEntity<String> response = restTemplate.getForEntity(STEAM_API_URL, String.class);
         String json = response.getBody();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -218,6 +216,18 @@ public class GameServiceImpl implements GameService {
         if (appsNode.isArray()) {
             appsNode.forEach(appNodes::add);
         }
+
+        return appNodes;
+    }
+
+    private List<JsonNode> getAppsNodeV2(String genre) throws JsonProcessingException {
+        ResponseEntity<String> response = restTemplate.getForEntity("https://steamspy.com/api.php?request=genre&genre=" + genre, String.class);
+        String json = response.getBody();
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(json);
+        List<JsonNode> appNodes = new ArrayList<>();
+        root.fields().forEachRemaining(entry -> appNodes.add(entry.getValue()));
 
         return appNodes;
     }
