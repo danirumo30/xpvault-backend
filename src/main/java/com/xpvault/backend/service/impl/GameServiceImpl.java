@@ -212,8 +212,13 @@ public class GameServiceImpl implements GameService {
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(json);
+        JsonNode appsNode = root.path("applist").path("apps");
+
         List<JsonNode> appNodes = new ArrayList<>();
-        root.fields().forEachRemaining(entry -> appNodes.add(entry.getValue()));
+        if (appsNode.isArray()) {
+            appsNode.forEach(appNodes::add);
+        }
+
         return appNodes;
     }
 }
