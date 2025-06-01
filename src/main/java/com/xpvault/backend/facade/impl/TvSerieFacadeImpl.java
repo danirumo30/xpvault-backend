@@ -1,12 +1,14 @@
 package com.xpvault.backend.facade.impl;
 
 import com.xpvault.backend.converter.CreatedByToBasicDirectorDTOConverter;
+import com.xpvault.backend.converter.TvSeasonDBToTvSeasonDTOConverter;
 import com.xpvault.backend.converter.TvSerieCastToBasicCastDTOConverter;
 import com.xpvault.backend.converter.TvSerieDBToBasicTvSerieDTOConverter;
 import com.xpvault.backend.converter.TvSerieDBToTvSerieDTOConverter;
 import com.xpvault.backend.dto.BasicCastDTO;
 import com.xpvault.backend.dto.BasicDirectorDTO;
 import com.xpvault.backend.dto.BasicTvSerieDTO;
+import com.xpvault.backend.dto.TvSeasonDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.TvSerieFacade;
 import com.xpvault.backend.service.TvSerieService;
@@ -29,6 +31,7 @@ public class TvSerieFacadeImpl implements TvSerieFacade {
     private final TvSerieDBToBasicTvSerieDTOConverter tvSerieDBToBasicTvSerieDTOConverter;
     private final CreatedByToBasicDirectorDTOConverter createdByToBasicDirectorDTOConverter;
     private final TvSerieCastToBasicCastDTOConverter tvSerieCastToBasicCastDTOConverter;
+    private final TvSeasonDBToTvSeasonDTOConverter tvSeasonDBToTvSeasonDTOConverter;
 
     @Override
     public List<BasicTvSerieDTO> getPopularTvSeries(String language, int page) {
@@ -92,5 +95,10 @@ public class TvSerieFacadeImpl implements TvSerieFacade {
                              .stream()
                              .map(tvSerieCastToBasicCastDTOConverter::convert)
                              .toList();
+    }
+
+    @Override
+    public TvSeasonDTO getTvSerieSeasons(int tvSerieId, String language, int seasonNumber) {
+        return tvSeasonDBToTvSeasonDTOConverter.convert(tvSerieService.getTvSerieSeasons(tvSerieId, language, seasonNumber), tvSerieId, language);
     }
 }

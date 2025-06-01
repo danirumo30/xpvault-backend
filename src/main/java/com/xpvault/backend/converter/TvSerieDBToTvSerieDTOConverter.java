@@ -2,10 +2,9 @@ package com.xpvault.backend.converter;
 
 import com.xpvault.backend.dto.BasicCastDTO;
 import com.xpvault.backend.dto.BasicDirectorDTO;
-import com.xpvault.backend.dto.TvSeasonDTO;
+import com.xpvault.backend.dto.BasicTvSeasonDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.service.TvSerieService;
-import info.movito.themoviedbapi.model.tv.season.TvSeasonDb;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -20,29 +19,13 @@ public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvS
     private final TvSerieService tvSerieService;
     private final CreatedByToBasicDirectorDTOConverter createdByToBasicDirectorDTOConverter;
     private final TvSerieCastToBasicCastDTOConverter tvSerieCastToBasicCastDTOConverter;
-    private final TvSeasonDBToTvSeasonDTOConverter tvSeasonDBToTvSeasonDTOConverter;
+    private final TvSeasonToBasicTvSeasonDTOConverter tvSeasonToBasicTvSeasonDTOConverter;
 
     @Override
     public TvSerieDTO convert(TvSeriesDb source) {
 
         List<BasicDirectorDTO> directors = null;
         List<BasicCastDTO> casting = null;
-
-        List<TvSeasonDTO> seasons = source.getSeasons()
-                                          .stream()
-                                          .map(season -> {
-                                                TvSeasonDb seasonDb = tvSerieService.getTvSerieSeasons(
-                                                        source.getId(),
-                                                        source.getOriginalLanguage(),
-                                                        season.getSeasonNumber()
-                                                );
-                                              return tvSeasonDBToTvSeasonDTOConverter.convert(
-                                                        seasonDb,
-                                                        source.getId(),
-                                                        source.getOriginalLanguage()
-                                                );
-                                          })
-                                          .toList();
 
 
         if (source.getCredits() != null) {
@@ -56,6 +39,11 @@ public class TvSerieDBToTvSerieDTOConverter implements Converter<TvSeriesDb, TvS
                                     .map(tvSerieCastToBasicCastDTOConverter::convert)
                                     .toList();
         }
+
+        List<BasicTvSeasonDTO> seasons = source.getSeasons()
+                                               .stream()
+                                               .map(season -> tvSeasonToBasicTvSeasonDTOConverter.convert(season, source.getId()))
+                                               .toList();
 
         return new TvSerieDTO(
                 source.getId(),

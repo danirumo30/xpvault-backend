@@ -3,6 +3,7 @@ package com.xpvault.backend.facade;
 import com.xpvault.backend.dto.BasicCastDTO;
 import com.xpvault.backend.dto.BasicDirectorDTO;
 import com.xpvault.backend.dto.BasicTvSerieDTO;
+import com.xpvault.backend.dto.TvSeasonDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 
@@ -18,5 +19,6 @@ public interface TvSerieFacade {
     TvSerieDTO getTvSerieDetailsById(int id, String language);
     List<BasicDirectorDTO> getDirectors(TvSeriesDb source);
     List<BasicCastDTO> getCasting(TvSeriesDb source);
+    TvSeasonDTO getTvSerieSeasons(int tvSerieId, String language, int seasonNumber);
 
 }

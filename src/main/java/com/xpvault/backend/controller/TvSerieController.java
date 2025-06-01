@@ -1,6 +1,7 @@
 package com.xpvault.backend.controller;
 
 import com.xpvault.backend.dto.BasicTvSerieDTO;
+import com.xpvault.backend.dto.TvSeasonDTO;
 import com.xpvault.backend.dto.TvSerieDTO;
 import com.xpvault.backend.facade.TvSerieFacade;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
@@ -116,5 +117,20 @@ public class TvSerieController {
         }
 
         return ResponseEntity.ok(tvSerie);
+    }
+
+    @GetMapping("/season/{id}")
+    public ResponseEntity<Object> getTvSeriesById(
+            @PathVariable Integer id,
+            @RequestParam Integer seasonId,
+            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
+    ) {
+        TvSeasonDTO tvSeason = tvSerieFacade.getTvSerieSeasons(id, language, seasonId);
+
+        if (tvSeason == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_NOT_FOUND + id);
+        }
+
+        return ResponseEntity.ok(tvSeason);
     }
 }
