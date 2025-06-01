@@ -20,5 +20,6 @@ public interface UserService {
     List<AppUserModel> findByUsernameContainsIgnoreCase(String username);
     AddResultEnum addFriendToUser(String username, String friendUsername);
     AppUserModel save(AppUserModel appUserModel);
+    List<AppUserModel> findFriendsByUsername(String username);
 
 }

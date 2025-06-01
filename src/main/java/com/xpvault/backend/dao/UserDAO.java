@@ -24,6 +24,9 @@ public interface UserDAO extends JpaRepository<AppUserModel, Long> {
     @Query("SELECT u.movies FROM AppUserModel u WHERE u.username = :username")
     List<MovieModel> findMoviesByUsername(@Param("username") String username);
 
+    @Query("SELECT u.friends FROM AppUserModel u WHERE u.username = :username")
+    List<AppUserModel> findFriendsByUsername(@Param("username") String username);
+
     List<AppUserModel> findByUsernameContainsIgnoreCase(String username);
 
 }

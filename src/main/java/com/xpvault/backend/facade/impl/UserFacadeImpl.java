@@ -128,6 +128,14 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
+    public List<AppUserDTO> getFriends(String username) {
+        return userService.findFriendsByUsername(username)
+                          .stream()
+                          .map(appUserModelToAppUserDTOConverter::convert)
+                          .toList();
+    }
+
+    @Override
     public AddResultEnum addFriendToUser(String username, String friendUsername) {
         return userService.addFriendToUser(username, friendUsername);
     }

@@ -109,6 +109,19 @@ public class UserController {
         return ResponseEntity.ok(movies);
     }
 
+    @GetMapping(PROFILE_PATH + "/{username}/friends")
+    public ResponseEntity<Object> getFriends(@PathVariable String username) {
+        List<AppUserDTO> friends = userFacade.getFriends(username);
+
+        if (friends.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(NO_USERS_FOUND);
+        }
+
+        return ResponseEntity.ok(friends);
+    }
+
     @GetMapping(PROFILE_PATH + "/{username}/content")
     public ResponseEntity<Object> getUserContent(@PathVariable String username) {
         AppUserDetailsDTO user = userFacade.findFullUserDetails(username);

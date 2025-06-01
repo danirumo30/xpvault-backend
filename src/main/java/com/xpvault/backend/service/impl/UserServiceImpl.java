@@ -169,4 +169,9 @@ public class UserServiceImpl implements UserService {
         }
         return userDAO.save(appUserModel);
     }
+
+    @Override
+    public List<AppUserModel> findFriendsByUsername(String username) {
+        return userDAO.findFriendsByUsername(username);
+    }
 }

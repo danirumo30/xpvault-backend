@@ -20,6 +20,7 @@ public interface UserFacade {
     AppUserDetailsDTO findFullUserDetails(String username);
     List<MovieDTO> getMovies(String username);
     List<TvSerieDTO> getTvSeries(String username);
+    List<AppUserDTO> getFriends(String username);
     AddResultEnum addFriendToUser(String username, String friendUsername);
     List<AppUserDTO> findByUsernameContainsIgnoreCase(String username);
     AppUserDTO save(AppUserDTO appUserDTO);
