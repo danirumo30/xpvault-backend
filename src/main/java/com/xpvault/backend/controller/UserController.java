@@ -191,6 +191,41 @@ public class UserController {
         return ResponseEntity.ok(saved);
     }
 
+    @PostMapping("/{username}/friends/delete")
+    public ResponseEntity<String> deleteFriend(
+            @PathVariable String username,
+            @RequestParam String friendUsername
+    ) {
+        AddResultEnum result = userFacade.deleteFriendFromUser(username, friendUsername);
+
+        Map<AddResultEnum, ResponseEntity<String>> responses = Map.of(
+                AddResultEnum.SUCCESS,
+                ResponseEntity.ok("Friend deleted successfully."),
+                AddResultEnum.USER_NOT_FOUND,
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username),
+                AddResultEnum.FRIEND_NOT_FOUND,
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(FRIEND_NOT_FOUND + friendUsername)
+        );
+
+        return responses.getOrDefault(
+                result,
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR)
+        );
+    }
+
+    @GetMapping("/{username}/friends/is-friend")
+    public ResponseEntity<Object> isFriend(
+            @PathVariable String username,
+            @RequestParam String friendUsername
+    ) {
+        boolean result = userFacade.isFriend(username, friendUsername);
+        return ResponseEntity.ok(Map.of(
+                "username", username,
+                "friendUsername", friendUsername,
+                "isFriend", result
+        ));
+    }
+
     private static @NotNull ResponseEntity<String> getAddResultResponse(
             String username,
             String notFoundParam,

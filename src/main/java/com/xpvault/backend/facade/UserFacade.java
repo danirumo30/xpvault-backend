@@ -24,5 +24,7 @@ public interface UserFacade {
     AddResultEnum addFriendToUser(String username, String friendUsername);
     List<AppUserDTO> findByUsernameContainsIgnoreCase(String username);
     AppUserDTO save(AppUserDTO appUserDTO);
+    AddResultEnum deleteFriendFromUser(String username, String friendUsername);
+    boolean isFriend(String username, String friendUsername);
 
 }

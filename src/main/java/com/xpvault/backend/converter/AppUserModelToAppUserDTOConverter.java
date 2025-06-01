@@ -67,7 +67,8 @@ public class AppUserModelToAppUserDTOConverter implements Converter<AppUserModel
                 totalTimeTvSeries,
                 totalGames,
                 totalMovies,
-                totalTvSeries
+                totalTvSeries,
+                source.getFriends().size()
         );
     }
 }

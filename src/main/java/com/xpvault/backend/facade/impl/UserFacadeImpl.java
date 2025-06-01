@@ -156,4 +156,14 @@ public class UserFacadeImpl implements UserFacade {
 
         return appUserModelToAppUserDTOConverter.convert(saved);
     }
+
+    @Override
+    public AddResultEnum deleteFriendFromUser(String username, String friendUsername) {
+        return userService.deleteFriendFromUser(username, friendUsername);
+    }
+
+    @Override
+    public boolean isFriend(String username, String friendUsername) {
+        return userService.isFriend(username, friendUsername);
+    }
 }

@@ -21,5 +21,7 @@ public interface UserService {
     AddResultEnum addFriendToUser(String username, String friendUsername);
     AppUserModel save(AppUserModel appUserModel);
     List<AppUserModel> findFriendsByUsername(String username);
+    AddResultEnum deleteFriendFromUser(String username, String friendUsername);
+    boolean isFriend(String username, String friendUsername);
 
 }

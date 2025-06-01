@@ -174,4 +174,36 @@ public class UserServiceImpl implements UserService {
     public List<AppUserModel> findFriendsByUsername(String username) {
         return userDAO.findFriendsByUsername(username);
     }
+
+    @Override
+    public AddResultEnum deleteFriendFromUser(String username, String friendUsername) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user -> Optional.ofNullable(findByUsername(friendUsername))
+                        .map(friend -> {
+                            if (user.getFriends() == null || !user.getFriends().contains(friend)) {
+                                return AddResultEnum.USER_NOT_FOUND;
+                            }
+
+                            user.getFriends().remove(friend);
+                            if (friend.getFriends() != null) {
+                                friend.getFriends().remove(user);
+                            }
+
+                            userDAO.save(user);
+                            userDAO.save(friend);
+
+                            return AddResultEnum.SUCCESS;
+                        })
+                        .orElse(AddResultEnum.FRIEND_NOT_FOUND)
+                ).orElse(AddResultEnum.USER_NOT_FOUND);
+    }
+
+    @Override
+    public boolean isFriend(String username, String friendUsername) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user -> Optional.ofNullable(findByUsername(friendUsername))
+                        .map(friend -> user.getFriends() != null && user.getFriends().contains(friend))
+                        .orElse(false)
+                ).orElse(false);
+    }
 }

@@ -35,5 +35,6 @@ public class AppUserDTO {
     private Integer totalGames;
     private Integer totalMovies;
     private Integer totalEpisodes;
+    private Integer totalFriends;
 
 }
