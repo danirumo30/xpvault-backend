@@ -5,6 +5,7 @@ import com.xpvault.backend.converter.SteamPlayerOwnedGameToOwnedSteamGameDTOConv
 import com.xpvault.backend.converter.SteamPlayerProfileToSteamUserDTOConverter;
 import com.xpvault.backend.converter.SteamUserDTOToSteamUserModelConverter;
 import com.xpvault.backend.converter.SteamUserModelToSteamUserDTOConverter;
+import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.dto.OwnedSteamGameDTO;
 import com.xpvault.backend.dto.SteamUserDTO;
 import com.xpvault.backend.dto.AppUserTopDTO;
@@ -50,16 +51,15 @@ public class SteamUserFacadeImpl implements SteamUserFacade {
 
     @Override
     public List<AppUserTopDTO> getAllUsers() {
-        return userFacade.allUsers()
+        return userFacade.allUsersBasic()
                           .stream()
-                          .filter(user -> user.getSteamUser() != null)
-                          .map(user -> new AppUserTopDTO(
-                                  user.getId(),
-                                  user.getUsername(),
-                                  user.getProfilePhoto(),
-                                  steamUserService.getTotalTimePlayed(user.getSteamUser().getSteamId())
-                                  )
-                          )
+                          .map(user -> {
+                              AppUserDTO appUserDTO = userFacade.findByUsername(user.getNickname());
+                              if (appUserDTO.getSteamUser() != null) {
+                                  user.setTotalTime(steamUserService.getTotalTimePlayed(appUserDTO.getSteamUser().getSteamId()));
+                              }
+                              return user;
+                          })
                           .sorted(Comparator.comparingLong(AppUserTopDTO::getTotalTime).reversed())
                           .toList();
     }
