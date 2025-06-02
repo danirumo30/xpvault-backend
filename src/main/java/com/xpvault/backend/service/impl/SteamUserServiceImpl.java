@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +74,10 @@ public class SteamUserServiceImpl implements SteamUserService {
         return ownedGames.stream()
                          .mapToLong(SteamPlayerOwnedGame::getTotalPlaytime)
                          .sum();
+    }
+
+    @Override
+    public Optional<SteamUserModel> findBySteamId(Long steamId) {
+        return steamUserDAO.findBySteamId(steamId);
     }
 }

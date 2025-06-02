@@ -5,6 +5,7 @@ import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import com.xpvault.backend.model.SteamUserModel;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SteamUserService {
 
@@ -15,5 +16,6 @@ public interface SteamUserService {
     SteamPlayerProfile getPlayerProfile(Long steamId);
     SteamUserModel save(SteamUserModel steamUserModel);
     Long getTotalTimePlayed(Long steamId);
+    Optional<SteamUserModel> findBySteamId(Long steamId);
 
 }

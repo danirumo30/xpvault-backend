@@ -3,6 +3,7 @@ package com.xpvault.backend.facade.impl;
 import com.xpvault.backend.converter.AppUserDTOToAppUserModelConverter;
 import com.xpvault.backend.converter.AppUserModelToAppUserDTOConverter;
 import com.xpvault.backend.converter.AppUserModelToAppUserDetailsDTOConverter;
+import com.xpvault.backend.converter.AppUserModelToAppUserTopDTOConverter;
 import com.xpvault.backend.converter.MovieModelToMovieDTOConverter;
 import com.xpvault.backend.converter.TvSerieModelToTvSerieDTOConverter;
 import com.xpvault.backend.dto.AppUserDTO;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -32,11 +34,20 @@ public class UserFacadeImpl implements UserFacade {
     private final UserService userService;
     private final MovieFacade movieFacade;
     private final TvSerieFacade tvSerieFacade;
+    private final AppUserModelToAppUserTopDTOConverter appUserModelToAppUserTopDTOConverter;
     private final AppUserModelToAppUserDTOConverter appUserModelToAppUserDTOConverter;
     private final AppUserModelToAppUserDetailsDTOConverter appUserModelToAppUserDetailsDTOConverter;
     private final MovieModelToMovieDTOConverter movieModelToMovieDTOConverter;
     private final TvSerieModelToTvSerieDTOConverter tvSerieModelToTvSerieDTOConverter;
     private final AppUserDTOToAppUserModelConverter appUserDTOToAppUserModelConverter;
+
+    @Override
+    public List<AppUserTopDTO> allUsersBasic() {
+        return userService.allUsers()
+                          .stream()
+                          .map(appUserModelToAppUserTopDTOConverter::convert)
+                          .toList();
+    }
 
     @Override
     public List<AppUserDTO> allUsers() {
@@ -128,10 +139,10 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public List<AppUserDTO> getFriends(String username) {
+    public List<AppUserTopDTO> getFriends(String username) {
         return userService.findFriendsByUsername(username)
                           .stream()
-                          .map(appUserModelToAppUserDTOConverter::convert)
+                          .map(appUserModelToAppUserTopDTOConverter::convert)
                           .toList();
     }
 
@@ -151,6 +162,10 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public AppUserDTO save(AppUserDTO appUserDTO) {
         AppUserModel appUserModel = appUserDTOToAppUserModelConverter.convert(appUserDTO);
+
+        Optional.ofNullable(appUserModel)
+                .map(AppUserModel::getSteamUser)
+                .ifPresent(steamUser -> steamUser.setAppUser(appUserModel));
 
         AppUserModel saved = userService.save(appUserModel);
 

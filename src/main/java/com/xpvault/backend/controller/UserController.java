@@ -46,7 +46,7 @@ public class UserController {
 
     @PostMapping("/all")
     public ResponseEntity<Object> allUsers() {
-        List<AppUserDTO> users = userFacade.allUsers();
+        List<AppUserTopDTO> users = userFacade.allUsersBasic();
 
         if (users.isEmpty()) {
             return ResponseEntity
@@ -111,7 +111,7 @@ public class UserController {
 
     @GetMapping(PROFILE_PATH + "/{username}/friends")
     public ResponseEntity<Object> getFriends(@PathVariable String username) {
-        List<AppUserDTO> friends = userFacade.getFriends(username);
+        List<AppUserTopDTO> friends = userFacade.getFriends(username);
 
         if (friends.isEmpty()) {
             return ResponseEntity

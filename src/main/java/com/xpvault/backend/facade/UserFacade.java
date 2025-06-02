@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface UserFacade {
 
+    List<AppUserTopDTO> allUsersBasic();
     List<AppUserDTO> allUsers();
     AppUserDTO findByUsername(String username);
     List<AppUserTopDTO> getAllUsersTopMovies();
@@ -20,7 +21,7 @@ public interface UserFacade {
     AppUserDetailsDTO findFullUserDetails(String username);
     List<MovieDTO> getMovies(String username);
     List<TvSerieDTO> getTvSeries(String username);
-    List<AppUserDTO> getFriends(String username);
+    List<AppUserTopDTO> getFriends(String username);
     AddResultEnum addFriendToUser(String username, String friendUsername);
     List<AppUserDTO> findByUsernameContainsIgnoreCase(String username);
     AppUserDTO save(AppUserDTO appUserDTO);

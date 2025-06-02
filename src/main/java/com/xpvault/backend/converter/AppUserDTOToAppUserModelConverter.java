@@ -2,6 +2,7 @@ package com.xpvault.backend.converter;
 
 import com.xpvault.backend.dto.AppUserDTO;
 import com.xpvault.backend.model.AppUserModel;
+import com.xpvault.backend.model.SteamUserModel;
 import com.xpvault.backend.service.SteamUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -29,10 +30,21 @@ public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, 
                            .password(source.getPassword())
                            .verificationCode(source.getVerificationCode())
                            .verificationExpiration(source.getVerificationExpiration())
-                           .steamUser(source.getSteamUser() != null
-                                           ? steamPlayerProfileToSteamUserModelConverter.convert(steamUserService.getPlayerProfile(source.getSteamUser().getSteamId()))
-                                           : null
-                           )
+                           .steamUser(getOrCreateSteamUser(source))
                            .build();
+    }
+
+
+    private SteamUserModel getOrCreateSteamUser(AppUserDTO source) {
+        if (source.getSteamUser() == null || source.getSteamUser().getSteamId() == null) {
+            return null;
+        }
+
+        Long steamId = source.getSteamUser().getSteamId();
+
+        return steamUserService.findBySteamId(steamId)
+                               .orElseGet(
+                                       () -> steamPlayerProfileToSteamUserModelConverter.convert(steamUserService.getPlayerProfile(steamId))
+                               );
     }
 }
