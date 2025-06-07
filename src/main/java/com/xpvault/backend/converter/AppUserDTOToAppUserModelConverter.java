@@ -43,8 +43,14 @@ public class AppUserDTOToAppUserModelConverter implements Converter<AppUserDTO, 
         Long steamId = source.getSteamUser().getSteamId();
 
         return steamUserService.findBySteamId(steamId)
-                               .orElseGet(
-                                       () -> steamPlayerProfileToSteamUserModelConverter.convert(steamUserService.getPlayerProfile(steamId))
-                               );
+                .filter(existingSteamUser ->
+                        existingSteamUser.getAppUser() == null ||
+                                existingSteamUser.getAppUser().getId().equals(source.getId())
+                )
+                .orElseGet(() ->
+                        steamPlayerProfileToSteamUserModelConverter.convert(
+                                steamUserService.getPlayerProfile(steamId)
+                        )
+                );
     }
 }

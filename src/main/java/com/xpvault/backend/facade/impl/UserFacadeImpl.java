@@ -161,15 +161,17 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public AppUserDTO save(AppUserDTO appUserDTO) {
-        AppUserModel appUserModel = appUserDTOToAppUserModelConverter.convert(appUserDTO);
-
-        Optional.ofNullable(appUserModel)
-                .map(AppUserModel::getSteamUser)
-                .ifPresent(steamUser -> steamUser.setAppUser(appUserModel));
-
-        AppUserModel saved = userService.save(appUserModel);
-
-        return appUserModelToAppUserDTOConverter.convert(saved);
+        return Optional.ofNullable(appUserDTOToAppUserModelConverter.convert(appUserDTO))
+                       .map(appUserModel -> {
+                            Optional.ofNullable(appUserModel.getSteamUser()).ifPresent(steamUser -> {
+                                if (steamUser.getAppUser() == null || steamUser.getAppUser().getId().equals(appUserModel.getId())) {
+                                    steamUser.setAppUser(appUserModel);
+                                }
+                            });
+                            return userService.save(appUserModel);
+                       })
+                       .map(appUserModelToAppUserDTOConverter::convert)
+                       .orElseThrow(() -> new IllegalArgumentException("Could not convert AppUserDTO to model"));
     }
 
     @Override
