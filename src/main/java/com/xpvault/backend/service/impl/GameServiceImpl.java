@@ -16,7 +16,10 @@ import com.xpvault.backend.service.GameService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,6 +42,13 @@ public class GameServiceImpl implements GameService {
     private final SteamNews steamNews;
     private final RestTemplate restTemplate = new RestTemplate();
     private final Random random = new Random();
+    private GameService self;
+
+    @Lazy
+    @Autowired
+    public void setSelf(GameService self) {
+        this.self = self;
+    }
 
     @Getter(AccessLevel.PUBLIC)
     private final List<SteamApp> steamApps;
@@ -74,6 +84,7 @@ public class GameServiceImpl implements GameService {
         return gameDAO.save(game);
     }
 
+    @Cacheable(value = "steam_app_details", key = "#steamId + '_' + #language")
     @Override
     public StoreAppDetails getSteamDetailsBySteamId(Integer steamId, String language) {
         try {
@@ -85,6 +96,7 @@ public class GameServiceImpl implements GameService {
         }
     }
 
+    @Cacheable(value = "steam_news", key = "#steamId")
     @Override
     public List<SteamNewsItem> getSteamNewsBySteamId(Integer steamId) {
         return steamNews.getNewsForApp(steamId, maxLength, -1, newsCount, "")
@@ -92,6 +104,7 @@ public class GameServiceImpl implements GameService {
                         .join();
     }
 
+    @Cacheable(value = "featured_games")
     @Override
     public StoreFeaturedApps getFeaturedGames() {
         return steamStorefront.getFeaturedApps()
@@ -99,6 +112,7 @@ public class GameServiceImpl implements GameService {
                               .join();
     }
 
+    @Cacheable(value = "steam_apps_full")
     @Override
     public List<SteamApp> getSteamAppsFull() {
         List<SteamApp> apps = new ArrayList<>();
@@ -129,10 +143,11 @@ public class GameServiceImpl implements GameService {
             return apps;
 
         } catch (Exception e) {
-            throw new SteamApiException("Error al obtener apps de SteamSpy: " + e.getMessage());
+            throw new SteamApiException("Error getting data from SteamSpy: " + e.getMessage());
         }
     }
 
+    @Cacheable(value = "steam_apps_page", key = "#page + '_' + #size")
     @Override
     public List<SteamApp> getSteamApps(int page, int size) {
         try {
@@ -154,6 +169,7 @@ public class GameServiceImpl implements GameService {
         }
     }
 
+    @Cacheable(value = "steam_apps_filtered_title", key = "#page + '_' + #size + '_' + #title.toLowerCase()")
     @Override
     public List<SteamApp> getSteamAppsFilteredByTitle(int page, int size, String title) {
         try {
@@ -179,6 +195,7 @@ public class GameServiceImpl implements GameService {
         }
     }
 
+    @Cacheable(value = "steam_apps_filtered_genre", key = "#page + '_' + #size + '_' + #genre.toLowerCase()")
     @Override
     public List<SteamApp> getSteamAppsFilteredByGenre(int page, int size, String genre) {
         try {
@@ -217,14 +234,10 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    @Override
-    public List<SteamApp> getSteamAppsPaged(int page, int size, String language, List<SteamApp> apps) {
-        return List.of();
-    }
-
+    @Cacheable(value = "steam_screenshot_url", key = "#steamId + '_' + #language")
     @Override
     public Optional<String> getRandomScreenshotUrl(Integer steamId, String language) {
-        StoreAppDetails details = getSteamDetailsBySteamId(steamId, language);
+        StoreAppDetails details = self.getSteamDetailsBySteamId(steamId, language);
         if (details != null && details.getScreenshots() != null && !details.getScreenshots().isEmpty()) {
             int index = random.nextInt(details.getScreenshots().size());
             return Optional.ofNullable(details.getScreenshots().get(index).getFullPath());

@@ -23,6 +23,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,50 +45,61 @@ public class TvSerieServiceImpl implements TvSerieService {
     private final TmdbSearch tmdbSearch;
     private final TmdbDiscover tmdbDiscover;
     private final TmdbGenre tmdbGenre;
+    private TvSerieService self;
+
+    @Lazy
+    @Autowired
+    public void setSelf(TvSerieService self) {
+        this.self = self;
+    }
 
     @SneakyThrows
+    @Cacheable(value = "popular_tv_series", key = "#language + '-' + #page")
     @Override
     public List<TvSeriesDb> getPopularTvSeries(String language, int page) {
         return tmdbTvSeriesLists.getPopular(language, page)
                                 .getResults()
                                 .stream()
                                 .map(tvSerie-> {
-                                    TvSeriesDb tvSeriesDb = getTvSerieDetails(tvSerie.getId(), language);
-                                    tvSeriesDb.setCredits(getTvSerieCredits(tvSerie.getId(), language));
+                                    TvSeriesDb tvSeriesDb = self.getTvSerieDetails(tvSerie.getId(), language);
+                                    tvSeriesDb.setCredits(self.getTvSerieCredits(tvSerie.getId(), language));
                                     return tvSeriesDb;
                                 })
                                 .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "top_rated_tv_series", key = "#language + '-' + #page")
     @Override
     public List<TvSeriesDb> getTopRatedTvSeries(String language, int page) {
         return tmdbTvSeriesLists.getTopRated(language, page)
                                 .getResults()
                                 .stream()
                                 .map(tvSerie-> {
-                                    TvSeriesDb tvSeriesDb = getTvSerieDetails(tvSerie.getId(), language);
-                                    tvSeriesDb.setCredits(getTvSerieCredits(tvSerie.getId(), language));
+                                    TvSeriesDb tvSeriesDb = self.getTvSerieDetails(tvSerie.getId(), language);
+                                    tvSeriesDb.setCredits(self.getTvSerieCredits(tvSerie.getId(), language));
                                     return tvSeriesDb;
                                 })
                                 .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "tv_series_by_title", key = "#title + '-' + #language + '-' + #page")
     @Override
     public List<TvSeriesDb> getTvSeriesByTitle(String title, String language, int page) {
         return tmdbSearch.searchTv(title, null, false, language, page, null)
                          .getResults()
                          .stream()
                          .map(tvSerie-> {
-                                TvSeriesDb tvSeriesDb = getTvSerieDetails(tvSerie.getId(), language);
-                                tvSeriesDb.setCredits(getTvSerieCredits(tvSerie.getId(), language));
+                                TvSeriesDb tvSeriesDb = self.getTvSerieDetails(tvSerie.getId(), language);
+                                tvSeriesDb.setCredits(self.getTvSerieCredits(tvSerie.getId(), language));
                                 return tvSeriesDb;
                          })
                          .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "tv_series_by_genre", key = "#genre.toLowerCase() + '-' + #language + '-' + #page")
     @Override
     public List<TvSeriesDb> getTvSeriesByGenre(String genre, String language, int page) {
         Optional<Integer> genreId = tmdbGenre.getTvList(language)
@@ -102,28 +116,31 @@ public class TvSerieServiceImpl implements TvSerieService {
                            .getResults()
                            .stream()
                            .map(tvSerie-> {
-                                TvSeriesDb tvSeriesDb = getTvSerieDetails(tvSerie.getId(), language);
-                                tvSeriesDb.setCredits(getTvSerieCredits(tvSerie.getId(), language));
+                                TvSeriesDb tvSeriesDb = self.getTvSerieDetails(tvSerie.getId(), language);
+                                tvSeriesDb.setCredits(self.getTvSerieCredits(tvSerie.getId(), language));
                                 return tvSeriesDb;
                            })
                            .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "tv_serie_details", key = "#tvSerieId + '-' + #language")
     public TvSeriesDb getTvSerieDetails(int tvSerieId, String language) {
         return tmdbTvSeries.getDetails(tvSerieId, language);
     }
 
     @SneakyThrows
+    @Cacheable(value = "tv_serie_credits", key = "#tvSerieId + '-' + #language")
     public Credits getTvSerieCredits(int tvSerieId, String language) {
         return tmdbTvSeries.getCredits(tvSerieId, language);
     }
 
     @Override
+    @Cacheable(value = "total_tv_serie_time", key = "#tvSeriesDb.id")
     public Integer getTotalTvSerieTime(TvSeriesDb tvSeriesDb) {
         return tvSeriesDb.getSeasons().stream()
                                       .mapToInt(season -> {
-                                            TvSeasonDb tvSeasonDb = getTvSerieSeasons(
+                                            TvSeasonDb tvSeasonDb = self.getTvSerieSeasons(
                                                     tvSeriesDb.getId(),
                                                     tvSeriesDb.getOriginalLanguage(),
                                                     season.getSeasonNumber()
@@ -136,6 +153,7 @@ public class TvSerieServiceImpl implements TvSerieService {
     }
 
     @Override
+    @Cacheable(value = "tv_serie_genres", key = "#tvSeriesDb.id")
     public List<String> getTvSerieGenres(TvSeriesDb tvSeriesDb) {
         return tvSeriesDb.getGenres()
                          .stream()
@@ -149,16 +167,19 @@ public class TvSerieServiceImpl implements TvSerieService {
     }
 
     @SneakyThrows
+    @Cacheable(value = "tv_season_details", key = "#tvSerieId + '-' + #language + '-' + #seasonNumber")
     public TvSeasonDb getTvSerieSeasons(int tvSerieId, String language, int seasonNumber) {
         return tmdbTvSeasons.getDetails(tvSerieId, seasonNumber, language);
     }
 
     @SneakyThrows
+    @Cacheable(value = "tv_episode_details", key = "#tvSerieId + '-' + #language + '-' + #seasonNumber + '-' + #episodeNumber")
     public TvEpisodeDb getTvSerieEpisodes(int tvSerieId, String language, int seasonNumber, int episodeNumber) {
         return tmdbTvEpisodes.getDetails(tvSerieId, seasonNumber, episodeNumber, language);
     }
 
     @Override
+    @Cacheable(value = "tv_series_creators", key = "#source.id")
     public List<CreatedBy> getDirectors(TvSeriesDb source) {
         return source.getCreatedBy()
                      .stream()
@@ -166,6 +187,7 @@ public class TvSerieServiceImpl implements TvSerieService {
     }
 
     @Override
+    @Cacheable(value = "tv_series_casting", key = "#source.id")
     public List<Cast> getCasting(TvSeriesDb source) {
         return source.getCredits()
                      .getCast()
@@ -174,6 +196,7 @@ public class TvSerieServiceImpl implements TvSerieService {
     }
 
     @Override
+    @Cacheable(value = "season_time", key = "#source.id")
     public int getSeasonTime(TvSeasonDb source) {
         return source.getEpisodes()
                      .stream()

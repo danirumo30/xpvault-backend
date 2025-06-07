@@ -20,6 +20,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,59 +40,70 @@ public class MovieServiceImpl implements MovieService {
     private final TmdbSearch tmdbSearch;
     private final TmdbDiscover tmdbDiscover;
     private final TmdbGenre tmdbGenre;
+    private MovieService self;
+
+    @Lazy
+    @Autowired
+    public void setSelf(MovieService self) {
+        this.self = self;
+    }
 
     @SneakyThrows
+    @Cacheable(value = "popular_movies", key = "#language + '_' + #page + '_' + #region")
     @Override
     public List<MovieDb> getPopularMovies(String language, int page, String region) {
         return tmdbMoviesList.getPopular(language, page, region)
                              .getResults()
                              .stream()
                              .map(movie-> {
-                                 MovieDb movieDb = getMovieDetails(movie.getId(), language);
-                                 movieDb.setCredits(getMovieCredits(movie.getId(), language));
+                                 MovieDb movieDb = self.getMovieDetails(movie.getId(), language);
+                                 movieDb.setCredits(self.getMovieCredits(movie.getId(), language));
                                  return movieDb;
                              })
                              .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "top_rated_movies", key = "'toprated_' + #language + '_' + #page + '_' + #region")
     @Override
     public List<MovieDb> getTopRatedMovies(String language, int page, String region) {
         return tmdbMoviesList.getTopRated(language, page, region)
                              .getResults()
                              .stream()
                              .map(movie-> {
-                                    MovieDb movieDb = getMovieDetails(movie.getId(), language);
-                                    movieDb.setCredits(getMovieCredits(movie.getId(), language));
+                                    MovieDb movieDb = self.getMovieDetails(movie.getId(), language);
+                                    movieDb.setCredits(self.getMovieCredits(movie.getId(), language));
                                     return movieDb;
                              })
                              .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "upcoming_movies", key = "'upcoming_' + #language + '_' + #page + '_' + #region")
     @Override
     public List<MovieDb> getUpcomingMovies(String language, int page, String region) {
         return tmdbMoviesList.getUpcoming(language, page, region)
                              .getResults()
                              .stream()
                              .map(movie-> {
-                                    MovieDb movieDb = getMovieDetails(movie.getId(), language);
-                                    movieDb.setCredits(getMovieCredits(movie.getId(), language));
+                                    MovieDb movieDb = self.getMovieDetails(movie.getId(), language);
+                                    movieDb.setCredits(self.getMovieCredits(movie.getId(), language));
                                     return movieDb;
                              })
                              .toList();
     }
 
     @SneakyThrows
+    @Cacheable(value = "movies_by_title", key = "#title + '_' + #language + '_' + #page + '_' + #region")
     @Override
     public List<MovieDb> getMovieByTitle(String title, String language, int page, String region) {
         return tmdbSearch.searchMovie(title, false, language, null, page, region, null)
                          .getResults()
                          .stream()
                          .map(movie-> {
-                                MovieDb movieDb = getMovieDetails(movie.getId(), language);
+                                MovieDb movieDb = self.getMovieDetails(movie.getId(), language);
                                 if (movieDb != null) {
-                                    movieDb.setCredits(getMovieCredits(movie.getId(), language));
+                                    movieDb.setCredits(self.getMovieCredits(movie.getId(), language));
                                     return movieDb;
                                 }
                                 return null;
@@ -99,6 +113,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @SneakyThrows
+    @Cacheable(value = "movies_by_genre", key = "#language + '_' + #page + '_' + #genre")
     @Override
     public List<MovieDb> getMovieByGenre(String genre, String language, int page) {
         Optional<Integer> genreId = tmdbGenre.getMovieList(language)
@@ -118,13 +133,14 @@ public class MovieServiceImpl implements MovieService {
                            .getResults()
                            .stream()
                            .map(movie-> {
-                                MovieDb movieDb = getMovieDetails(movie.getId(), language);
-                                movieDb.setCredits(getMovieCredits(movie.getId(), language));
+                                MovieDb movieDb = self.getMovieDetails(movie.getId(), language);
+                                movieDb.setCredits(self.getMovieCredits(movie.getId(), language));
                                 return movieDb;
                            })
                            .toList();
     }
 
+    @Cacheable(value = "movies", key = "#movieId + '_' + #language")
     public MovieDb getMovieDetails(int movieId, String language) {
         try {
             return tmdbMovies.getDetails(movieId, language);
@@ -134,6 +150,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @SneakyThrows
+    @Cacheable(value = "credits", key = "#movieId + '_' + #language")
     public Credits getMovieCredits(int movieId, String language) {
         return tmdbMovies.getCredits(movieId, language);
     }

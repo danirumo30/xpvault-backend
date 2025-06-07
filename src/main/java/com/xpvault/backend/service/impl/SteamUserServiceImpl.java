@@ -11,6 +11,9 @@ import com.xpvault.backend.service.SteamUserService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +27,15 @@ public class SteamUserServiceImpl implements SteamUserService {
     private final SteamPlayerService playerService;
     private final SteamUser steamUser;
     private final SteamUserDAO steamUserDAO;
+    private SteamUserService self;
 
+    @Lazy
+    @Autowired
+    public void setSelf(SteamUserService self) {
+        this.self = self;
+    }
+
+    @Cacheable(value = "owned_games", key = "#steamId")
     @Override
     public List<SteamPlayerOwnedGame> getOwnedGames(Long steamId) {
         List<SteamPlayerOwnedGame> games = playerService.getOwnedGames(steamId, true, true)
@@ -33,6 +44,7 @@ public class SteamUserServiceImpl implements SteamUserService {
         return games != null ? games : List.of();
     }
 
+    @Cacheable(value = "owned_games_20", key = "#steamId")
     @Override
     public List<SteamPlayerOwnedGame> getTwentyOwnedGames(Long steamId) {
         List<SteamPlayerOwnedGame> games =  playerService.getOwnedGames(steamId, true, true)
@@ -41,6 +53,7 @@ public class SteamUserServiceImpl implements SteamUserService {
         return games != null ? games.subList(0, 20) : List.of();
     }
 
+    @Cacheable(value = "steam_id_by_username", key = "#username")
     @Override
     public Long getSteamIdByUsername(String username) {
         return steamUser.getSteamIdFromVanityUrl(username, VanityUrlType.INDIVIDUAL_PROFILE)
@@ -48,6 +61,7 @@ public class SteamUserServiceImpl implements SteamUserService {
                         .join();
     }
 
+    @Cacheable(value = "username_by_steam_id", key = "#steamId")
     @Override
     public String getUsernameBySteamId(Long steamId) {
         return steamUser.getPlayerProfile(steamId)
@@ -56,6 +70,7 @@ public class SteamUserServiceImpl implements SteamUserService {
                         .getName();
     }
 
+    @Cacheable(value = "player_profile", key = "#steamId")
     @Override
     public SteamPlayerProfile getPlayerProfile(Long steamId) {
         return steamUser.getPlayerProfile(steamId)
@@ -68,9 +83,10 @@ public class SteamUserServiceImpl implements SteamUserService {
         return steamUserDAO.save(steamUserModel);
     }
 
+    @Cacheable(value = "total_time_played", key = "#steamId")
     @Override
     public Long getTotalTimePlayed(Long steamId) {
-        List<SteamPlayerOwnedGame> ownedGames = getOwnedGames(steamId);
+        List<SteamPlayerOwnedGame> ownedGames = self.getOwnedGames(steamId);
         return ownedGames.stream()
                          .mapToLong(SteamPlayerOwnedGame::getTotalPlaytime)
                          .sum();
