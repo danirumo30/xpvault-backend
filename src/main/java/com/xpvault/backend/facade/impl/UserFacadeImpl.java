@@ -183,4 +183,24 @@ public class UserFacadeImpl implements UserFacade {
     public boolean isFriend(String username, String friendUsername) {
         return userService.isFriend(username, friendUsername);
     }
+
+    @Override
+    public AddResultEnum deleteMovieFromUser(String username, Integer movieId) {
+        return userService.deleteMovieFromUser(username, movieId);
+    }
+
+    @Override
+    public AddResultEnum deleteTvSerieFromUser(String username, Integer tvSerieId) {
+        return userService.deleteTvSerieFromUser(username, tvSerieId);
+    }
+
+    @Override
+    public boolean isMovieAdded(String username, Integer movieId) {
+        return userService.isMovieAdded(username, movieId);
+    }
+
+    @Override
+    public boolean isTvSerieAdded(String username, Integer tvSerieId) {
+        return userService.isTvSerieAdded(username, tvSerieId);
+    }
 }

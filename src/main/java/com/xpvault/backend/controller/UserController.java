@@ -251,4 +251,74 @@ public class UserController {
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR)
         );
     }
+
+    @PostMapping("/{username}/movies/delete")
+    public ResponseEntity<String> deleteMovieFromUser(
+            @PathVariable String username,
+            @RequestParam Integer movieId
+    ) {
+        AddResultEnum result = userFacade.deleteMovieFromUser(username, movieId);
+
+        Map<AddResultEnum, ResponseEntity<String>> responses = Map.of(
+                AddResultEnum.SUCCESS,
+                ResponseEntity.ok("Movie deleted successfully."),
+                AddResultEnum.USER_NOT_FOUND,
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username),
+                AddResultEnum.MOVIE_NOT_FOUND,
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_NOT_FOUND + movieId)
+        );
+
+        return responses.getOrDefault(
+                result,
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR)
+        );
+    }
+
+    @PostMapping("/{username}/tv-series/delete")
+    public ResponseEntity<String> deleteTvSerieFromUser(
+            @PathVariable String username,
+            @RequestParam Integer tvSerieId
+    ) {
+        AddResultEnum result = userFacade.deleteTvSerieFromUser(username, tvSerieId);
+
+        Map<AddResultEnum, ResponseEntity<String>> responses = Map.of(
+                AddResultEnum.SUCCESS,
+                ResponseEntity.ok("TV Serie deleted successfully."),
+                AddResultEnum.USER_NOT_FOUND,
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(USER_NOT_FOUND + username),
+                AddResultEnum.TV_SERIE_NOT_FOUND,
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_NOT_FOUND + tvSerieId)
+        );
+
+        return responses.getOrDefault(
+                result,
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UNEXPECTED_ERROR)
+        );
+    }
+
+    @GetMapping("/{username}/movies/is-added")
+    public ResponseEntity<Map<String, Object>> isMovieAdded(
+            @PathVariable String username,
+            @RequestParam Integer movieId
+    ) {
+        boolean result = userFacade.isMovieAdded(username, movieId);
+        return ResponseEntity.ok(Map.of(
+                "username", username,
+                "movieId", movieId,
+                "isMovieAdded", result
+        ));
+    }
+
+    @GetMapping("/{username}/tv-series/is-added")
+    public ResponseEntity<Map<String, Object>> isTvSerieAdded(
+            @PathVariable String username,
+            @RequestParam Integer tvSerieId
+    ) {
+        boolean result = userFacade.isTvSerieAdded(username, tvSerieId);
+        return ResponseEntity.ok(Map.of(
+                "username", username,
+                "tvSerieId", tvSerieId,
+                "isTvSerieAdded", result
+        ));
+    }
 }

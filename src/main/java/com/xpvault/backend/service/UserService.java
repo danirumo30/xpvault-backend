@@ -23,5 +23,9 @@ public interface UserService {
     List<AppUserModel> findFriendsByUsername(String username);
     AddResultEnum deleteFriendFromUser(String username, String friendUsername);
     boolean isFriend(String username, String friendUsername);
+    AddResultEnum deleteMovieFromUser(String username, Integer movieId);
+    AddResultEnum deleteTvSerieFromUser(String username, Integer tvSerieId);
+    boolean isMovieAdded(String username, Integer movieId);
+    boolean isTvSerieAdded(String username, Integer tvSerieId);
 
 }

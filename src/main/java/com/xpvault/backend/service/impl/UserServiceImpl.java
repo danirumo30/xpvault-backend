@@ -206,4 +206,58 @@ public class UserServiceImpl implements UserService {
                         .orElse(false)
                 ).orElse(false);
     }
+
+    @Override
+    public AddResultEnum deleteMovieFromUser(String username, Integer movieId) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user -> {
+                    if (user.getMovies() == null) {
+                        return AddResultEnum.MOVIE_NOT_FOUND;
+                    }
+                    MovieModel movieToRemove = movieService.findByTmdbId(movieId);
+                    if (movieToRemove == null || !user.getMovies().remove(movieToRemove)) {
+                        return AddResultEnum.MOVIE_NOT_FOUND;
+                    }
+                    userDAO.save(user);
+                    return AddResultEnum.SUCCESS;
+                })
+                .orElse(AddResultEnum.USER_NOT_FOUND);
+    }
+
+    @Override
+    public AddResultEnum deleteTvSerieFromUser(String username, Integer tvSerieId) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user -> {
+                    if (user.getTvSeries() == null) {
+                        return AddResultEnum.TV_SERIE_NOT_FOUND;
+                    }
+                    TvSerieModel serieToRemove = tvSerieService.findByTmdbId(tvSerieId);
+                    if (serieToRemove == null || !user.getTvSeries().remove(serieToRemove)) {
+                        return AddResultEnum.TV_SERIE_NOT_FOUND;
+                    }
+                    userDAO.save(user);
+                    return AddResultEnum.SUCCESS;
+                })
+                .orElse(AddResultEnum.USER_NOT_FOUND);
+    }
+
+    @Override
+    public boolean isMovieAdded(String username, Integer movieId) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user -> {
+                    if (user.getMovies() == null) return false;
+                    MovieModel movie = movieService.findByTmdbId(movieId);
+                    return movie != null && user.getMovies().contains(movie);
+                }).orElse(false);
+    }
+
+    @Override
+    public boolean isTvSerieAdded(String username, Integer tvSerieId) {
+        return Optional.ofNullable(findByUsername(username))
+                .map(user -> {
+                    if (user.getTvSeries() == null) return false;
+                    TvSerieModel serie = tvSerieService.findByTmdbId(tvSerieId);
+                    return serie != null && user.getTvSeries().contains(serie);
+                }).orElse(false);
+    }
 }
