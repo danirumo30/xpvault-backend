@@ -94,10 +94,9 @@ public class MovieController {
     @GetMapping("/genre/{genre}")
     public ResponseEntity<Object> getMovieByGenre(
             @PathVariable String genre,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
+            @RequestParam(defaultValue = "1") int page
     ) {
-        List<BasicMovieDTO> movies = movieFacade.getMovieByGenre(genre, language, page);
+        List<BasicMovieDTO> movies = movieFacade.getMovieByGenre(genre, "en", page);
 
         if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_GENRE_NOT_FOUND + genre);
