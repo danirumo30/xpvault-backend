@@ -88,7 +88,6 @@ public class TvSerieServiceImpl implements TvSerieService {
     @SneakyThrows
     @Override
     public List<TvSeriesDb> getTvSeriesByGenre(String genre, String language, int page) {
-
         Optional<Integer> genreId = tmdbGenre.getTvList(language)
                                    .stream()
                                    .filter(g -> g.getName().equalsIgnoreCase(genre))

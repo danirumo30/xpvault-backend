@@ -93,10 +93,9 @@ public class TvSerieController {
     @GetMapping("/genre/{genre}")
     public ResponseEntity<Object> getTvSeriesByGenre(
             @PathVariable String genre,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
+            @RequestParam(defaultValue = "0") int page
     ) {
-        List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByGenre(genre, language, page);
+        List<BasicTvSerieDTO> tvSeries = tvSerieFacade.getTvSeriesByGenre(genre, "en", page);
 
         if (tvSeries.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TV_SERIE_GENRE_NOT_FOUND + genre);
