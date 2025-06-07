@@ -79,10 +79,9 @@ public class MovieController {
     public ResponseEntity<Object> getMovieByTitle(
             @PathVariable String title,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "US") String region,
-            @RequestHeader(value = HEADER_ACCEPT_LANGUAGE, defaultValue = HEADER_DEFAULT_LANGUAGE) String language
+            @RequestParam(defaultValue = "US") String region
     ) {
-        List<BasicMovieDTO> movies = movieFacade.getMovieByTitle(title, language, page, region);
+        List<BasicMovieDTO> movies = movieFacade.getMovieByTitle(title, "en", page, region);
 
         if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MOVIE_TITLE_NOT_FOUND + title);
