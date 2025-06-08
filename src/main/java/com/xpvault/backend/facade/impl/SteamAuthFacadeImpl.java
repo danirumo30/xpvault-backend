@@ -20,8 +20,8 @@ public class SteamAuthFacadeImpl implements SteamAuthFacade {
     @Override
     public String getSteamRedirectUrl() {
         return steamAuthService.buildRedirectUrl(
-                "http://localhost:5000/steam-auth/login/return",
-                "http://localhost:5000"
+                "https://xpvaultbackend.es/steam-auth/login/return",
+                "https://xpvaultbackend.es"
         );
     }
 
