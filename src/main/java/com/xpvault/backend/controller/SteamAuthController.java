@@ -33,11 +33,11 @@ public class SteamAuthController {
         String steamId = steamAuthFacade.processSteamReturn(request);
 
         if (steamId == null) {
-            response.sendRedirect("https://danirumo30.github.io/xpvault-frontend/#steamError");
+            response.sendRedirect("https://xpvault.me/#steamError");
             return;
         }
 
-        response.sendRedirect("https://danirumo30.github.io/xpvault-frontend/?steamId=" + steamId);
+        response.sendRedirect("https://xpvault.me/?steamId=" + steamId);
     }
 }
 
