@@ -162,16 +162,30 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public AppUserDTO save(AppUserDTO appUserDTO) {
         return Optional.ofNullable(appUserDTOToAppUserModelConverter.convert(appUserDTO))
-                       .map(appUserModel -> {
-                            Optional.ofNullable(appUserModel.getSteamUser()).ifPresent(steamUser -> {
-                                if (steamUser.getAppUser() == null || steamUser.getAppUser().getId().equals(appUserModel.getId())) {
-                                    steamUser.setAppUser(appUserModel);
-                                }
-                            });
-                            return userService.save(appUserModel);
-                       })
-                       .map(appUserModelToAppUserDTOConverter::convert)
-                       .orElseThrow(() -> new IllegalArgumentException("Could not convert AppUserDTO to model"));
+                .map(appUserModel -> {
+                    Optional<AppUserModel> existingUserOpt = Optional.ofNullable(userService.findByUsername(appUserModel.getUsername()));
+
+                    if (existingUserOpt.isPresent()) {
+                        AppUserModel existingUser = existingUserOpt.get();
+
+                        if (appUserModel.getMovies() == null || appUserModel.getMovies().isEmpty()) {
+                            appUserModel.setMovies(existingUser.getMovies());
+                        }
+                        if (appUserModel.getTvSeries() == null || appUserModel.getTvSeries().isEmpty()) {
+                            appUserModel.setTvSeries(existingUser.getTvSeries());
+                        }
+                    }
+
+                    Optional.ofNullable(appUserModel.getSteamUser()).ifPresent(steamUser -> {
+                        if (steamUser.getAppUser() == null || steamUser.getAppUser().getId().equals(appUserModel.getId())) {
+                            steamUser.setAppUser(appUserModel);
+                        }
+                    });
+
+                    return userService.save(appUserModel);
+                })
+                .map(appUserModelToAppUserDTOConverter::convert)
+                .orElseThrow(() -> new IllegalArgumentException("Could not convert AppUserDTO to model"));
     }
 
     @Override
