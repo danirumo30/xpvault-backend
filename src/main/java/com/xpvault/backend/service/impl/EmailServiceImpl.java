@@ -22,7 +22,6 @@ public class EmailServiceImpl implements EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("xpvault.team@gmail.com");
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(body, true);
