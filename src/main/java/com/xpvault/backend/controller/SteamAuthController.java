@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -24,20 +25,43 @@ public class SteamAuthController {
     private final SteamAuthFacade steamAuthFacade;
 
     @GetMapping(LOGIN_PATH)
-    public void redirectToSteam(HttpServletResponse response) throws IOException {
-        response.sendRedirect(steamAuthFacade.getSteamRedirectUrl());
+    public void redirectToSteam(
+            @RequestParam(value = "redirect", required = false, defaultValue = "web") String redirect,
+            HttpServletResponse response
+    ) throws IOException {
+        response.sendRedirect(steamAuthFacade.getSteamRedirectUrl(redirect));
     }
 
+
     @GetMapping(LOGIN_PATH + "/return")
-    public void handleSteamReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void handleSteamReturn(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(value = "redirect", required = false, defaultValue = "web") String redirect
+    ) throws IOException {
         String steamId = steamAuthFacade.processSteamReturn(request);
 
         if (steamId == null) {
-            response.sendRedirect("https://xpvault.me/#steamError");
+            response.sendRedirect(getRedirectUrl(redirect));
             return;
         }
 
-        response.sendRedirect("https://xpvault.me/?steamId=" + steamId);
+        response.sendRedirect(getRedirectUrlWithSteamId(redirect, steamId));
+    }
+
+    private String getRedirectUrl(String redirect) {
+        return switch (redirect.toLowerCase()) {
+            case "android" -> "myapp://steam-login-error";
+            case "ios"     -> "myapp-ios://steam-login-error";
+            default        -> "https://xpvaultbackend.es/#steamError";
+        };
+    }
+
+    private String getRedirectUrlWithSteamId(String redirect, String steamId) {
+        return switch (redirect.toLowerCase()) {
+            case "android" -> "myapp://steam-login-return?steamId=" + steamId;
+            case "ios"     -> "myapp-ios://steam-login-return?steamId=" + steamId;
+            default        -> "https://xpvaultbackend.es/?steamId=" + steamId;
+        };
     }
 }
-
