@@ -53,7 +53,7 @@ public class SteamAuthController {
         return switch (redirect.toLowerCase()) {
             case "android" -> "myapp://steam-login-error";
             case "ios"     -> "myapp-ios://steam-login-error";
-            default        -> "https://xpvaultbackend.es/#steamError";
+            default        -> "https://xpvault.me/#steamError";
         };
     }
 
@@ -61,7 +61,7 @@ public class SteamAuthController {
         return switch (redirect.toLowerCase()) {
             case "android" -> "myapp://steam-login-return?steamId=" + steamId;
             case "ios"     -> "myapp-ios://steam-login-return?steamId=" + steamId;
-            default        -> "https://xpvaultbackend.es/?steamId=" + steamId;
+            default        -> "https://xpvault.me/?steamId=" + steamId;
         };
     }
 }
