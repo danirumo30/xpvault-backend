@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
@@ -19,17 +18,11 @@ public class SteamAuthFacadeImpl implements SteamAuthFacade {
     private final SteamAuthService steamAuthService;
 
     @Override
-    public String getSteamRedirectUrl(String redirect) {
-        String returnUrl = UriComponentsBuilder
-                .newInstance()
-                .scheme("https")
-                .host("xpvaultbackend.es")
-                .path("/steam-auth/login/return")
-                .queryParam("redirect", redirect)
-                .build()
-                .toUriString();
-
-        return steamAuthService.buildRedirectUrl(returnUrl, "https://xpvaultbackend.es");
+    public String getSteamRedirectUrl() {
+        return steamAuthService.buildRedirectUrl(
+                "https://xpvaultbackend.es/steam-auth/login/return",
+                "https://xpvaultbackend.es"
+        );
     }
 
     @Override

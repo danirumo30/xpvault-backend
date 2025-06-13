@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public interface SteamAuthFacade {
 
-    String getSteamRedirectUrl(String redirect);
+    String getSteamRedirectUrl();
     String processSteamReturn(HttpServletRequest request) throws IOException;
 
 }
